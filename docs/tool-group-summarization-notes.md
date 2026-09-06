@@ -130,10 +130,17 @@
 ## 2026-09-06：0.1.5 分层三区改造
 
 - 主链改为按当前 surface 位置（不是 seq 数值）从尾部按模型容量划分：近区 0-20%、工具区 20-50%、遗忘区 >50%；边界同时满足 tool pair 和 step 完整性。
-- 调度水位独立于区域边界：40% 运行工具要点化和原始大结果裁剪，70% 增加一批遗忘区压缩，80% 在受控批数内每批重新计量、重新划区并继续收敛。
+- 调度水位独立于区域边界：40% 运行工具要点化和原始大结果裁剪，70% 增加一批遗忘区压缩，80% 每批重新计量、重新划区并继续收敛。
 - 本轮工具摘要和裁剪 replacement 进入排除集合，不可被本轮遗忘语义压缩；history summary 至少经历一个 `turn/end` 后才可重入。来源索引从 replacement/sourceEventSeqs、官方 prune/compaction 事件和持久成功 audit 重建，不读取摘要文本 marker。
-- 工具裁剪只接收明确的原始结果候选集合，摘要与裁剪候选互斥；确定性失败落入持久 fallback 记录，瞬时流失败只允许一轮受控重试，避免每个 pre-step 重复发起 LLM 调用。
+- 工具裁剪只接收明确的原始结果候选集合，摘要与裁剪候选互斥；确定性失败落入持久 fallback 记录，瞬时流失败使用持久 audit 限制重试，避免每个 pre-step 重复发起 LLM 调用。
 - 新增 `compaction-three-zone.spec.ts` 覆盖非单调 seq、边界、安全有限 batch、来源恢复和旧配置冲突规则；完整回归更新为允许 task-state 已定义的 `repair` 审计认证状态。
+
+## 2026-09-06：0.1.6 压力可恢复性
+
+- 普通 80% pressure 不再受固定两批上限约束；每次成功 replacement 后重新计量并重新划区，只要 token 严格下降且仍有安全候选就继续，初始 surface 节点数仅作为异常收敛 guard。
+- `maxPressureBatches` 只限制 overflow 单次尝试中每个保护级别的批数；70% 普通维护仍由 `maxMaintenanceBatches` 限制。
+- 工具组允许首次 transient failure 后再进行一次持久可恢复尝试；fallback 或累计两次 failure 后结束工具阶段，允许普通历史压缩接管，避免遗忘区永久阻塞。
+- `planForgetBatch` 区分无遗忘区、起点不安全、最老完整单元超限和无安全结束边界；pressure 另记录 re-entry、工具阶段、无收益及 convergence guard，不扩展 Session event vocabulary。
 
 ## 下一步读取顺序
 

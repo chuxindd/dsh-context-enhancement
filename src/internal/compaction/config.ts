@@ -117,6 +117,9 @@ function resolvePolicy(
   fallback: ResolvedPolicy | undefined,
   name: string,
 ): ResolvedPolicy {
+  if (config.compactionRetries !== undefined && config.maxPressureBatches !== undefined) {
+    throw new Error(`${name}: compactionRetries conflicts with maxPressureBatches; configure only one pressure budget`)
+  }
   const pressureRatio = config.pressureRatio ?? config.thresholdRatio ?? fallback?.pressureRatio ?? DEFAULT_PRESSURE_RATIO
   const recentRatio = config.recentRatio ?? config.retainRatio ?? fallback?.recentRatio ?? DEFAULT_RECENT_RATIO
   const forgetBoundaryRatio = config.forgetBoundaryRatio ?? fallback?.forgetBoundaryRatio ?? DEFAULT_FORGET_BOUNDARY_RATIO
@@ -144,7 +147,9 @@ function resolvePolicy(
     targetBatchTokens: config.targetBatchTokens ?? fallback?.targetBatchTokens ?? DEFAULT_TARGET_BATCH_TOKENS,
     maxBatchTokens: config.maxBatchTokens ?? fallback?.maxBatchTokens ?? DEFAULT_MAX_BATCH_TOKENS,
     maxMaintenanceBatches: config.maxMaintenanceBatches ?? fallback?.maxMaintenanceBatches ?? DEFAULT_MAX_MAINTENANCE_BATCHES,
-    maxPressureBatches: config.maxPressureBatches ?? fallback?.maxPressureBatches ?? DEFAULT_MAX_PRESSURE_BATCHES,
+    maxPressureBatches: config.maxPressureBatches ?? (config.compactionRetries !== undefined
+      ? config.compactionRetries + 1
+      : fallback?.maxPressureBatches ?? DEFAULT_MAX_PRESSURE_BATCHES),
     minReentryTurns: config.minReentryTurns ?? fallback?.minReentryTurns ?? DEFAULT_MIN_REENTRY_TURNS,
     summarizationProvider: config.summarizationProvider ?? fallback?.summarizationProvider ?? '',
     summarizationModel: config.summarizationModel ?? fallback?.summarizationModel ?? '',

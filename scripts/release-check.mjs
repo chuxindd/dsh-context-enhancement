@@ -60,7 +60,7 @@ const pkg = loadJson('package.json')
 if (pkg) {
   ok('package.json parses')
   if (pkg.name !== 'dsh-context-enhancement') bad(`package name is ${pkg.name}`)
-  if (pkg.version !== '0.1.5') bad(`package version is ${pkg.version}`)
+  if (pkg.version !== '0.1.6') bad(`package version is ${pkg.version}`)
   if (pkg.type !== 'module') bad('package.type must be module')
   if (!pkg.dsh?.bundle?.patch) bad('package is missing dsh.bundle.patch')
   if (pkg.repository?.url !== 'git+https://github.com/chuxindd/dsh-context-enhancement.git') bad('package.repository.url is missing or incorrect')

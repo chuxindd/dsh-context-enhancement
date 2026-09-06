@@ -114,7 +114,9 @@ export function ContextEnhancementAction({ sessionId, useSessions, useProjection
       <div style={headingStyle}><strong>{t('panelLabel')}</strong><button ref={closeRef} type="button" style={closeStyle} aria-label={t('close')} onClick={closePanel}>×</button></div>
       <p style={introStyle}>{t('intro')}</p>
       {EFFECTS.map(effect => {
-        const count = evidence?.[effect.key] ?? 0
+        const count = effect.key === 'taskStateBasic' || effect.key === 'taskStatePrompt'
+          ? (evidence?.taskStateRequests ?? 0)
+          : (evidence?.[effect.key] ?? 0)
         return <div key={effect.label} style={rowStyle}>
           <span style={dotStyle} aria-hidden="true" />
           <div><div>{t(effect.label)}</div><div style={detailStyle}>{t(effect.detail)}</div></div>

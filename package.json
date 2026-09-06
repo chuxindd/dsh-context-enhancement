@@ -1,7 +1,7 @@
 {
   "name": "dsh-context-enhancement",
   "description": "Persistent task state and context-aware compaction for DeepSeek Harness coding sessions.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "author": "chuxindd",
   "repository": {
@@ -70,7 +70,7 @@
     "presets",
     "scripts/install-desktop-preset.mjs",
     "README.md",
-    "README.zh.md",
+    "README.en.md",
     "CONTRIBUTING.md",
     "LICENSE",
     "CHANGELOG.md",
@@ -88,7 +88,7 @@
   },
   "packageManager": "pnpm@11.7.0",
   "scripts": {
-    "build": "pnpm run build:lib",
+    "build": "tsc -p tsconfig.build.json && tsdown --config-loader tsx && node scripts/patch-client-id.mjs",
     "build:lib": "tsc -p tsconfig.build.json && tsdown --config-loader tsx && node scripts/patch-client-id.mjs",
     "typecheck": "tsc -p tsconfig.json --pretty false",
     "test": "vitest run",

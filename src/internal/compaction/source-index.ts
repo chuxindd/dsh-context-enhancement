@@ -104,7 +104,8 @@ function replacementSources(event: SessionEvent): readonly SessionSeq[] {
 function completedTurnsAfter(session: Session, replacement: SessionEvent): number {
   let count = 0
   for (let seq = replacement.seq + 1; seq < session.seq; seq += 1) {
-    if (session.eventAt(seq as SessionSeq)?.type === 'turn/end') count += 1
+    const event = session.eventAt(seq as SessionSeq)
+    if (event?.type === 'turn/end' && event.data.reason?.kind === 'completed') count += 1
   }
   return count
 }

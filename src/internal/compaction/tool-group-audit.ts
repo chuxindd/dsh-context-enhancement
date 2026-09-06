@@ -17,6 +17,7 @@ export interface ToolGroupFingerprintInput {
 export interface ToolGroupAuditRecord {
   readonly requestId: string
   readonly sessionId: string
+  /** Session lifecycle identity. Legacy records without createdAt are ignored. */
   readonly lifecycle?: { readonly createdAt?: number }
   readonly fingerprint: string
   readonly sourceSeqs: readonly SessionSeq[]
@@ -55,10 +56,12 @@ export function openToolGroupAudit(
   provider: string,
   model: string,
   fingerprint: string,
+  lifecycle: { readonly createdAt: number } = { createdAt: 0 },
 ): ToolGroupAuditRecord {
   return {
     requestId,
     sessionId,
+    lifecycle,
     fingerprint,
     sourceSeqs: [...group.sourceSeqs],
     surfaceGeneration,
@@ -90,6 +93,18 @@ export function recoverableOpenAuditFor(
   fingerprint: string,
 ): ToolGroupAuditRecord | undefined {
   return records.find(record => record.fingerprint === fingerprint && record.status === 'open')
+}
+
+/** Whether one durable tool group still permits semantic summarization work. */
+export function shouldAttemptToolGroupSummary(
+  records: readonly ToolGroupAuditRecord[],
+  fingerprint: string,
+): boolean {
+  if (successfulAuditFor(records, fingerprint) !== undefined) return false
+  if (recoverableOpenAuditFor(records, fingerprint) !== undefined) return true
+  if (records.some(record => record.fingerprint === fingerprint && record.status === 'fallback')) return false
+  const failures = records.filter(record => record.fingerprint === fingerprint && record.status === 'failure').length
+  return failures < 2
 }
 
 export function assertToolGroupCommitStable(

@@ -13,7 +13,7 @@ import type { CompactionResult } from '@deepseek-ai/dsh-compaction'
 import { BasicCompactionEngine } from '../src/compaction-basic.ts'
 import { resolveCompactSpec, resolveConfig, resolveTargetPolicy } from '../src/internal/compaction/config.ts'
 import { buildSurfaceSourceIndex } from '../src/internal/compaction/source-index.ts'
-import { partitionSurfaceZones, selectForgetBatch } from '../src/internal/compaction/zones.ts'
+import { partitionSurfaceZones, planForgetBatch, selectForgetBatch } from '../src/internal/compaction/zones.ts'
 
 const SURFACE = { surfaceOp: 'append' as const }
 
@@ -73,6 +73,19 @@ describe('three-zone positional planning', () => {
     expect(zones.tool?.startIndex).toBe(1)
     expect(zones.tool?.endIndex).toBe(3)
     expect(zones.forget?.endIndex).toBe(0)
+  })
+
+  it('reports an oversized oldest complete unit instead of silently returning no range', () => {
+    const session = Session.create(SessionId('zones-oversized'))
+    session.append('user/message', createUserMessage({ content: [{ type: 'text', text: 'oversized' }], source: { kind: 'user' } }), SURFACE)
+    session.append('user/message', createUserMessage({ content: [{ type: 'text', text: 'middle' }], source: { kind: 'user' } }), SURFACE)
+    session.append('user/message', createUserMessage({ content: [{ type: 'text', text: 'recent' }], source: { kind: 'user' } }), SURFACE)
+    const priced = measurement(session, 30)
+    const zones = partitionSurfaceZones(session, priced, { recentRatio: 0.20, forgetBoundaryRatio: 0.50, contextWindow: 100 })
+    expect(planForgetBatch(session, priced, zones, { targetBatchTokens: 20, maxBatchTokens: 24 })).toEqual({
+      kind: 'blocked',
+      reason: 'oldest-unit-too-large',
+    })
   })
 
   it('selects one oldest bounded safe forget batch', () => {
@@ -145,6 +158,7 @@ describe('three-zone engine scheduling', () => {
         tokenMeter,
         llm: { resolveModelInfo: async () => ({ context: { contextWindow: 100 } }) },
         get: () => undefined,
+        logger: { warn: () => undefined },
       },
       zones: (current: Session, priced: TokenMeasurement, spec: ReturnType<typeof resolveCompactSpec>) => partitionSurfaceZones(current, priced, {
         recentRatio: spec.retainTokens / spec.contextWindow,
@@ -154,6 +168,7 @@ describe('three-zone engine scheduling', () => {
       summarizeToolGroups: async () => undefined,
       sourceIndex: (current: Session) => buildSurfaceSourceIndex(current),
       hasPendingToolIntermediateWork: () => false,
+      logPressureStop: () => undefined,
       compactRegion: async (start: SessionSeq, end: SessionSeq): Promise<CompactionResult> => {
         compacted.push({ start, end })
         const replacement = session.append('user/message', createUserMessage({
@@ -190,13 +205,21 @@ describe('three-zone engine scheduling', () => {
     expect(compacted).toHaveLength(1)
   })
 
-  it('remeasures and selects a fresh second forget range while pressure remains', async () => {
-    const session = sessionWithNodes(9)
+  it('stops overflow at the forget guard instead of entering younger zones', async () => {
+    const session = sessionWithNodes(12)
+    const { engine, agent, compacted } = engineHarness(session)
+    await (BasicCompactionEngine.prototype as unknown as { recoverOverflow: Function }).recoverOverflow.call(engine, agent, undefined, new AbortController().signal)
+    expect(compacted.length).toBeLessThanOrEqual(2)
+    expect(compacted.every(entry => session.surface.nodes.indexOf(entry.start) < 6)).toBe(true)
+  })
+
+  it('remeasures fresh ranges beyond the old two-batch cap until pressure converges', async () => {
+    const session = sessionWithNodes(12)
     const { engine, agent, compacted } = engineHarness(session)
     await BasicCompactionEngine.prototype.compactIfNeeded.call(engine, agent, 'pressure', new AbortController().signal)
-    expect(compacted).toHaveLength(2)
+    expect(compacted.length).toBeGreaterThan(2)
     expect(compacted[1]).not.toEqual(compacted[0])
-    expect(session.surface.nodes).toHaveLength(7)
+    expect(session.surface.nodes.length).toBeLessThan(8)
   })
 })
 
@@ -214,6 +237,17 @@ describe('durable source classification and compatibility', () => {
     expect(buildSurfaceSourceIndex(session).entry(replacement.seq).kind).toBe('unknown-replacement')
     expect(buildSurfaceSourceIndex(session, [replacement.seq]).entry(replacement.seq).kind).toBe('tool-summary')
     expect(buildSurfaceSourceIndex(session).isOriginalToolResult(replacement.seq)).toBe(false)
+  })
+
+  it.each(['aborted', 'error', 'blocked', 'max-tokens', 'interrupted'] as const)('does not re-enter after non-completed %s turn', reason => {
+    const session = Session.create(SessionId(`source-${reason}`))
+    session.append('user/message', createUserMessage({ content: [{ type: 'text', text: 'prompt' }], source: { kind: 'user' } }), SURFACE)
+    addToolStep(session, 1, 1, `summary-${reason}`)
+    const original = session.surface.nodes.at(-1)!
+    const event = session.eventAt(original)!
+    const replacement = session.append('tool/result', event!.data as never, { surfaceOp: { op: 'replace', start: original, end: original }, sourceEventSeqs: [original] })
+    session.append('turn/end', { turn: 1, reason: { kind: reason } } as never)
+    expect(buildSurfaceSourceIndex(session, [replacement.seq]).canCompactHistory(replacement.seq, 1)).toBe(false)
   })
 
   it('holds tool-summary replacements until a later completed turn', () => {

@@ -1,59 +1,112 @@
 # dsh-context-enhancement
 
-`dsh-context-enhancement` is a context-management plugin for DeepSeek Harness (DSH),
-listed under the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic. It builds on the `standard` agent preset, adds task state that survives turns and
-restarts, and replaces the default compaction implementation. Long sessions retain
-recent work and key decisions while older tool output is reduced earlier.
+`dsh-context-enhancement` 是为 DeepSeek Harness（DSH）定制的上下文增强插件，面向单一长会话的上下文管理，提供“工具要点化”和“遗忘区压缩”、“独立会话摘要”的能力。
 
-It is intended for multi-step, long-running, tool-heavy development tasks and work
-that must continue after an interruption.
+> 当前版本：`0.1.6`。兼容 DeepSeek Harness `0.1.2-rc.1`。
+> 本项目还在测试阶段，代码由 GPT5.6 Sol 完成，欢迎批评指教。
 
-> Current version: `0.1.5`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
+## 工作原理
 
-[中文文档](./README.zh.md)
+编码 Agent 在长任务中会经历几十上百轮工具调用。 把完整历史保留在主上下文中会面临以下硬约束：
 
-## Changes from standard
+* 上下文窗口有限，工具输出、代码片段和报错日志迟早填满窗口，必须压缩或丢弃。
+* 输入越长，有用约束越容易被大量工具低价值输出稀释，主 Agent 越难判断下一步该做什么。
+* 模型难以区分当前现场、历史事实和已经完成的工作。
+* 在窗口即将耗尽时一次性压缩，输入往往过大，极易同时损失底层细节和全局结构。
 
-The `contextual` preset keeps the coding tools, planning, subagents, and workflows
-from `standard`. It changes only task continuity and context management.
+同时，长任务还需要一份持续更新的任务摘要，用于记录已经发生的事实、决策和关键上下文。
 
-| Capability | `standard` | `contextual` |
-| --- | --- | --- |
-| Coding agent and tools | Included | Preserved |
-| Task state | Depends on conversation history | Extracted and persisted automatically |
-| Recovery after restart | No separate task state | Loads committed state without rebuilding it through an LLM call |
-| Older tool output | Handled by default compaction | Reduced before semantic compaction |
-| Long-session compaction | DSH default implementation | Keeps recent work at higher fidelity before summarizing older history |
+在行业常见的 TODO 清单编排、长程目标（Goal）验证及各种状态循环机制的基础之上，针对长会话的记忆管理，本插件由“主线程分区压缩”和“独立 checkpoint 旁路”两套并行机制分别处理：
 
-In Web sessions, the **Enhanced features** header action reports four runtime effects:
-task progress memory, request context sync, tool-result cleanup, and long-conversation
-cleanup. The panel reports status; detailed events remain available in Trajectory.
+#### 2.1 主线程压缩链
 
-## Installation
+主线程中的内容随新对话产生而逐渐老化，并依次进入三个互不重叠的区域：
 
-### Requirements
+```text
+最老                                                        最新
+┌──────────────────┬────────────────────────┬──────────────────┐
+│ 遗忘区           │ 工具压缩区             │ 近区             │
+│                  │                        │                  │
+│ 操作③            │ 操作① / 操作②          │ 原始内容完整保留 │
+│ 分批语义压缩     │ 工具要点化或工具裁剪   │ 当前工作现场     │
+└──────────────────┴────────────────────────┴──────────────────┘
+```
+
+每段内容遵循统一生命周期：
+
+```text
+近区原始内容
+    │ 随新内容增长而老化
+    ▼
+工具压缩区
+    │ 工具结果形成要点或经过裁剪
+    │ 用户消息、助手回答和工具要点继续参与后续对话
+    │ 接受用户纠偏、模型判断和新工具证据验证
+    ▼
+遗忘区
+    │ 按最老优先的有限批次执行语义压缩
+    ▼
+遗忘摘要
+```
+
+工具要点化、工具裁剪和遗忘区压缩是三个独立操作。
+
+#### 2.2 Checkpoint 旁路链
+
+独立任务状态服务读取主线程事件流，在后台持续更新同一份 Checkpoint。
+
+```text
+主线程事件流
+    │
+    └─ 独立 Checkpoint 服务
+          ├─ 截取上次提交位置之后的新增事件
+          ├─ 与上一版稳定状态合并
+          └─ 校验并提交新的稳定版本
+```
+
+Checkpoint 使用独立模型请求、输入预算、输出预算、超时和重试策略。主 Agent 始终读取最近一次成功提交的稳定版本；后台更新和失败均不阻塞主任务。
+
+## 相比 standard 的变化
+
+`contextual` 保留 `standard` 的编码工具、规划、子代理和工作流能力，仅改变任务连续性
+与上下文管理方式。
+
+| 能力                 | `standard`         | `contextual`                                           |
+| -------------------- | ------------------ | ------------------------------------------------------ |
+| 编码 Agent 与工具    | 完整提供           | 完整保留                                               |
+| 任务状态             | 依赖当前对话       | 自动提取并持久保存任务事实、决策、约束、风险和后续事项 |
+| 服务重启后的任务恢复 | 无独立状态         | 从存储直接恢复，不需要重新调用模型重建                 |
+| 较早工具输出         | 由默认压缩统一处理 | 在压缩前优先缩减，降低上下文占用                       |
+| 长对话压缩           | DSH 默认实现       | 优先保留近期工作，再整理较早历史                       |
+
+在 Web 会话中，标题栏的 **增强功能** 按钮显示四项运行状态：任务进度记忆、请求上下文
+同步、工具结果整理和长对话整理。该面板用于查看状态；详细事件仍在“轨迹”中。
+
+## 安装
+
+### 前置条件
 
 - Node.js `^22.19.0 || >=24.0.0`
 - DeepSeek Harness `0.1.2-rc.1`
-- A configured DSH model provider
-- The Web installation uses `dsh --profile web`
+- 已配置可用的 DSH 模型提供方
+- Web 安装使用 `dsh --profile web`
 
-### Install from a GitHub release
+### 从 GitHub Release 安装
 
-Pin a tag so later repository changes do not alter the deployment:
+安装固定 tag，避免后续提交改变当前部署：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.5'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
 dsh --profile web
 ```
 
-Open `http://127.0.0.1:8080`, create a session, and select **上下文增强**.
-The plugin preserves the other shipped presets and registers `contextual` as the
-default preset.
+打开 `http://127.0.0.1:8080`，新建会话并选择 **上下文增强**。插件会保留
+`standard`、`minimal`、`ptc` 和 `cordis` 等原有模式，同时将 `contextual` 注册为默认
+模式。
 
-### Install from a local checkout
+### 从本地源码安装
 
-Use this path for development or before a GitHub release exists:
+适合开发、调试或尚未创建 Release 时使用：
 
 ```powershell
 git clone https://github.com/chuxindd/dsh-context-enhancement.git
@@ -61,180 +114,104 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.5.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.6.tgz"
 dsh --profile web
 ```
 
-Pass an absolute tarball path if the DSH CLI does not accept the relative path on
-Windows.
+在 Windows PowerShell 中，如果 DSH CLI 不接受含 `/` 的相对路径，请传入 tarball 的
+绝对路径。
 
-### Desktop compatibility step
+### Desktop 兼容步骤
 
-The Desktop launcher rebuilds the agent-preset discovery roots. After installing the
-bundle, materialize `contextual` into the user preset directory:
+Desktop 启动器会重建 Agent preset 的发现目录，因此安装 Bundle 后还需要把
+`contextual` preset 写入用户目录。在本仓库或解压后的源码目录执行：
 
 ```powershell
 pnpm run install:desktop-preset
 ```
 
-The default target is `%DSH_HOME%\.agent-presets\contextual`, or
-`%USERPROFILE%\.dsh\.agent-presets\contextual` when `DSH_HOME` is unset. The script
-refuses to replace an existing preset. Replace it intentionally with:
+默认写入 `%DSH_HOME%\.agent-presets\contextual`；未设置 `DSH_HOME` 时使用
+`%USERPROFILE%\.dsh\.agent-presets\contextual`。如果已有同名 preset，脚本会拒绝覆盖；
+确认需要替换时执行：
 
 ```powershell
 pnpm run install:desktop-preset -- --force
 ```
 
-## Usage and verification
+## 使用与验证
 
-1. Start the Web profile and open or create a session.
-2. Select **上下文增强** in the agent picker.
-3. Work normally; task-state updates and context management are automatic.
-4. Open **Enhanced features** in the session header to inspect enabled state and trigger counts.
-5. Open Trajectory to inspect detailed pruning and compaction events.
+1. 启动 Web profile，打开或新建会话。
+2. 在 Agent 选择器中选择 **上下文增强**。
+3. 正常执行任务；任务状态与上下文整理均自动运行，不需要手动维护。
+4. 点击会话标题栏的 **增强功能** 查看各能力是否启用及本会话触发次数。
+5. 打开“轨迹”查看压缩、裁剪等详细事件。
 
-Task state updates asynchronously after its event threshold is reached. A new session
-may report that an effect has not triggered yet even though the feature is enabled.
+任务状态达到事件阈值后异步更新，因此刚创建的会话可能显示“本会话尚未触发”。这不代表
+能力未启用。
 
-## How it works
+## 配置
 
-This bundle manages long sessions through two parallel paths:
+Bundle 默认配置位于 `cordis.patch.yml`，可在 profile/home patch 层覆盖。覆盖 `config`
+时需要提供完整配置，而不是只写变化字段。
 
-1. **The main-thread compaction path** changes the Session surface used by the next model request and progressively reduces the granularity of older content.
-2. **The checkpoint side path** collects task progress independently and makes the latest committed task state available to later model requests without blocking the main task on state maintenance.
+### 任务状态 provider
 
-### 1. Main-thread compaction path
-
-The compaction flow does not wait until the context window is exhausted and then perform one indiscriminate summary. It applies increasingly stronger operations:
-
-```text
-Current Session surface, measured from its newest tail
-      |
-      +-- Recent zone (0-20% of model capacity): preserve the live working set
-      +-- Tool zone (20-50%): source-validated tool notes or deterministic raw-result pruning
-      +-- Forget zone (>50%): oldest-first bounded semantic history batches
-```
-
-#### Recent-tail protection
-
-`compaction-basic` partitions the current surface by position and token age against the routed model capacity: recent is 0-20%, tool is 20-50%, and forget is older than 50%. Every boundary is snapped toward history to preserve complete tool pairs and steps. Ordinary maintenance never crosses those zones.
-
-Every boundary is checked by current Session-surface position rather than by assuming numeric sequence order. Tool calls and results must remain complete and balanced within their step or segment. A candidate that would cut through the middle of a tool segment is skipped.
-
-#### Tool-group summarization
-
-When the older range contains a qualifying sequence of complete tool activity, `tool-group-summarizer`:
-
-- treats a complete tool segment as one group;
-- filters groups by result count, result characters, estimated tokens, per-group token limits, and the maximum groups per pass;
-- makes one structured JSON model call per selected group with `purpose: compaction`;
-- requires coverage of every source sequence and call id;
-- accepts only facts, paths, identifiers, errors, and unresolved items grounded in the source input;
-- validates the schema and source coverage before appending one replacement for each original tool/result node;
-- preserves message metadata and records `sourceEventSeqs` so the replacement remains traceable to its source events.
-
-Before committing, the engine rechecks the Session lifecycle, surface generation, and source nodes. Route, stream, empty-output, JSON, schema, or source-validation failures do not block the turn. They are audited as fallback/failure and the deterministic pruner continues the reduction.
-
-Tool-group audit records live in the independent `context_enhancement_tool_group_summary` storage domain. Records use `open`, `success`, `fallback`, and `failure` states together with a fingerprint and content digest. A successful fingerprint skips duplicate model work; an unfinished open record reuses its request id after recovery.
-
-#### Deterministic pruning
-
-After tool-group processing, `tool-result-pruner` remeasures the current surface and recomputes the tool zone. It reduces only provenance-indexed original large results in that zone; already summarized results are never re-scanned or classified by text. A configured hard limit may still bound an exceptional original result in the recent zone. Neither operation deletes original Session events: both use surface replacement or shadowing for subsequent model requests.
-
-#### Semantic compaction
-
-If tool-group summarization and deterministic pruning do not bring the request below the routed model threshold, `compaction-basic` selects an older history range that satisfies tool-pairing and step-boundary guards, invokes the compatible semantic compaction backend, and measures the result again. Retries are bounded. If no safe range exists or the pressure cannot converge, the engine reports the failure instead of cutting an unbalanced tool chain.
-
-Context-overflow recovery is a separate emergency path: it performs whole-surface deterministic pruning first and then chooses a compaction range that can advance the surface for the current request.
-
-### 2. Checkpoint side path
-
-`task-state-basic` consumes Session events in the background. Once its configured event threshold is reached, it makes an independent model request for a structured candidate state. Size, schema, count, and semantic checks run before the candidate is committed as the stable state for that Session lifecycle.
-
-`task-state-prompt` reads the latest committed stable state before later model requests and injects it within the configured `maxBytes` limit. Before a stable state exists, it injects nothing. A failed background update leaves the previous stable state in place and does not block the main task.
-
-The durable state contains confirmed facts, decisions, constraints, risks, evidence references, TODO references, continuation information, source cursor, revision, and digest.
-
-| Dimension | Main-thread compaction | Checkpoint side path |
-| --- | --- | --- |
-| Purpose | Control request size and historical noise | Preserve durable task context |
-| Changes the Session surface | Yes, through replacement/shadowing | No, it writes to an independent storage domain |
-| Deletes original events | No | No |
-| Failure behavior | Deterministic fallback or bounded compaction failure | Keep the previous stable state and continue the task |
-| Main implementation | `compaction-basic`, `tool-group-*`, `tool-result-pruner` | `task-state-basic`, `task-state-prompt` |
-
-Task-state and tool-group audit data are stored outside the Session event vocabulary. The bundle does not add `SessionEventMap` event types, so ordinary Session logs remain readable when the plugin is unloaded or an official preset is selected again.
-
-The `contextual` preset mounts this bundle's task-state and compaction components. The `standard` preset continues to use the official DSH compaction implementation. Removing the bundle restores the official composition without deleting stored task state or Session logs.
-
-## Configuration
-
-Defaults live in `cordis.patch.yml` and can be replaced through a profile or home patch.
-A patch replaces the entire `config` object, so provide every required field.
-
-### Task-state provider
-
-| Field | Default | Purpose |
+| 字段 | 默认值 | 作用 |
 | --- | ---: | --- |
-| `provider` / `model` | `deepseek-official` / `deepseek-v4-flash` | Model route for background state updates |
-| `minEvents` | `20` | Eligible events required to start an update |
-| `maxEvents` | `200` | Maximum events processed by one update |
-| `maxInputBytes` | `60000` | UTF-8 input budget for one update |
-| `maxOutputTokens` | `4000` | Background generation limit |
-| `timeoutMs` | `120000` | Request deadline |
-| `maxInfraRetries` | `2` | Additional retries for transient infrastructure failures |
-| `maxEntriesPerKind` | `50` | Limit for each facts/decisions/constraints/risks collection |
-| `maxEntryBytes` | `4000` | Limit for one state entry |
-| `maxListItems` | `40` | Limit for one list field |
+| `provider` / `model` | `deepseek-official` / `deepseek-v4-flash` | 后台任务状态更新使用的模型路由 |
+| `minEvents` | `20` | 已提交位置之后，自动启动一次更新所需的最少事件数 |
+| `maxEvents` | `200` | 单次更新最多处理的事件数 |
+| `maxInputBytes` | `60000` | 单次结构化输入的 UTF-8 字节预算 |
+| `maxOutputTokens` | `4000` | 单次后台生成上限 |
+| `timeoutMs` | `120000` | 单次请求超时 |
+| `maxInfraRetries` | `2` | 瞬时基础设施错误的额外重试次数 |
+| `maxEntriesPerKind` | `50` | 每类事实、决策、约束和风险的上限 |
+| `maxEntryBytes` | `4000` | 单条状态记录的字节上限 |
+| `maxListItems` | `40` | 单个列表字段的条目上限 |
 
-`task-state-prompt.maxBytes` defaults to `8000` and bounds the state injected into a
-model request.
+`task-state-prompt` 的 `maxBytes` 默认是 `8000`，用于限制注入请求上下文的状态大小。
 
-### Compaction
+### 上下文压缩
 
-`contextual` retains the official configuration vocabulary, including
-`thresholdRatio`, `retainRatio`, `retainTokens`, `summarizationProvider`,
-`summarizationModel`, `maxTokens`, `compactionRetries`, `maxOverflowRetries`,
-`modelPolicies`, and `auto`.
+`contextual` 继承 DSH 官方配置字段，包括 `thresholdRatio`、`retainRatio`、
+`retainTokens`、`summarizationProvider`、`summarizationModel`、`maxTokens`、
+`compactionRetries`、`maxOverflowRetries`、`modelPolicies` 和 `auto`。
 
-Tool-output reduction uses `thresholdChars`, `headChars`, and `tailChars`. Inspect real
-sessions in Trajectory before lowering these values. Aggressive thresholds increase
-processing frequency and may remove output needed for debugging.
+工具输出缩减使用 `thresholdChars`、`headChars` 和 `tailChars`。修改阈值前建议先通过轨迹
+观察真实会话；阈值过低会增加处理频率，保留量过低会损失排查问题所需的原始输出。
 
-## Data, upgrades, and removal
+## 数据、升级与卸载
 
-Task state is stored at:
+任务状态保存在：
 
 ```text
 $DSH_HOME/storages/context_enhancement_task_state.json
 ```
 
-Ordinary sessions remain under `$DSH_HOME/sessions`. Uninstalling the plugin does not
-delete either location.
+普通 Session 继续保存在 `$DSH_HOME/sessions`。插件不会在卸载时删除这些数据。
 
-Upgrade:
+升级：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.5'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
 ```
 
-Roll back:
+回滚到上一版本：
 
 ```powershell
 dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.3'
 ```
 
-Uninstall:
+卸载：
 
 ```powershell
 dsh plugin --profile web remove dsh-context-enhancement
 ```
 
-Restart the profile after every install, upgrade, rollback, or removal. Removal clears
-the `contextual` default override and restores official compaction, but retains task
-state and Session logs.
+每次安装、升级、回滚或卸载后都需要重启 profile。卸载会移除 `contextual` 默认覆盖并
+恢复官方压缩组合，但不会删除任务状态文件和 Session 日志。
 
-## Local development
+## 本地开发
 
 ```powershell
 git clone https://github.com/chuxindd/dsh-context-enhancement.git
@@ -245,59 +222,63 @@ pnpm test
 pnpm run build
 ```
 
-Built files under `lib/` are committed because installation from a GitHub tag does not
-run `prepare` or `postinstall`. After changing `src/`, run the build and commit the
-corresponding `lib/` changes.
+仓库提交 `lib/` 构建产物，因为 GitHub tag 安装不会运行 `prepare` 或 `postinstall`。
+修改 `src/` 后必须运行 `pnpm run build`，并把对应的 `lib/` 变化一起提交。
 
-| Command | Purpose |
+常用命令：
+
+| 命令 | 用途 |
 | --- | --- |
-| `pnpm run typecheck` | Strictly check sources and tests |
-| `pnpm test` | Run the Vitest suite |
-| `pnpm run test:watch` | Run tests continuously during development |
-| `pnpm run build` | Generate declarations and runtime entries under `lib/` |
-| `pnpm run release:check` | Validate dependencies, exports, patch, preset, and package contents |
-| `pnpm run verify:install` | Install the tarball into an isolated DSH home and mount the preset |
+| `pnpm run typecheck` | 严格检查源码与测试类型 |
+| `pnpm test` | 运行 Vitest 测试 |
+| `pnpm run test:watch` | 开发过程中持续运行测试 |
+| `pnpm run build` | 生成 `lib/types` 和运行时入口 |
+| `pnpm run release:check` | 检查依赖、exports、patch、preset 和打包内容 |
+| `pnpm run verify:install` | 在隔离 DSH home 中安装 tarball 并验证 preset 挂载 |
 
-## Extending the project
+## 扩展开发
 
-| Change | Primary entry points |
+主要修改入口：
+
+| 目标 | 入口 |
 | --- | --- |
-| Task-state schema or service contract | `src/task-state.ts`, `src/internal/task-state/` |
-| Collection, validation, or commit behavior | `src/task-state-basic.ts`, `src/internal/task-state/basic/` |
-| State rendered into model requests | `src/task-state-prompt.ts` |
-| Compaction selection or execution | `src/compaction-basic.ts`, `src/internal/compaction/` |
-| Tool-output reduction | `src/tool-result-pruner.ts` |
-| Web status panel | `src/client/`, `src/effect-projection.ts` |
-| Agent composition | `presets/contextual/agent.cordis.yml` |
-| Profile installation behavior | `cordis.patch.yml` |
+| 调整任务状态 schema 或服务契约 | `src/task-state.ts`、`src/internal/task-state/` |
+| 调整任务状态采集、校验和提交 | `src/task-state-basic.ts`、`src/internal/task-state/basic/` |
+| 调整注入模型请求的状态格式 | `src/task-state-prompt.ts` |
+| 调整压缩选择和执行策略 | `src/compaction-basic.ts`、`src/internal/compaction/` |
+| 调整工具输出缩减 | `src/tool-result-pruner.ts` |
+| 调整 Web 状态面板 | `src/client/`、`src/effect-projection.ts` |
+| 调整 Agent 组合 | `presets/contextual/agent.cordis.yml` |
+| 调整 Profile 安装行为 | `cordis.patch.yml` |
 
-Development constraints:
+开发约束：
 
-- Do not add DSH `SessionEventMap` events for task state. Its separate storage-domain
-  audit keeps old Session logs readable after the plugin is removed.
-- Persistent-schema changes require a compatibility or migration plan and tests for
-  restart, damaged data, and older data.
-- Compaction changes should cover tool-call pairing, selection boundaries, zero-benefit
-  behavior, overflow, and deterministic fallback.
-- Client changes require synchronized locales, projection coverage, and `lib/client.js`.
-- DSH-derived code in `src/internal/` must retain provenance and MIT attribution.
+- 不要为任务状态新增 DSH `SessionEventMap` 事件；审计数据位于独立 storage domain，保证
+  卸载后旧 Session 日志仍可由官方代码读取。
+- 修改持久 schema 时必须说明兼容和迁移策略，并增加重启、损坏数据和旧版本数据测试。
+- 修改压缩策略时应覆盖工具调用配对、选择边界、空收益、溢出与确定性回退。
+- 修改客户端后同时更新中英文 locale、projection 测试和 `lib/client.js`。
+- `src/internal/` 中源自 DSH 的代码必须保留 provenance 与 MIT 归属说明。
 
-## Contributing
+## 贡献
 
-Issues: <https://github.com/chuxindd/dsh-context-enhancement/issues>
+Issue：<https://github.com/chuxindd/dsh-context-enhancement/issues>
 
-Before opening a pull request:
+提交 Pull Request 前：
 
-1. Work on a focused branch without unrelated formatting or generated-file churn.
-2. Add or update tests for behavioral changes.
-3. Run `pnpm run typecheck`, `pnpm test`, `pnpm run build`, and `pnpm run release:check`.
-4. Commit source files and their corresponding `lib/` output.
-5. Explain the problem, implementation choice, compatibility impact, and manual verification.
-6. State upgrade and rollback implications when changing storage, agent composition, or compaction semantics.
+1. 从独立分支完成改动，避免混入无关格式化或生成文件。
+2. 为行为变化增加或更新测试。
+3. 运行 `pnpm run typecheck`、`pnpm test`、`pnpm run build` 和
+   `pnpm run release:check`。
+4. 提交源码及对应的 `lib/` 构建产物。
+5. 在 PR 中说明问题、实现选择、兼容影响和人工验证方式。
+6. 如果改变持久数据、Agent 组合或压缩语义，明确写出升级与回滚影响。
 
-See `CONTRIBUTING.md` for the full contribution workflow.
+完整约定见 `CONTRIBUTING.md`。
 
-## Maintainer release process
+## 发布维护
+
+维护者发布新版本时：
 
 ```powershell
 pnpm run typecheck
@@ -305,23 +286,18 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.5.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.6.tgz
 ```
 
-After all checks pass, commit the version change, create tag `v0.1.5`, and attach the
-matching tarball to the GitHub release.
+全部通过后提交版本变更，创建 `v0.1.6` tag，并在 GitHub Release 上传同名 tarball。
 
-## Compatibility notes
+## 兼容性说明
 
-- The current release is pinned to DSH `0.1.2-rc.1`; a DSH upgrade requires a newly
-  verified plugin release.
-- Runtime code never imports unpublished `@deepseek-ai/dsh-*` `src/*` subpaths.
-- Some official compaction behavior is adapted under `src/internal/` under the MIT
-  license; see `THIRD_PARTY_NOTICES.md`.
-- A headless profile without the `agent-presets` roster receives only the host-side
-  task-state provider and does not change its default agent preset.
+- 当前精确兼容 DSH `0.1.2-rc.1`；升级 DSH 后需要重新验证并发布新版本。
+- 运行时不导入 `@deepseek-ai/dsh-*` 的未发布 `src/*` subpath。
+- Headless 或未挂载 `agent-presets` roster 的 profile 只会启用主机侧任务状态 provider，
+  不会修改默认 Agent preset。
 
-## License
+## 许可证
 
-MIT. Portions are adapted from DeepSeek Harness under the MIT license. See
-`THIRD_PARTY_NOTICES.md`.
+MIT。

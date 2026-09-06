@@ -6,7 +6,7 @@ import { toolGroupAuditDomainSpec } from './tool-group-domain.ts'
 export interface ToolGroupAuditStore {
   readonly open: (record: ToolGroupAuditRecord) => Promise<void>
   readonly finish: (requestId: string, update: (record: ToolGroupAuditRecord) => ToolGroupAuditRecord) => Promise<void>
-  readonly recordsForSession: (sessionId: string) => readonly ToolGroupAuditRecord[]
+  readonly recordsForSession: (sessionId: string, createdAt?: number) => readonly ToolGroupAuditRecord[]
   readonly close: () => Promise<void>
 }
 
@@ -16,7 +16,10 @@ export async function openToolGroupAuditStore(ctx: Context): Promise<ToolGroupAu
   return {
     open: record => table.put(record.requestId, record),
     finish: async (requestId, update) => { await table.update(requestId, update) },
-    recordsForSession: sessionId => [...table.entries()].map(([, record]) => record).filter(record => record.sessionId === sessionId),
+    recordsForSession: (sessionId, createdAt) => [...table.entries()].map(([, record]) => record).filter(record =>
+      record.sessionId === sessionId
+      && createdAt !== undefined
+      && record.lifecycle?.createdAt === createdAt),
     close: () => domain.close(),
   }
 }

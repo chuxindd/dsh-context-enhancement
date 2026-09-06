@@ -39,7 +39,7 @@ export interface CompactionPolicyConfig {
   summarizationModel?: string
   /** Provider generation cap for summarization. Defaults to `8192`. */
   maxTokens?: number
-  /** Extra attempts after the first compaction when pressure remains above threshold. Defaults to `1`. */
+  /** Legacy overflow-zone retry budget; maps to `maxPressureBatches - 1`. Defaults to `1`. */
   compactionRetries?: number
   /** Maximum retries after canonical context overflow; `0` disables recovery. Defaults to `1`. */
   maxOverflowRetries?: number
@@ -49,7 +49,7 @@ export interface CompactionPolicyConfig {
   maxBatchTokens?: number
   /** Normal maintenance forget batches. Defaults to `1`; `0` disables this tier. */
   maxMaintenanceBatches?: number
-  /** Pressure/overflow batches per protected zone. Defaults to `2`; `0` disables this tier. */
+  /** Overflow batches per protected zone and recovery attempt. Defaults to `2`; `0` disables semantic overflow recovery. */
   maxPressureBatches?: number
   /** Completed turns required before a history summary may re-enter. Defaults to `1`. */
   minReentryTurns?: number

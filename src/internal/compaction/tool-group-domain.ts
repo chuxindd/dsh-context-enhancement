@@ -33,8 +33,14 @@ export const toolGroupAuditDomainSpec = defineDomain({
   },
 })
 
-export function recordsForSession(records: readonly ToolGroupAuditRecord[], sessionId: string): ToolGroupAuditRecord[] {
-  return records.filter(record => record.sessionId === sessionId)
+export function recordsForSession(
+  records: readonly ToolGroupAuditRecord[],
+  sessionId: string,
+  createdAt?: number,
+): ToolGroupAuditRecord[] {
+  return records.filter(record => record.sessionId === sessionId
+    && createdAt !== undefined
+    && record.lifecycle?.createdAt === createdAt)
 }
 
 export function recordSourceSeqs(record: ToolGroupAuditRecord): readonly SessionSeq[] {

@@ -587,6 +587,15 @@ function buildSummarizationInput(
   }
 }
 
+/** Find a prior start marker with the same durable compaction id. */
+function findMatchingCompactionStart(session: Session, endSeq: SessionSeq, compactionId: unknown): SessionEvent<'compaction/start'> | undefined {
+  for (let seq = Number(endSeq) - 1; seq >= 0; seq -= 1) {
+    const event = session.eventAt(SessionSeq(seq))
+    if (event?.type === 'compaction/start' && event.data.compactionId === compactionId) return event
+  }
+  return undefined
+}
+
 /** Inspect open-turn, unmatched-compaction, and latest seed-boundary state independently. */
 function inspectCompactionEntryState(session: Session): CompactionEntryState {
   let openTurn: number | null = null
@@ -604,7 +613,15 @@ function inspectCompactionEntryState(session: Session): CompactionEntryState {
         unmatchedCompactionStart = event
         compactionEntryStateKnown = true
       } else if (event.type === 'compaction/end') {
-        compactionEntryStateKnown = true
+        // An end marker closes only its matching start. Mismatched ends are
+        // ignored so interleaved or corrupt history cannot release a lock.
+        if (event.data.compactionId === undefined) {
+          compactionEntryStateKnown = true
+        } else {
+          const startId = event.data.compactionId
+          const matchingStart = findMatchingCompactionStart(session, event.seq, startId)
+          if (matchingStart !== undefined) compactionEntryStateKnown = true
+        }
       }
     }
     if (!openTurnStateKnown) {

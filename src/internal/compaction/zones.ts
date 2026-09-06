@@ -42,6 +42,16 @@ export interface ForgetBatchOptions {
   readonly maxBatchTokens: number
 }
 
+export type ForgetBatchBlockReason =
+  | 'no-forget-range'
+  | 'unsafe-forget-start'
+  | 'oldest-unit-too-large'
+  | 'no-safe-batch-end'
+
+export type ForgetBatchPlan =
+  | { readonly kind: 'selected'; readonly range: SurfaceIndexRange }
+  | { readonly kind: 'blocked'; readonly reason: ForgetBatchBlockReason }
+
 /**
  * Partition one token snapshot into non-overlapping forget/tool/recent zones.
  * Boundaries are measured from the newest surface tail and moved toward the
@@ -98,28 +108,47 @@ export function rangeFromIndexes(
  * allowed to be below the target, but never above max; if it is above max no
  * semantic call is made. The returned range never crosses the forget boundary.
  */
+export function planForgetBatch(
+  session: Session,
+  measurement: TokenMeasurement,
+  zones: SurfaceZones,
+  options: ForgetBatchOptions,
+): ForgetBatchPlan {
+  const zone = zones.forget
+  if (zone === null) return { kind: 'blocked', reason: 'no-forget-range' }
+  if (!toolPairingBalancedBefore(session, zone.startSeq)) {
+    return { kind: 'blocked', reason: 'unsafe-forget-start' }
+  }
+  const target = Math.max(1, options.targetBatchTokens)
+  const max = Math.max(target, options.maxBatchTokens)
+  let candidate: SurfaceIndexRange | null = null
+  let sawSafeEnd = false
+  for (let end = zone.startIndex; end <= zone.endIndex; end += 1) {
+    if (!toolPairingBalancedAfter(session, session.surface.nodes[end]!)) continue
+    if (!stepBoundaryAfter(session, end, zone.endIndex)) continue
+    sawSafeEnd = true
+    const range = makeRange([...session.surface.nodes], measurement, zone.startIndex, end)
+    if (range === null) continue
+    if (range.tokens > max) {
+      return candidate === null
+        ? { kind: 'blocked', reason: 'oldest-unit-too-large' }
+        : { kind: 'selected', range: candidate }
+    }
+    candidate = range
+    if (range.tokens >= target) break
+  }
+  if (candidate !== null) return { kind: 'selected', range: candidate }
+  return { kind: 'blocked', reason: sawSafeEnd ? 'oldest-unit-too-large' : 'no-safe-batch-end' }
+}
+
 export function selectForgetBatch(
   session: Session,
   measurement: TokenMeasurement,
   zones: SurfaceZones,
   options: ForgetBatchOptions,
 ): SurfaceIndexRange | null {
-  const zone = zones.forget
-  if (zone === null) return null
-  if (!toolPairingBalancedBefore(session, zone.startSeq)) return null
-  const target = Math.max(1, options.targetBatchTokens)
-  const max = Math.max(target, options.maxBatchTokens)
-  let candidate: SurfaceIndexRange | null = null
-  for (let end = zone.startIndex; end <= zone.endIndex; end += 1) {
-    if (!toolPairingBalancedAfter(session, session.surface.nodes[end]!)) continue
-    if (!stepBoundaryAfter(session, end, zone.endIndex)) continue
-    const range = makeRange([...session.surface.nodes], measurement, zone.startIndex, end)
-    if (range === null) continue
-    if (range.tokens > max) break
-    candidate = range
-    if (range.tokens >= target) break
-  }
-  return candidate
+  const plan = planForgetBatch(session, measurement, zones, options)
+  return plan.kind === 'selected' ? plan.range : null
 }
 
 /** A batch boundary must not split a surface step with the same turn/step. */

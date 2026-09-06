@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { SessionSeq } from '@deepseek-ai/dsh-session'
-import { assertToolGroupCommitStable, contentDigest, finishToolGroupAudit, openToolGroupAudit, recoverableOpenAuditFor, successfulAuditFor, toolGroupFingerprint } from '../src/internal/compaction/tool-group-audit.ts'
+import { assertToolGroupCommitStable, contentDigest, finishToolGroupAudit, openToolGroupAudit, recoverableOpenAuditFor, shouldAttemptToolGroupSummary, successfulAuditFor, toolGroupFingerprint } from '../src/internal/compaction/tool-group-audit.ts'
 import type { ToolGroup } from '../src/internal/compaction/tool-groups.ts'
 
 const group: ToolGroup = {
@@ -23,6 +23,29 @@ describe('tool group audit helpers', () => {
     const success = finishToolGroupAudit(record, 'success', { replacementSeqs: [SessionSeq(8)] })
     expect(successfulAuditFor([success], fingerprint)).toBe(success)
     expect(() => finishToolGroupAudit(success, 'success')).toThrow(/cannot finish/)
+  })
+
+  it('allows one durable transient retry, then releases terminal failures', () => {
+    const fingerprint = 'retry-fingerprint'
+    const first = finishToolGroupAudit(
+      openToolGroupAudit('r1', 's', group, 2, 'p', 'm', fingerprint),
+      'failure',
+      { error: 'stream failed' },
+    )
+    const second = finishToolGroupAudit(
+      openToolGroupAudit('r2', 's', group, 2, 'p', 'm', fingerprint),
+      'failure',
+      { error: 'stream failed again' },
+    )
+    const fallback = finishToolGroupAudit(
+      openToolGroupAudit('r3', 's', group, 2, 'p', 'm', fingerprint),
+      'fallback',
+      { error: 'invalid output' },
+    )
+    expect(shouldAttemptToolGroupSummary([], fingerprint)).toBe(true)
+    expect(shouldAttemptToolGroupSummary([first], fingerprint)).toBe(true)
+    expect(shouldAttemptToolGroupSummary([first, second], fingerprint)).toBe(false)
+    expect(shouldAttemptToolGroupSummary([fallback], fingerprint)).toBe(false)
   })
 
   it('rejects changed lifecycle, generation, or source surface', () => {

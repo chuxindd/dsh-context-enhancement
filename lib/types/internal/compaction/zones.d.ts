@@ -34,6 +34,14 @@ export interface ForgetBatchOptions {
     readonly targetBatchTokens: number;
     readonly maxBatchTokens: number;
 }
+export type ForgetBatchBlockReason = 'no-forget-range' | 'unsafe-forget-start' | 'oldest-unit-too-large' | 'no-safe-batch-end';
+export type ForgetBatchPlan = {
+    readonly kind: 'selected';
+    readonly range: SurfaceIndexRange;
+} | {
+    readonly kind: 'blocked';
+    readonly reason: ForgetBatchBlockReason;
+};
 /**
  * Partition one token snapshot into non-overlapping forget/tool/recent zones.
  * Boundaries are measured from the newest surface tail and moved toward the
@@ -47,5 +55,6 @@ export declare function rangeFromIndexes(session: Session, measurement: TokenMea
  * allowed to be below the target, but never above max; if it is above max no
  * semantic call is made. The returned range never crosses the forget boundary.
  */
+export declare function planForgetBatch(session: Session, measurement: TokenMeasurement, zones: SurfaceZones, options: ForgetBatchOptions): ForgetBatchPlan;
 export declare function selectForgetBatch(session: Session, measurement: TokenMeasurement, zones: SurfaceZones, options: ForgetBatchOptions): SurfaceIndexRange | null;
 //# sourceMappingURL=zones.d.ts.map

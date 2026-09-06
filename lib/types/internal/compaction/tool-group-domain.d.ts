@@ -10,6 +10,6 @@ export declare const toolGroupAuditDomainSpec: {
         audit: import("@deepseek-ai/dsh-storage-domain").DomainTableSpec<string, ToolGroupAuditRecord>;
     };
 };
-export declare function recordsForSession(records: readonly ToolGroupAuditRecord[], sessionId: string): ToolGroupAuditRecord[];
+export declare function recordsForSession(records: readonly ToolGroupAuditRecord[], sessionId: string, createdAt?: number): ToolGroupAuditRecord[];
 export declare function recordSourceSeqs(record: ToolGroupAuditRecord): readonly SessionSeq[];
 //# sourceMappingURL=tool-group-domain.d.ts.map

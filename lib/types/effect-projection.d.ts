@@ -1,6 +1,8 @@
 import { z } from 'zod';
-/** Counts durable evidence events emitted by the four context capabilities. */
+/** Counts durable evidence events emitted by context capabilities. */
 export interface ContextEnhancementEvidence {
+    /** Request envelopes participating in task-state processing; not successes. */
+    taskStateRequests: number;
     taskStateBasic: number;
     taskStatePrompt: number;
     toolResultPruner: number;
@@ -21,6 +23,7 @@ export declare const contextEnhancementProjectionDefinition: {
     key: "contextEnhancement";
     stateVersion: number;
     stateSchema: z.ZodObject<{
+        taskStateRequests: z.ZodNumber;
         taskStateBasic: z.ZodNumber;
         taskStatePrompt: z.ZodNumber;
         toolResultPruner: z.ZodNumber;
@@ -30,6 +33,7 @@ export declare const contextEnhancementProjectionDefinition: {
     apply: (state: NoInfer<ContextEnhancementEvidence>, event: import("@deepseek-ai/dsh-session").SessionEvent) => ContextEnhancementEvidence;
     wire: {
         viewSchema: z.ZodObject<{
+            taskStateRequests: z.ZodNumber;
             taskStateBasic: z.ZodNumber;
             taskStatePrompt: z.ZodNumber;
             toolResultPruner: z.ZodNumber;

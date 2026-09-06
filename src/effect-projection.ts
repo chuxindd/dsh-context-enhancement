@@ -1,8 +1,10 @@
 import type { ProjectionDefinition } from '@deepseek-ai/dsh-session-projection'
 import { z } from 'zod'
 
-/** Counts durable evidence events emitted by the four context capabilities. */
+/** Counts durable evidence events emitted by context capabilities. */
 export interface ContextEnhancementEvidence {
+  /** Request envelopes participating in task-state processing; not successes. */
+  taskStateRequests: number
   taskStateBasic: number
   taskStatePrompt: number
   toolResultPruner: number
@@ -21,6 +23,7 @@ declare module '@deepseek-ai/dsh-session-projection/types' {
 }
 
 const evidenceSchema = z.object({
+  taskStateRequests: z.number().int().nonnegative(),
   taskStateBasic: z.number().int().nonnegative(),
   taskStatePrompt: z.number().int().nonnegative(),
   toolResultPruner: z.number().int().nonnegative(),
@@ -28,6 +31,7 @@ const evidenceSchema = z.object({
 }).strict()
 
 const initial: ContextEnhancementEvidence = {
+  taskStateRequests: 0,
   taskStateBasic: 0,
   taskStatePrompt: 0,
   toolResultPruner: 0,
@@ -42,11 +46,7 @@ export const contextEnhancementProjectionDefinition = {
   init: () => initial,
   apply: (state, event) => {
     if (event.type === 'request/header') {
-      return {
-        ...state,
-        taskStateBasic: state.taskStateBasic + 1,
-        taskStatePrompt: state.taskStatePrompt + 1,
-      }
+      return { ...state, taskStateRequests: state.taskStateRequests + 1 }
     }
     if (event.type === 'compaction/prune') return { ...state, toolResultPruner: state.toolResultPruner + 1 }
     if (event.type === 'compaction/end') return { ...state, compactionBasic: state.compactionBasic + 1 }

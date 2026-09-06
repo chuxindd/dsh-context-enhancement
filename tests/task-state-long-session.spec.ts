@@ -85,7 +85,7 @@ let root: string | undefined
 const contexts: Context[] = []
 
 afterEach(async () => {
-  await Promise.all(contexts.splice(0).map(ctx => ctx.fiber.dispose()))
+  for (const ctx of contexts.splice(0)) await ctx.fiber.dispose()
   if (root !== undefined) await rm(root, { recursive: true, force: true })
   root = undefined
 })
@@ -123,7 +123,7 @@ async function mountHost(ctx: Context, sessionSubroot = 'sessions'): Promise<voi
 async function mountComposition(
   sessionSubroot = 'sessions',
   adapter?: LlmAdapter,
-  minEvents = PROVIDER_CONFIG.minEvents,
+  minEvents: number = PROVIDER_CONFIG.minEvents,
 ): Promise<Context> {
   const ctx = new Context()
   contexts.push(ctx)
@@ -186,6 +186,7 @@ async function readDomain(): Promise<{
 }
 
 const LONG_TIMEOUT = 30_000
+const STAGE_TIMEOUT = 5_000
 
 describe('task-state-basic keyless long-session + replay', () => {
   it('converges across multiple waves to the live tail of a 30+ event tool-heavy session', async () => {
@@ -277,7 +278,7 @@ describe('task-state-basic keyless long-session + replay', () => {
     const createdAt = 1_700_000_000_000
     let firstCalls = 0
 
-    const first = await mountComposition('sessions', new FocusAdapter(() => { firstCalls += 1 }), 4)
+    const first = await mountComposition('sessions', new FocusAdapter(() => { firstCalls += 1 }), 1)
     const session = first.sessions.create(SessionId('restart-session'), {
       meta: { cwd: root, createdAt },
     })
@@ -288,22 +289,39 @@ describe('task-state-basic keyless long-session + replay', () => {
       lastSeq = toolStep(session, turn, 1, `p1c${turn}`, 'ok')
       await new Promise<void>(resolve => setTimeout(resolve, 8))
     }
-    await waitUntil(() => first.taskState.getStable(session.id)?.sourceCursor === lastSeq, LONG_TIMEOUT)
+    await waitUntil(() => first.taskState.getStable(session.id)?.sourceCursor === lastSeq, LONG_TIMEOUT).catch(error => {
+      throw new Error(`first stable convergence failed: ${error instanceof Error ? error.message : String(error)}`)
+    })
     const firstRevision = first.taskState.getStable(session.id)!.revision
     expect(firstCalls).toBeGreaterThanOrEqual(1)
-    await first.fiber.dispose()
+    const disposeStarted = Date.now()
+    await Promise.race([
+      first.fiber.dispose(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('first fiber.dispose deadline exceeded')), STAGE_TIMEOUT)),
+    ])
+    expect(Date.now() - disposeStarted).toBeLessThan(LONG_TIMEOUT)
     contexts.splice(contexts.indexOf(first), 1)
 
     // Fresh context with NO adapter: startup must publish the stored stable
     // directly from the domain (any model call would fail loudly) and keep the
     // audit rows readable.
-    const second = await mountComposition('sessions-2', undefined, 4)
+    const second = await Promise.race([
+      mountComposition('sessions-2', undefined, 1),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('second mount deadline exceeded')), STAGE_TIMEOUT)),
+    ])
     const resumed = second.sessions.create(SessionId('restart-session'), {
       meta: { cwd: root, createdAt },
     })
-    expect(second.taskState.getStable(resumed.id)).toBeDefined()
+    const storedStable = second.taskState.getStable(resumed.id)
+    if (storedStable === undefined) throw new Error('stored stable read failed after second mount')
+    expect(storedStable).toBeDefined()
     expect(second.taskState.getStable(resumed.id)!.revision).toBe(firstRevision)
     expect(second.taskState.getStable(resumed.id)!.sourceCursor).toBe(lastSeq)
+    await Promise.race([
+      second.fiber.dispose(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error('second fiber.dispose deadline exceeded')), STAGE_TIMEOUT)),
+    ])
+    contexts.splice(contexts.indexOf(second), 1)
 
     // The durable domain still holds every audit row (sessions put + finished
     // audit put both landed before dispose), so replay evidence survives restart.

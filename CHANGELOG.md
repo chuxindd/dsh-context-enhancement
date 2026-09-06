@@ -5,6 +5,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-09-06
+
+### Changed
+
+- Ordinary 80% pressure compaction now remeasures and repartitions after every successful forget batch, continuing beyond the former two-batch cap while token pressure keeps decreasing.
+- `maxPressureBatches` now acts only as the per-zone emergency overflow budget; normal 70% maintenance remains bounded by `maxMaintenanceBatches`.
+- Tool-group summarization now allows one durable retry after a transient failure, then releases terminal failures and deterministic fallbacks to ordinary history compaction instead of permanently blocking the forget zone.
+
+### Fixed
+
+- Added explicit pressure-stop diagnostics for unavailable forget ranges, unsafe boundaries, oversized oldest units, re-entry/tool-stage deferral, no progress, and convergence guards.
+- Isolated tool-summary audit provenance by exact Session lifecycle, counted only completed turns for re-entry, kept mismatched compaction-end markers from releasing the durable lock, and prevented overflow from skipping a protected zone with candidates remaining.
+- Corrected the Enhanced features panel so request participation is not presented as successful task-state work.
+
 ## [0.1.5] - 2026-09-06
 
 ### Added
@@ -19,6 +33,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Changed overflow recovery order to original large results, forget zone, tool zone, then recent zone. Legacy `thresholdRatio`, `retainRatio`, and `retainTokens` remain supported with explicit conflict errors for ambiguous new-field combinations.
 
 
+## [0.1.3] - 2026-05-28
+
+### Changed
+
+- Packaged the enhanced tool-group summarization pipeline, audit persistence, surface-safe replacement flow, and deterministic fallback behavior.
+- Added a desktop compatibility installer for materializing the `contextual` preset into `$DSH_HOME/.agent-presets` when the Desktop launcher replaces bundle preset roots.
+
 ## [0.1.2] - 2026-05-28
 
 ### Changed
@@ -26,14 +47,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Reworked the contextual-session header action into a compact system-style **Enhanced features** button.
 - Replaced implementation-facing labels with user-facing descriptions and separated enabled state from per-session trigger counts.
 - Added responsive panel sizing, an explicit close control, Escape handling, and improved dialog accessibility metadata.
-
-## [0.1.3] - 2026-05-28
-
-### Changed
-
-- Packaged the enhanced tool-group summarization pipeline, audit persistence, surface-safe replacement flow, and deterministic fallback behavior.
-- Added a desktop compatibility installer for materializing the `contextual` preset into `$DSH_HOME/.agent-presets` when the Desktop launcher replaces bundle preset roots.
-- Raised the Enhanced features panel above host navigation layers and changed it to viewport-fixed positioning with resize and scroll reflow.
 
 ## [0.1.4] - 2026-09-06
 

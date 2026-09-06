@@ -51,8 +51,6 @@ export declare class BasicCompactionEngine extends CompactionEngine {
     private readonly warnedPressureConfigTargets;
     private readonly overflowRetries;
     private readonly overflowAgents;
-    /** One controlled in-process retry for a transient tool-summary stream failure. */
-    private readonly transientToolGroupRetries;
     private toolGroupAuditStore;
     private toolGroupAuditStorePromise;
     constructor(ctx: Context, config?: BasicCompactionConfig);
@@ -86,8 +84,12 @@ export declare class BasicCompactionEngine extends CompactionEngine {
      * @returns the latest summary compaction result, or `null` when no summary ran.
      */
     compactIfNeeded(agent: Agent, trigger: CompactionTrigger, signal: AbortSignal): Promise<CompactionResult | null>;
+    /** Record why an above-threshold pressure pass could not continue safely. */
+    private logPressureStop;
     /** Rebuild source types from Session provenance and durable successful audits. */
     private sourceIndex;
+    /** Rebuild the durable fingerprint used to classify one selected tool group. */
+    private toolGroupFingerprint;
     /** Whether a forget batch still contains raw content owed an intermediate tool pass. */
     private hasPendingToolIntermediateWork;
     /** Derive current zones from one fresh meter snapshot and the routed capacity. */

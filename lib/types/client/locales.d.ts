@@ -5,8 +5,8 @@ export declare const zh: {
     readonly panelLabel: "当前会话的增强功能";
     readonly intro: "功能会根据当前会话自动工作，详细记录可在轨迹中查看。";
     readonly enabled: "已启用";
-    readonly evidence: "本会话触发 {count} 次";
-    readonly notTriggered: "本会话尚未触发";
+    readonly evidence: "本会话参与 {count} 次请求";
+    readonly notTriggered: "本会话尚未参与请求";
     readonly close: "关闭";
     readonly taskStateBasic: "任务进度记忆";
     readonly taskStateBasicDetail: "自动保存任务进度";
