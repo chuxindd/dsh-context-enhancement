@@ -1,21 +1,24 @@
 /** Context-enhancement header panel dictionaries. */
 export declare const NS = "contextEnhancement";
 export declare const zh: {
-    readonly trigger: "增强功能";
-    readonly panelLabel: "当前会话的增强功能";
-    readonly intro: "功能会根据当前会话自动工作，详细记录可在轨迹中查看。";
+    readonly trigger: "当前状态";
+    readonly panelLabel: "当前状态";
+    readonly intro: "以下能力正在为当前会话工作，次数表示已经实际生效的操作。";
     readonly enabled: "已启用";
-    readonly evidence: "本会话参与 {count} 次请求";
-    readonly notTriggered: "本会话尚未参与请求";
+    readonly evidenceSaved: "已保存 {count} 次";
+    readonly evidenceRead: "已读取 {count} 次";
+    readonly evidenceGrouped: "已归纳 {count} 组";
+    readonly evidenceCompacted: "已压缩 {count} 次";
+    readonly notTriggered: "尚未生效";
     readonly close: "关闭";
-    readonly taskStateBasic: "任务进度记忆";
-    readonly taskStateBasicDetail: "自动保存任务进度";
-    readonly taskStatePrompt: "请求上下文同步";
-    readonly taskStatePromptDetail: "自动同步当前任务状态";
-    readonly toolResultPruner: "工具结果整理";
-    readonly toolResultPrunerDetail: "减少重复和冗余内容";
-    readonly compactionBasic: "长对话整理";
-    readonly compactionBasicDetail: "按需压缩历史上下文";
+    readonly taskStateBasic: "保存会话摘要";
+    readonly taskStateBasicDetail: "自动提炼并保存当前会话中的重要信息";
+    readonly taskStatePrompt: "读取会话摘要";
+    readonly taskStatePromptDetail: "在后续请求中继续参考已保存的会话信息";
+    readonly toolResultPruner: "归纳工具操作";
+    readonly toolResultPrunerDetail: "将一组连续的工具调用和结果压缩为结果摘要，减少冗长工具输出";
+    readonly compactionBasic: "压缩较早的对话内容";
+    readonly compactionBasicDetail: "将较早的对话提炼成摘要，减少上下文占用";
     readonly footer: "详细记录会出现在当前会话的轨迹中。";
 };
 export declare const en: Record<ContextEnhancementKey, string>;

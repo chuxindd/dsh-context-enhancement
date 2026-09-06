@@ -75,8 +75,8 @@ export declare const taskStateAuditOpenSchema: z.ZodObject<{
 /** One permissive finished-phase view used to validate a restored row. */
 export declare const taskStateAuditFinishedSchema: z.ZodObject<{
     outcome: z.ZodEnum<{
-        failure: "failure";
         success: "success";
+        failure: "failure";
         repair: "repair";
     }>;
     requestId: z.ZodOptional<z.ZodString>;

@@ -9,12 +9,12 @@ import { NS, type ContextEnhancementKey } from './locales.ts'
 
 type Props = PropsRuntime<'conversation.session.header.actions'> & PropsLocale<typeof NS>
 type EffectKey = 'taskStateBasic' | 'taskStatePrompt' | 'toolResultPruner' | 'compactionBasic'
-type EffectRow = Readonly<{ label: ContextEnhancementKey; detail: ContextEnhancementKey; key: EffectKey }>
+type EffectRow = Readonly<{ label: ContextEnhancementKey; detail: ContextEnhancementKey; countLabel: ContextEnhancementKey; key: EffectKey }>
 const EFFECTS: readonly EffectRow[] = [
-  { key: 'taskStateBasic', label: 'taskStateBasic', detail: 'taskStateBasicDetail' },
-  { key: 'taskStatePrompt', label: 'taskStatePrompt', detail: 'taskStatePromptDetail' },
-  { key: 'toolResultPruner', label: 'toolResultPruner', detail: 'toolResultPrunerDetail' },
-  { key: 'compactionBasic', label: 'compactionBasic', detail: 'compactionBasicDetail' },
+  { key: 'taskStateBasic', label: 'taskStateBasic', detail: 'taskStateBasicDetail', countLabel: 'evidenceSaved' },
+  { key: 'taskStatePrompt', label: 'taskStatePrompt', detail: 'taskStatePromptDetail', countLabel: 'evidenceRead' },
+  { key: 'toolResultPruner', label: 'toolResultPruner', detail: 'toolResultPrunerDetail', countLabel: 'evidenceGrouped' },
+  { key: 'compactionBasic', label: 'compactionBasic', detail: 'compactionBasicDetail', countLabel: 'evidenceCompacted' },
 ]
 const rootStyle: CSSProperties = { position: 'relative', display: 'inline-flex', zIndex: 2147483000 }
 const triggerStyle: CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, border: '1px solid var(--dsw-border-subtle, #d9dce3)', borderRadius: 7, background: 'var(--dsw-surface-primary, #fff)', color: 'var(--dsw-text-secondary, #5f6368)', cursor: 'pointer', font: 'inherit', fontSize: 12, lineHeight: 1.25, padding: '6px 10px', whiteSpace: 'nowrap' }
@@ -120,7 +120,7 @@ export function ContextEnhancementAction({ sessionId, useSessions, useProjection
         return <div key={effect.label} style={rowStyle}>
           <span style={dotStyle} aria-hidden="true" />
           <div><div>{t(effect.label)}</div><div style={detailStyle}>{t(effect.detail)}</div></div>
-          <div style={{ textAlign: 'right' }}><div style={statusStyle}>{t('enabled')}</div><div style={countStyle}>{count === 0 ? t('notTriggered') : t('evidence', { count })}</div></div>
+          <div style={{ textAlign: 'right' }}><div style={statusStyle}>{t('enabled')}</div><div style={countStyle}>{count === 0 ? t('notTriggered') : t(effect.countLabel, { count })}</div></div>
         </div>
       })}
       <div style={{ ...detailStyle, paddingTop: 10 }}>{t('footer')}</div>
