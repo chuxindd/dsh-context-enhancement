@@ -1,0 +1,15 @@
+# Minimal workspace declaration for this single-package repository.
+#
+# pnpm treats the root package.json as the workspace root; no `packages` list
+# is required. This file exists so pnpm 10+ reads the reviewed install-script
+# allowlist from here:
+#   - esbuild (a transitive dev dependency of tsdown/vitest) ships a
+#     postinstall that downloads its native binary; pnpm blocks it until it is
+#     explicitly allowed. Nothing else in the dev tree needs an install script.
+#
+# Note for consumers: this allowlist governs developing THIS repository. When
+# installing the bundle from GitHub into a DSH profile, the profile's own
+# pnpm-workspace.yaml governs scripts; see README.md "Installation".
+allowBuilds:
+  esbuild: true
+  koffi: true

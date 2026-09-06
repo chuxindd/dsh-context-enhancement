@@ -1,0 +1,69 @@
+# dsh-context-enhancement — Profile Bundle patch layer.
+#
+# Applied AFTER the profile's in-box bundles (dsh-base + dsh-web-app on the
+# `web` profile). This layer targets the WEB profile, which composes the
+# `agent-presets` roster row and lets every session mount a preset; profiles
+# without that row (e.g. headless, acp) receive only the host `task-state-basic`
+# provider insertion and are otherwise unchanged by this bundle.
+#
+# What this layer does, and why:
+#
+# 1. HOST PLANE — task-state-basic. Task state is process-global authoritative
+#    product data in ONE storage domain (`context_enhancement_task_state`), so
+#    the provider must sit on the host plane, never behind a preset isolate
+#    realm (realm isolation does not isolate a storage-domain name). The prompt
+#    consumer and the compaction replacement rows live in the `contextual`
+#    preset instead (see presets/contextual/agent.cordis.yml).
+#
+# 2. WEB PROFILE — the agent-presets roster row. `default` moves to the
+#    `contextual` preset this bundle ships, while `standard`, `ptc`, `minimal`,
+#    and `cordis` stay mounted from the shipped system root (includeShippedRoot
+#    true) and the user's own authored presets stay discoverable
+#    (includeUserRoot true). A `system`-trust root pointing at THIS bundle's
+#    shipped `presets/` directory makes `contextual` a read-only, upgrade-safe
+#    preset: it travels with the bundle package and cannot be edited into an
+#    unusable state by the person running the deployment.
+#
+#    The first root covers bundles linked into the shared DSH installation
+#    closure. The second root resolves a profile-local `node_modules` install
+#    from the Loader's file URL; both layouts are used by `dsh plugin add`.
+#
+# 3. Compaction is deliberately NOT mounted on the host plane: the web profile
+#    disables the base-layer compaction rows and lets each preset supply them.
+#    The `contextual` preset mounts this bundle's replacement compaction-basic
+#    and tool-result-pruner behind its isolate realm; `standard` keeps the
+#    official rows. Uninstalling this bundle therefore restores `standard`'s
+#    official compaction untouched.
+
+# ── host plane: the process-global task-state provider ───────────────────────
+
+- insert:
+    - id: context-enhancement-ui
+      name: dsh-context-enhancement
+    - id: task-state-basic
+      name: dsh-context-enhancement/task-state-basic
+      config:
+        provider: deepseek-official
+        model: deepseek-v4-flash
+        minEvents: 20
+        maxEvents: 200
+        maxInputBytes: 60000
+        maxOutputTokens: 4000
+        timeoutMs: 120000
+        maxInfraRetries: 2
+        maxEntriesPerKind: 50
+        maxEntryBytes: 4000
+        maxListItems: 40
+
+# ── web profile: point the agent-preset roster at the bundled preset ─────────
+
+- id: agent-presets
+  config:
+    default: contextual
+    includeShippedRoot: true
+    includeUserRoot: true
+    roots:
+      - path: !!js dshHomePath('profiles', 'node_modules', 'dsh-context-enhancement', 'presets')
+        trust: system
+      - path: !!js decodeURIComponent(new URL('node_modules/dsh-context-enhancement/presets', ctx.baseUrl).pathname).replace(/^\/([A-Za-z]:)/, '$1')
+        trust: system

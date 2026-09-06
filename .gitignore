@@ -1,0 +1,20 @@
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+*.log
+pnpm-debug.log*
+.DS_Store
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.orig
+.tmp/
+.temp/
+
+# Built runtime is COMMITTED and packed: a GitHub/tag install has no
+# prepare/postinstall, so the Loader imports committed `lib/*.js` directly.
+# Only the tsconfig incremental cache stays ignored.
+lib/**/*.tsbuildinfo
