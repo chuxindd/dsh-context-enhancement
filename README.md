@@ -1,6 +1,6 @@
-# dsh-context-enhancement
+# Dsh-Context-Enhancement
 
-`dsh-context-enhancement` 是为 DeepSeek Harness（DSH）定制的上下文增强插件，面向单一长会话的上下文管理，提供“工具要点化”和“遗忘区压缩”、“独立会话摘要”的能力。
+`dsh-context-enhancement` 是为 DeepSeek Harness（DSH）定制的上下文增强插件，面向单一长会话的上下文管理，提供“工具要点化”和“遗忘区压缩”、“独立会话摘要”的能力，力求化解会话在触发 /compact 上下文压缩后损失信息过多，导致前后表现“判若两人”的技术困境。
 
 > 当前版本：`0.1.6`。兼容 DeepSeek Harness `0.1.2-rc.1`。
 > 本项目还在测试阶段，代码由 GPT5.6 Sol 完成，欢迎批评指教。
@@ -45,8 +45,6 @@
     ▼
 遗忘摘要
 ```
-
-工具要点化、工具裁剪和遗忘区压缩是三个独立操作。
 
 #### 2.2 Checkpoint 旁路链
 
