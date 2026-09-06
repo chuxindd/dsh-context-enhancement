@@ -14,7 +14,7 @@ Requirements:
 ```powershell
 git clone https://github.com/chuxindd/dsh-context-enhancement.git
 cd dsh-context-enhancement
-pnpm install
+corepack pnpm install
 pnpm run typecheck
 pnpm test
 pnpm run build
@@ -91,7 +91,7 @@ also build and verify the tarball:
 
 ```powershell
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.4.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.5.tgz
 ```
 
 `verify:install` uses a temporary `DSH_HOME`, installs the package into a fresh Web

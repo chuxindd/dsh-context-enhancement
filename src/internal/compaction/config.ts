@@ -1,18 +1,4 @@
-/**
- * Load-time validation and routed-model policy resolution for the
- * `dsh-context-enhancement` basic compaction backend, re-implemented from the
- * MIT-licensed official rc1 source.
- *
- * SOURCE: local copy of the official rc.1 `dsh-compaction-basic`
- * `src/config.ts` (MIT, tag dsh-v0.1.2-rc.1 of the `deepseek-harness`
- * repository). Behavior is preserved exactly; the standalone implementation
- * keeps the same Config vocabulary so a replacement Basic fully retains
- * official rc1 behavior and Config. `deepFreeze` comes from the published rc1
- * `@deepseek-ai/dsh-util-values` package. Provenance is recorded in
- * THIRD_PARTY_NOTICES.md.
- *
- * @module dsh-context-enhancement/internal/compaction/config
- */
+/** Three-zone compaction configuration resolution and model-policy inheritance. */
 
 import type { LlmCallConfig } from '@deepseek-ai/dsh-llm'
 import { deepFreeze } from '@deepseek-ai/dsh-util-values'
@@ -22,64 +8,45 @@ import type {
   ModelCompactPolicyConfig,
   ResolvedCompactSpec,
   ResolvedConfig,
+  ResolvedPolicyFields,
   ResolvedRetention,
   ResolvedTargetPolicy,
 } from './types.ts'
 
-/** Default request-pressure fraction for every routed model. */
-const DEFAULT_THRESHOLD_RATIO = 0.8
+const DEFAULT_PRESSURE_RATIO = 0.80
+const DEFAULT_RECENT_RATIO = 0.20
+const DEFAULT_FORGET_BOUNDARY_RATIO = 0.50
+const DEFAULT_TOOL_MAINTENANCE_RATIO = 0.40
+const DEFAULT_FORGET_MAINTENANCE_RATIO = 0.70
+const DEFAULT_TARGET_BATCH_TOKENS = 16_000
+const DEFAULT_MAX_BATCH_TOKENS = 24_000
+const DEFAULT_MAX_MAINTENANCE_BATCHES = 1
+const DEFAULT_MAX_PRESSURE_BATCHES = 2
+const DEFAULT_MIN_REENTRY_TURNS = 1
 
-/** Default verbatim-tail fraction for every routed model. */
-const DEFAULT_RETAIN_RATIO = 0.16
-
-/** Fields shared by top-level defaults and exact-target overrides. */
 const POLICY_CONFIG_KEYS = [
-  'thresholdRatio',
-  'retainRatio',
-  'retainTokens',
-  'summarizationProvider',
-  'summarizationModel',
-  'maxTokens',
-  'compactionRetries',
-  'maxOverflowRetries',
+  'thresholdRatio', 'retainRatio', 'retainTokens', 'recentRatio',
+  'forgetBoundaryRatio', 'toolMaintenanceRatio', 'forgetMaintenanceRatio',
+  'pressureRatio', 'targetBatchTokens', 'maxBatchTokens',
+  'maxMaintenanceBatches', 'maxPressureBatches', 'minReentryTurns',
+  'summarizationProvider', 'summarizationModel', 'maxTokens',
+  'compactionRetries', 'maxOverflowRetries',
 ] as const
-
 const TOOL_GROUP_KEYS = new Set([
   'enabled', 'minGroupResults', 'minGroupChars', 'minGroupTokens',
   'maxGroupTokens', 'maxGroupsPerPass', 'maxSummaryTokens',
 ])
-
-/** Complete public top-level configuration key set. */
 const BASIC_COMPACT_CONFIG_KEYS: ReadonlySet<string> = new Set([
-  ...POLICY_CONFIG_KEYS,
-  'modelPolicies',
-  'auto',
-  'toolGroupSummarizer',
+  ...POLICY_CONFIG_KEYS, 'modelPolicies', 'auto', 'toolGroupSummarizer',
 ])
+const MODEL_POLICY_KEYS: ReadonlySet<string> = new Set(['provider', 'model', ...POLICY_CONFIG_KEYS])
 
-/** Complete exact-target override key set. */
-const MODEL_POLICY_KEYS: ReadonlySet<string> = new Set([
-  'provider',
-  'model',
-  ...POLICY_CONFIG_KEYS,
-])
-
-/** Target-specific pressure configuration failure eligible for warning suppression. */
 export class TargetPressureConfigError extends Error {
-  /**
-   * @param targetKey - exact provider/model route used as the warning key.
-   * @param message - actionable configuration failure detail.
-   */
-  constructor(readonly targetKey: string, message: string) {
-    super(message)
-  }
+  constructor(readonly targetKey: string, message: string) { super(message) }
 }
 
-/**
- * Resolve and validate service defaults plus exact-target partial overrides.
- * @param config - untrusted plugin configuration after Loader normalization.
- * @returns detached immutable defaults and validated exact-target overrides.
- */
+type ResolvedPolicy = ResolvedPolicyFields & ResolvedRetention
+
 export function resolveConfig(config: BasicCompactionConfig = {}): ResolvedConfig {
   validateKeys(config, BASIC_COMPACT_CONFIG_KEYS, 'BasicCompactionConfig')
   validateToolGroupConfig(config.toolGroupSummarizer)
@@ -88,26 +55,13 @@ export function resolveConfig(config: BasicCompactionConfig = {}): ResolvedConfi
     throw new Error('BasicCompactionConfig: auto must be a boolean')
   }
 
-  const thresholdRatio = config.thresholdRatio ?? DEFAULT_THRESHOLD_RATIO
-  const retention = resolveRetention(config, { retainRatio: DEFAULT_RETAIN_RATIO })
-  validateRatioRetention(thresholdRatio, retention, 'BasicCompactionConfig')
+  const resolved = resolvePolicy(config, undefined, 'BasicCompactionConfig')
   const modelPolicies = resolveModelPolicies(config.modelPolicies)
   for (const [index, policy] of modelPolicies.entries()) {
-    validateRatioRetention(
-      policy.thresholdRatio ?? thresholdRatio,
-      resolveRetention(policy, retention),
-      `BasicCompactionConfig: modelPolicies[${index}]`,
-    )
+    resolvePolicy(policy, resolved, `BasicCompactionConfig: modelPolicies[${index}]`)
   }
-
   return deepFreeze({
-    thresholdRatio,
-    ...retention,
-    summarizationProvider: config.summarizationProvider ?? '',
-    summarizationModel: config.summarizationModel ?? '',
-    maxTokens: config.maxTokens ?? 8192,
-    compactionRetries: config.compactionRetries ?? 1,
-    maxOverflowRetries: config.maxOverflowRetries ?? 1,
+    ...resolved,
     modelPolicies,
     auto: config.auto ?? true,
     toolGroupSummarizer: {
@@ -119,232 +73,183 @@ export function resolveConfig(config: BasicCompactionConfig = {}): ResolvedConfi
       maxGroupsPerPass: config.toolGroupSummarizer?.maxGroupsPerPass ?? 2,
       maxSummaryTokens: config.toolGroupSummarizer?.maxSummaryTokens ?? 1_200,
     },
-  })
+  }) as ResolvedConfig
 }
 
-/**
- * Merge the exact provider/model override over the validated default policy.
- * @param config - validated service defaults and override table.
- * @param target - exact durable provider/model route to match.
- * @returns detached immutable policy before model-capacity scaling.
- */
 export function resolveTargetPolicy(
   config: ResolvedConfig,
   target: Pick<LlmCallConfig, 'provider' | 'model'>,
 ): ResolvedTargetPolicy {
-  const override = config.modelPolicies.find(policy => (
-    policy.provider === target.provider && policy.model === target.model
-  ))
-  const inheritedRetention: ResolvedRetention = config.retainTokens === undefined
-    ? { retainRatio: config.retainRatio }
-    : { retainTokens: config.retainTokens }
-  return deepFreeze({
-    target: { provider: target.provider, model: target.model },
-    thresholdRatio: override?.thresholdRatio ?? config.thresholdRatio,
-    ...resolveRetention(override ?? {}, inheritedRetention),
-    summarizationProvider: override?.summarizationProvider ?? config.summarizationProvider,
-    summarizationModel: override?.summarizationModel ?? config.summarizationModel,
-    maxTokens: override?.maxTokens ?? config.maxTokens,
-    compactionRetries: override?.compactionRetries ?? config.compactionRetries,
-    maxOverflowRetries: override?.maxOverflowRetries ?? config.maxOverflowRetries,
-  })
+  const override = config.modelPolicies.find(policy =>
+    policy.provider === target.provider && policy.model === target.model)
+  const resolved = resolvePolicy(override ?? {}, config, `${target.provider}/${target.model}`)
+  return deepFreeze({ ...resolved, target: { ...target } })
 }
 
-/**
- * Scale one routed policy into concrete token budgets for its model capacity.
- * @param policy - merged policy for the exact routed target.
- * @param contextWindow - positive adapter-owned capacity for that target.
- * @returns detached immutable pressure and retention budgets.
- */
-export function resolveCompactSpec(
-  policy: ResolvedTargetPolicy,
-  contextWindow: number,
-): ResolvedCompactSpec {
+export function resolveCompactSpec(policy: ResolvedTargetPolicy, contextWindow: number): ResolvedCompactSpec {
   const targetKey = `${policy.target.provider}/${policy.target.model}`
   if (!Number.isInteger(contextWindow) || contextWindow <= 0) {
-    throw new TargetPressureConfigError(
-      targetKey,
-      `BasicCompactionConfig: contextWindow (${contextWindow}) must be a positive integer`,
-    )
+    throw new TargetPressureConfigError(targetKey, `BasicCompactionConfig: contextWindow (${contextWindow}) must be a positive integer`)
   }
-  const thresholdTokens = Math.floor(contextWindow * policy.thresholdRatio)
+  const thresholdTokens = Math.floor(contextWindow * policy.pressureRatio)
   const retainTokens = policy.retainTokens === undefined
-    ? Math.floor(contextWindow * policy.retainRatio)
+    ? Math.floor(contextWindow * policy.recentRatio)
     : policy.retainTokens
+  const forgetBoundaryTokens = Math.floor(contextWindow * policy.forgetBoundaryRatio)
   if (retainTokens >= thresholdTokens) {
-    throw new TargetPressureConfigError(
-      targetKey,
-      `BasicCompactionConfig: ${policy.target.provider}/${policy.target.model} retainTokens `
-      + `(${retainTokens}) must be less than threshold tokens ${thresholdTokens}`,
-    )
+    throw new TargetPressureConfigError(targetKey, `BasicCompactionConfig: ${targetKey} retainTokens (${retainTokens}) must be less than threshold tokens ${thresholdTokens}`)
+  }
+  if (retainTokens >= forgetBoundaryTokens) {
+    throw new TargetPressureConfigError(targetKey, `BasicCompactionConfig: ${targetKey} retainTokens (${retainTokens}) must be less than forget boundary tokens ${forgetBoundaryTokens}`)
   }
   return deepFreeze({
+    ...policy,
     target: { ...policy.target },
     contextWindow,
-    thresholdRatio: policy.thresholdRatio,
+    thresholdRatio: policy.pressureRatio,
     thresholdTokens,
     retainTokens,
-    summarizationProvider: policy.summarizationProvider,
-    summarizationModel: policy.summarizationModel,
-    maxTokens: policy.maxTokens,
-    compactionRetries: policy.compactionRetries,
-    maxOverflowRetries: policy.maxOverflowRetries,
   })
 }
 
-/** Choose an explicit retention form or inherit the already-resolved fallback. */
-function resolveRetention(
+function resolvePolicy(
   config: CompactionPolicyConfig,
-  fallback: ResolvedRetention,
-): ResolvedRetention {
-  if (config.retainTokens !== undefined) return { retainTokens: config.retainTokens }
-  if (config.retainRatio !== undefined) return { retainRatio: config.retainRatio }
-  return fallback
+  fallback: ResolvedPolicy | undefined,
+  name: string,
+): ResolvedPolicy {
+  const pressureRatio = config.pressureRatio ?? config.thresholdRatio ?? fallback?.pressureRatio ?? DEFAULT_PRESSURE_RATIO
+  const recentRatio = config.recentRatio ?? config.retainRatio ?? fallback?.recentRatio ?? DEFAULT_RECENT_RATIO
+  const forgetBoundaryRatio = config.forgetBoundaryRatio ?? fallback?.forgetBoundaryRatio ?? DEFAULT_FORGET_BOUNDARY_RATIO
+  const toolMaintenanceRatio = config.toolMaintenanceRatio ?? fallback?.toolMaintenanceRatio ?? DEFAULT_TOOL_MAINTENANCE_RATIO
+  const forgetMaintenanceRatio = config.forgetMaintenanceRatio ?? fallback?.forgetMaintenanceRatio ?? DEFAULT_FORGET_MAINTENANCE_RATIO
+  validateZoneRatios(recentRatio, forgetBoundaryRatio, toolMaintenanceRatio, forgetMaintenanceRatio, pressureRatio, name)
+  validateRetention(config, pressureRatio, recentRatio, name)
+  // A model override that omits retention inherits the default policy's exact
+  // retention form. A new/legacy ratio on the override deliberately switches to
+  // the ratio form; an explicit retainTokens remains absolute.
+  const retention = config.retainTokens !== undefined
+    ? { retainTokens: config.retainTokens }
+    : (config.retainRatio !== undefined || config.recentRatio !== undefined)
+      ? { retainRatio: recentRatio }
+      : fallback?.retainTokens !== undefined
+        ? { retainTokens: fallback.retainTokens }
+        : { retainRatio: recentRatio }
+  const fields = {
+    thresholdRatio: pressureRatio,
+    recentRatio,
+    forgetBoundaryRatio,
+    toolMaintenanceRatio,
+    forgetMaintenanceRatio,
+    pressureRatio,
+    targetBatchTokens: config.targetBatchTokens ?? fallback?.targetBatchTokens ?? DEFAULT_TARGET_BATCH_TOKENS,
+    maxBatchTokens: config.maxBatchTokens ?? fallback?.maxBatchTokens ?? DEFAULT_MAX_BATCH_TOKENS,
+    maxMaintenanceBatches: config.maxMaintenanceBatches ?? fallback?.maxMaintenanceBatches ?? DEFAULT_MAX_MAINTENANCE_BATCHES,
+    maxPressureBatches: config.maxPressureBatches ?? fallback?.maxPressureBatches ?? DEFAULT_MAX_PRESSURE_BATCHES,
+    minReentryTurns: config.minReentryTurns ?? fallback?.minReentryTurns ?? DEFAULT_MIN_REENTRY_TURNS,
+    summarizationProvider: config.summarizationProvider ?? fallback?.summarizationProvider ?? '',
+    summarizationModel: config.summarizationModel ?? fallback?.summarizationModel ?? '',
+    maxTokens: config.maxTokens ?? fallback?.maxTokens ?? 8_192,
+    compactionRetries: config.compactionRetries ?? fallback?.compactionRetries ?? 1,
+    maxOverflowRetries: config.maxOverflowRetries ?? fallback?.maxOverflowRetries ?? 1,
+    ...retention,
+  }
+  validateResolvedBudgets(fields, name)
+  return fields
 }
 
-/** Reject a capacity-independent retention conflict at plugin load. */
-function validateRatioRetention(
-  thresholdRatio: number,
-  retention: ResolvedRetention,
-  name: string,
-): void {
-  if (retention.retainRatio !== undefined && retention.retainRatio >= thresholdRatio) {
-    throw new Error(
-      `${name}: retainRatio (${retention.retainRatio}) must be less than `
-      + `the resolved thresholdRatio (${thresholdRatio})`,
-    )
+function validateResolvedBudgets(fields: {
+  targetBatchTokens: number; maxBatchTokens: number; maxMaintenanceBatches: number;
+  maxPressureBatches: number; minReentryTurns: number
+}, name: string): void {
+  for (const [key, value] of Object.entries(fields)) {
+    if (key === 'maxMaintenanceBatches' || key === 'maxPressureBatches') {
+      assertNonNegativeInteger(`${name}.${key}`, value)
+    } else if (key === 'targetBatchTokens' || key === 'maxBatchTokens' || key === 'minReentryTurns') {
+      assertPositiveInteger(`${name}.${key}`, value)
+    }
+  }
+  if (fields.targetBatchTokens > fields.maxBatchTokens) {
+    throw new Error(`${name}: targetBatchTokens must not exceed maxBatchTokens`)
   }
 }
 
-/** Validate, detach, and reject duplicate exact-target policies. */
+function validateZoneRatios(recent: number, forget: number, tool: number, forgetMaint: number, pressure: number, name: string): void {
+  for (const [key, value] of Object.entries({ recentRatio: recent, forgetBoundaryRatio: forget, toolMaintenanceRatio: tool, forgetMaintenanceRatio: forgetMaint, pressureRatio: pressure })) assertRatio(`${name}.${key}`, value)
+  if (!(recent < forget && forget < forgetMaint && forgetMaint < pressure)) throw new Error(`${name}: require recentRatio < forgetBoundaryRatio < forgetMaintenanceRatio < pressureRatio`)
+  if (!(tool >= recent && tool < forgetMaint)) throw new Error(`${name}: require toolMaintenanceRatio >= recentRatio and < forgetMaintenanceRatio`)
+}
+
+function validateRetention(config: CompactionPolicyConfig, pressure: number, recent: number, name: string): void {
+  if (config.thresholdRatio !== undefined && config.pressureRatio !== undefined
+    && config.thresholdRatio !== config.pressureRatio) {
+    throw new Error(`${name}: thresholdRatio conflicts with pressureRatio`)
+  }
+  if (config.retainRatio !== undefined && config.recentRatio !== undefined
+    && config.retainRatio !== config.recentRatio) {
+    throw new Error(`${name}: retainRatio conflicts with recentRatio`)
+  }
+  if (config.retainTokens !== undefined && (config.retainRatio !== undefined || config.recentRatio !== undefined)) {
+    throw new Error(`${name}: retainTokens is mutually exclusive with retainRatio and recentRatio`)
+  }
+  if (config.retainRatio !== undefined) assertRatio(`${name}.retainRatio`, config.retainRatio)
+  if (config.retainTokens !== undefined) assertNonNegativeInteger(`${name}.retainTokens`, config.retainTokens)
+  if (recent >= pressure) throw new Error(`${name}: recentRatio must be less than pressureRatio`)
+}
+
 function resolveModelPolicies(configured: unknown): ModelCompactPolicyConfig[] {
   if (configured === undefined) return []
-  if (!Array.isArray(configured)) {
-    throw new Error('BasicCompactionConfig: modelPolicies must be an array')
-  }
+  if (!Array.isArray(configured)) throw new Error('BasicCompactionConfig: modelPolicies must be an array')
   const seen = new Set<string>()
   return configured.map((source: unknown, index) => {
     const name = `BasicCompactionConfig: modelPolicies[${index}]`
-    assertModelPolicy(source, name)
+    if (!isUnknownRecord(source)) throw new Error(`${name} must be an object`)
+    validateKeys(source, MODEL_POLICY_KEYS, name)
+    assertNonEmptyString(`${name}.provider`, source.provider)
+    assertNonEmptyString(`${name}.model`, source.model)
+    validatePolicy(source, name)
     const key = `${source.provider}\u0000${source.model}`
-    if (seen.has(key)) {
-      throw new Error(
-        `BasicCompactionConfig: duplicate model policy for ${source.provider}/${source.model}`,
-      )
-    }
+    if (seen.has(key)) throw new Error(`BasicCompactionConfig: duplicate model policy for ${source.provider}/${source.model}`)
     seen.add(key)
-    return { ...source }
+    return { ...source } as unknown as ModelCompactPolicyConfig
   })
 }
 
-/** Validate one untrusted exact-target override and narrow its public type. */
-function assertModelPolicy(
-  source: unknown,
-  name: string,
-): asserts source is ModelCompactPolicyConfig {
-  if (!isUnknownRecord(source)) throw new Error(`${name} must be an object`)
-  validateKeys(source, MODEL_POLICY_KEYS, name)
-  assertNonEmptyString(`${name}.provider`, source.provider)
-  assertNonEmptyString(`${name}.model`, source.model)
-  validatePolicy(source, name)
+function validatePolicy(config: CompactionPolicyConfig | Record<string, unknown>, name: string): void {
+  const values = config as Record<string, unknown>
+  const ratioKeys = ['thresholdRatio', 'retainRatio', 'recentRatio', 'forgetBoundaryRatio', 'toolMaintenanceRatio', 'forgetMaintenanceRatio', 'pressureRatio']
+  for (const key of ratioKeys) if (values[key] !== undefined) assertRatio(`${name}.${key}`, values[key])
+  if (values.retainTokens !== undefined) assertNonNegativeInteger(`${name}.retainTokens`, values.retainTokens)
+  for (const key of ['targetBatchTokens', 'maxBatchTokens', 'maxMaintenanceBatches', 'maxPressureBatches', 'minReentryTurns', 'maxTokens', 'compactionRetries', 'maxOverflowRetries']) {
+    if (values[key] !== undefined) (key === 'compactionRetries' || key === 'maxOverflowRetries'
+      || key === 'maxMaintenanceBatches' || key === 'maxPressureBatches')
+      ? assertNonNegativeInteger(`${name}.${key}`, values[key])
+      : assertPositiveInteger(`${name}.${key}`, values[key])
+  }
+  if (typeof values.targetBatchTokens === 'number' && typeof values.maxBatchTokens === 'number' && values.targetBatchTokens > values.maxBatchTokens) throw new Error(`${name}: targetBatchTokens must not exceed maxBatchTokens`)
+  validateSummarizationPair(values, name)
 }
 
-/** Validate the fields common to defaults and exact-target partial overrides. */
-function validatePolicy(
-  config: CompactionPolicyConfig | Record<string, unknown>,
-  name: string,
-): void {
-  const thresholdRatio = config.thresholdRatio
-  const retainRatio = config.retainRatio
-  const retainTokens = config.retainTokens
-  const maxTokens = config.maxTokens
-  const compactionRetries = config.compactionRetries
-  const maxOverflowRetries = config.maxOverflowRetries
-  if (thresholdRatio !== undefined) assertRatio(`${name}.thresholdRatio`, thresholdRatio)
-  if (retainRatio !== undefined) assertRatio(`${name}.retainRatio`, retainRatio)
-  if (retainTokens !== undefined) assertNonNegativeInteger(`${name}.retainTokens`, retainTokens)
-  if (retainRatio !== undefined && retainTokens !== undefined) {
-    throw new Error(`${name}: retainRatio and retainTokens are mutually exclusive`)
-  }
-  if (maxTokens !== undefined) assertPositiveInteger(`${name}.maxTokens`, maxTokens)
-  if (compactionRetries !== undefined) {
-    assertNonNegativeInteger(`${name}.compactionRetries`, compactionRetries)
-  }
-  if (maxOverflowRetries !== undefined) {
-    assertNonNegativeInteger(`${name}.maxOverflowRetries`, maxOverflowRetries)
-  }
-
-  validateSummarizationPair(config, name)
-}
-
-/** Require one scope to omit, clear, or replace the summarization target as a pair. */
-function validateSummarizationPair(
-  config: CompactionPolicyConfig | Record<string, unknown>,
-  name: string,
-): void {
+function validateSummarizationPair(config: CompactionPolicyConfig | Record<string, unknown>, name: string): void {
   const provider = config.summarizationProvider
   const model = config.summarizationModel
-  if (provider !== undefined && typeof provider !== 'string') {
-    throw new Error(`${name}.summarizationProvider must be a string`)
-  }
-  if (model !== undefined && typeof model !== 'string') {
-    throw new Error(`${name}.summarizationModel must be a string`)
-  }
+  if (provider !== undefined && typeof provider !== 'string') throw new Error(`${name}.summarizationProvider must be a string`)
+  if (model !== undefined && typeof model !== 'string') throw new Error(`${name}.summarizationModel must be a string`)
   if (provider === undefined && model === undefined) return
-  if (provider === undefined || model === undefined
-    || (provider.length === 0) !== (model.length === 0)) {
-    throw new Error(
-      `${name}: summarizationProvider and summarizationModel must be set together `
-      + 'as an empty or non-empty pair',
-    )
-  }
+  if (provider === undefined || model === undefined || (provider.length === 0) !== (model.length === 0)) throw new Error(`${name}: summarizationProvider and summarizationModel must be set together as an empty or non-empty pair`)
 }
 
-/** Reject stale or misspelled keys before defaults can hide them. */
 function validateToolGroupConfig(config: unknown): void {
   if (config === undefined) return
   if (!isUnknownRecord(config)) throw new Error('BasicCompactionConfig: toolGroupSummarizer must be an object')
   validateKeys(config, TOOL_GROUP_KEYS, 'BasicCompactionConfig.toolGroupSummarizer')
   if (config.enabled !== undefined && typeof config.enabled !== 'boolean') throw new Error('BasicCompactionConfig.toolGroupSummarizer.enabled must be a boolean')
-  for (const key of ['minGroupResults', 'minGroupChars', 'minGroupTokens', 'maxGroupTokens', 'maxGroupsPerPass', 'maxSummaryTokens']) {
-    const value = config[key]
-    if (value !== undefined) assertPositiveInteger(`BasicCompactionConfig.toolGroupSummarizer.${key}`, value)
-  }
-  if (typeof config.minGroupTokens === 'number' && typeof config.maxGroupTokens === 'number' && config.minGroupTokens > config.maxGroupTokens) {
-    throw new Error('BasicCompactionConfig.toolGroupSummarizer.minGroupTokens must not exceed maxGroupTokens')
-  }
+  for (const key of ['minGroupResults', 'minGroupChars', 'minGroupTokens', 'maxGroupTokens', 'maxGroupsPerPass', 'maxSummaryTokens']) if (config[key] !== undefined) assertPositiveInteger(`BasicCompactionConfig.toolGroupSummarizer.${key}`, config[key])
+  if (typeof config.minGroupTokens === 'number' && typeof config.maxGroupTokens === 'number' && config.minGroupTokens > config.maxGroupTokens) throw new Error('BasicCompactionConfig.toolGroupSummarizer.minGroupTokens must not exceed maxGroupTokens')
 }
 
-function validateKeys(config: object, keys: ReadonlySet<string>, name: string): void {
-  for (const key of Object.keys(config)) {
-    if (!keys.has(key)) throw new Error(`${name}: unknown key "${key}"`)
-  }
-}
-
-function isUnknownRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function assertNonEmptyString(name: string, value: unknown): asserts value is string {
-  if (typeof value !== 'string' || value.length === 0) {
-    throw new Error(`${name} must be a non-empty string`)
-  }
-}
-
-function assertPositiveInteger(name: string, value: unknown): asserts value is number {
-  if (typeof value !== 'number' || !Number.isInteger(value) || value <= 0) {
-    throw new Error(`${name} (${String(value)}) must be a positive integer`)
-  }
-}
-
-function assertNonNegativeInteger(name: string, value: unknown): asserts value is number {
-  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
-    throw new Error(`${name} (${String(value)}) must be a non-negative integer`)
-  }
-}
-
-function assertRatio(name: string, value: unknown): asserts value is number {
-  if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0 || value > 1) {
-    throw new Error(`${name} (${String(value)}) must be a number in (0, 1]`)
-  }
-}
+function validateKeys(config: object, keys: ReadonlySet<string>, name: string): void { for (const key of Object.keys(config)) if (!keys.has(key)) throw new Error(`${name}: unknown key "${key}"`) }
+function isUnknownRecord(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value) }
+function assertNonEmptyString(name: string, value: unknown): asserts value is string { if (typeof value !== 'string' || value.length === 0) throw new Error(`${name} must be a non-empty string`) }
+function assertPositiveInteger(name: string, value: unknown): asserts value is number { if (typeof value !== 'number' || !Number.isInteger(value) || value <= 0) throw new Error(`${name} (${String(value)}) must be a positive integer`) }
+function assertNonNegativeInteger(name: string, value: unknown): asserts value is number { if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) throw new Error(`${name} (${String(value)}) must be a non-negative integer`) }
+function assertRatio(name: string, value: unknown): asserts value is number { if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0 || value > 1) throw new Error(`${name} (${String(value)}) must be a number in (0, 1]`) }

@@ -17,15 +17,25 @@ import type { LlmCallConfig } from '@deepseek-ai/dsh-llm'
 
 /** Policy fields shared by the default policy and exact model overrides. */
 export interface CompactionPolicyConfig {
-  /** Compact at this fraction of the model's context window. Defaults to `0.8`. */
+  /** Legacy pressure trigger alias. When `pressureRatio` is omitted this supplies it. */
   thresholdRatio?: number
-  /** Recent context retained as a fraction of the model's window. Defaults to `0.16`. */
+  /** Legacy recent-tail alias. When `recentRatio` is omitted this supplies it. */
   retainRatio?: number
-  /** Absolute recent-context budget; mutually exclusive with `retainRatio`. */
+  /** Legacy absolute recent-tail budget; mutually exclusive with retainRatio/recentRatio. */
   retainTokens?: number
-  /** Summary provider; set together with `summarizationModel`, or inherit the conversation target. */
+  /** Recent zone boundary as a fraction of the model window. Defaults to `0.20`. */
+  recentRatio?: number
+  /** Forget-zone boundary as a fraction of the model window. Defaults to `0.50`. */
+  forgetBoundaryRatio?: number
+  /** Tool maintenance trigger as a fraction of the model window. Defaults to `0.40`. */
+  toolMaintenanceRatio?: number
+  /** Forget maintenance trigger as a fraction of the model window. Defaults to `0.70`. */
+  forgetMaintenanceRatio?: number
+  /** Pressure trigger as a fraction of the model window. Defaults to `0.80`. */
+  pressureRatio?: number
+  /** Summary provider; set together with summarizationModel, or inherit the conversation target. */
   summarizationProvider?: string
-  /** Summary model; set together with `summarizationProvider`, or inherit the conversation target. */
+  /** Summary model; set together with summarizationProvider, or inherit the conversation target. */
   summarizationModel?: string
   /** Provider generation cap for summarization. Defaults to `8192`. */
   maxTokens?: number
@@ -33,6 +43,16 @@ export interface CompactionPolicyConfig {
   compactionRetries?: number
   /** Maximum retries after canonical context overflow; `0` disables recovery. Defaults to `1`. */
   maxOverflowRetries?: number
+  /** Target semantic forget batch size. Defaults to `16000`. */
+  targetBatchTokens?: number
+  /** Maximum semantic forget batch size. Defaults to `24000`. */
+  maxBatchTokens?: number
+  /** Normal maintenance forget batches. Defaults to `1`; `0` disables this tier. */
+  maxMaintenanceBatches?: number
+  /** Pressure/overflow batches per protected zone. Defaults to `2`; `0` disables this tier. */
+  maxPressureBatches?: number
+  /** Completed turns required before a history summary may re-enter. Defaults to `1`. */
+  minReentryTurns?: number
 }
 
 /** Exact provider/model override merged over the default compaction policy. */
@@ -69,8 +89,19 @@ export type ResolvedRetention =
   | { readonly retainRatio?: never; readonly retainTokens: number }
 
 /** Validated policy fields shared before and after exact-target matching. */
-interface ResolvedPolicyFields {
+export interface ResolvedPolicyFields {
+  /** Legacy alias retained in the resolved shape for callers and diagnostics. */
   readonly thresholdRatio: number
+  readonly recentRatio: number
+  readonly forgetBoundaryRatio: number
+  readonly toolMaintenanceRatio: number
+  readonly forgetMaintenanceRatio: number
+  readonly pressureRatio: number
+  readonly targetBatchTokens: number
+  readonly maxBatchTokens: number
+  readonly maxMaintenanceBatches: number
+  readonly maxPressureBatches: number
+  readonly minReentryTurns: number
   readonly summarizationProvider: string
   readonly summarizationModel: string
   readonly maxTokens: number

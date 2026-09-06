@@ -206,11 +206,22 @@ export class ToolResultPruner extends Service {
         ? null
         : resolveOlderSpan(nodes, options.olderRange)
 
+    const explicitCandidates = options?.candidateSeqs === undefined
+      ? undefined
+      : new Set(options.candidateSeqs)
+    if (explicitCandidates !== undefined) {
+      for (const seq of explicitCandidates) {
+        if (!nodes.includes(seq)) throw new Error(`tool-result prune: candidate seq ${seq} not found in surface`)
+      }
+    }
+
     const candidates: SnapshotCandidate[] = []
     for (const [position, seq] of nodes.entries()) {
       const event = session.eventAt(seq)
-      // Surface seqs are validated contiguous log references.
-      if (event?.type !== 'tool/result') continue
+      // The normal legacy pass can consider every original tool result. Three-zone
+      // maintenance provides an explicit provenance-derived set, so summaries are
+      // never identified by generated text or accidentally re-pruned.
+      if (event?.type !== 'tool/result' || (explicitCandidates !== undefined && !explicitCandidates.has(seq))) continue
       const ordinaryEligible = olderSpan === null
         ? false
         : position >= olderSpan.startIndex && position <= olderSpan.endIndex

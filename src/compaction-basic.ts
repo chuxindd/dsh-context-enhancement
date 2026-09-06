@@ -38,7 +38,7 @@ import type { CommandId } from '@deepseek-ai/dsh-commands/brand'
 // the same `ctx.toolResultPruner` merge on the official class, and the preset
 // isolate realm mounts exactly one pruner provider (this package's), so the
 // two declarations must never coexist in one program.
-import type {} from './tool-result-pruner.ts'
+import type { ToolResultPruner } from './tool-result-pruner.ts'
 import { randomUUID } from 'node:crypto'
 import { selectToolGroups } from './internal/compaction/tool-groups.ts'
 import { summarizeToolGroup, ToolGroupSummaryFallbackError } from './internal/compaction/tool-group-summarizer.ts'
@@ -56,8 +56,9 @@ import {
   assertNoActiveCompaction,
   compactSurfaceRegion,
   selectCompactableRange,
-  splitRetainedTail,
 } from './internal/compaction/region.ts'
+import { partitionSurfaceZones, selectForgetBatch } from './internal/compaction/zones.ts'
+import { buildSurfaceSourceIndex } from './internal/compaction/source-index.ts'
 import { summarizeWithLlm } from './internal/compaction/summarizer.ts'
 import type { SummarizationInput, SummaryResult } from './internal/compaction/summarizer.ts'
 
@@ -110,17 +111,32 @@ const summarizationModelSchema = z.string()
 const maxTokensSchema = z.number().step(1).min(1)
 const compactionRetriesSchema = z.number().step(1).min(0)
 const maxOverflowRetriesSchema = z.number().step(1).min(0)
-const modelPolicy: z<ModelCompactPolicyConfig> = z.object({
-  provider: z.string().required(),
-  model: z.string().required(),
+const ratioSchema = z.number()
+const positiveIntegerSchema = z.number().step(1).min(1)
+const policyFields = {
   thresholdRatio: thresholdRatioSchema,
   retainRatio: retainRatioSchema,
   retainTokens: retainTokensSchema,
+  recentRatio: ratioSchema,
+  forgetBoundaryRatio: ratioSchema,
+  toolMaintenanceRatio: ratioSchema,
+  forgetMaintenanceRatio: ratioSchema,
+  pressureRatio: ratioSchema,
+  targetBatchTokens: positiveIntegerSchema,
+  maxBatchTokens: positiveIntegerSchema,
+  maxMaintenanceBatches: z.number().step(1).min(0),
+  maxPressureBatches: z.number().step(1).min(0),
+  minReentryTurns: positiveIntegerSchema,
   summarizationProvider: summarizationProviderSchema,
   summarizationModel: summarizationModelSchema,
   maxTokens: maxTokensSchema,
   compactionRetries: compactionRetriesSchema,
   maxOverflowRetries: maxOverflowRetriesSchema,
+}
+const modelPolicy: z<ModelCompactPolicyConfig> = z.object({
+  provider: z.string().required(),
+  model: z.string().required(),
+  ...policyFields,
 })
 
 /**
@@ -140,14 +156,7 @@ export class BasicCompactionEngine extends CompactionEngine {
   static inject = ['llm', 'tokenMeter', 'sessions']
 
   static Config: z<BasicCompactionConfig> = z.object({
-    thresholdRatio: thresholdRatioSchema,
-    retainRatio: retainRatioSchema,
-    retainTokens: retainTokensSchema,
-    summarizationProvider: summarizationProviderSchema,
-    summarizationModel: summarizationModelSchema,
-    maxTokens: maxTokensSchema,
-    compactionRetries: compactionRetriesSchema,
-    maxOverflowRetries: maxOverflowRetriesSchema,
+    ...policyFields,
     modelPolicies: z.array(modelPolicy),
     auto: z.boolean(),
     toolGroupSummarizer: z.object({
@@ -167,6 +176,8 @@ export class BasicCompactionEngine extends CompactionEngine {
   private readonly warnedPressureConfigTargets = new Set<string>()
   private readonly overflowRetries = new WeakMap<Agent, number>()
   private readonly overflowAgents = new WeakMap<Session, Agent>()
+  /** One controlled in-process retry for a transient tool-summary stream failure. */
+  private readonly transientToolGroupRetries = new Set<string>()
   private toolGroupAuditStore: ToolGroupAuditStore | undefined
   private toolGroupAuditStorePromise: Promise<void> | undefined
 
@@ -325,94 +336,214 @@ export class BasicCompactionEngine extends CompactionEngine {
     const policy = resolveTargetPolicy(this.config, target)
     const meter = this.ctx.tokenMeter
     let measurement = meter.measure(agent.session)
-    switch (trigger) {
-      case 'context-overflow':
-        break
-      case 'pressure':
-        break
-      /* Closed-union exhaustiveness guard */
-      default:
-        assertNever(trigger, 'compaction trigger')
-    }
+    if (trigger !== 'pressure' && trigger !== 'context-overflow') assertNever(trigger, 'compaction trigger')
 
-    // Pruning is optional so compaction-basic remains independently composable.
-    // Overflow always qualifies; pressure first resolves the routed model's
-    // capacity and checks its target-specific threshold.
     const prune = this.ctx.get('toolResultPruner')
-
     if (trigger === 'context-overflow') {
-      if (prune !== undefined) {
-        prune.pruneSession(agent.session)
-        measurement = meter.measure(agent.session)
-      }
-      // Overflow recovery keeps whole-surface pruning and opts out of the
-      // empty-benefit guard: its retry depends on advancing the surface, and
-      // re-compacting an isolated checkpoint is that path's last deterministic
-      // reduction (the non-shrink assertion still guards growth).
-      const range = selectCompactableRange(agent.session, measurement, 0, false)
-      if (range === null) return null
-      return this.compactRegion(range.start, range.end, agent, signal)
+      return this.recoverOverflow(agent, prune, signal)
     }
 
     const context = (await this.ctx.llm.resolveModelInfo(target.provider, target.model, signal)).context
-    assertNoActiveCompaction(agent.session, 'automatic pressure compaction')
+    assertNoActiveCompaction(agent.session, 'automatic three-zone compaction')
     const targetKey = `${target.provider}/${target.model}`
     if (context === undefined) {
-      throw new TargetPressureConfigError(
-        targetKey,
-        `compaction-basic: no context capacity for ${targetKey}; `
-        + 'configure contextWindow on that adapter model',
-      )
+      throw new TargetPressureConfigError(targetKey, `compaction-basic: no context capacity for ${targetKey}; configure contextWindow on that adapter model`)
     }
     const spec = resolveCompactSpec(policy, context.contextWindow)
-    if (measurement.totalTokens < spec.thresholdTokens) return null
+    const toolWatermark = Math.floor(spec.contextWindow * policy.toolMaintenanceRatio)
+    const forgetWatermark = Math.floor(spec.contextWindow * policy.forgetMaintenanceRatio)
+    if (measurement.totalTokens < toolWatermark) return null
 
-    // Once pressure qualifies, derive the retained-tail boundary from the same
-    // resolved retention used for global compaction and reduce only the older
-    // head outside it: recent results stay at high fidelity unless the pruner's
-    // own experimental hard limit forces one down. With no older head the prune
-    // call still consults that hard limit, then remeasure through the singleton
-    // replay fold and stop when the deterministic reduction cleared pressure.
-    if (prune !== undefined) {
-      let split = splitRetainedTail(agent.session, measurement, spec.retainTokens)
-      await this.summarizeToolGroups(agent, target, policy, split.olderRange, signal)
-      measurement = meter.measure(agent.session)
-      split = splitRetainedTail(agent.session, measurement, spec.retainTokens)
-      prune.pruneSession(agent.session, { olderRange: split.olderRange })
+    // Every operation measures again and derives fresh positional boundaries.
+    // A round-local exclusion set prevents its tool replacements entering the
+    // semantic forget pass even if the replacement shifts surface positions.
+    const roundReplacements = new Set<SessionSeq>()
+    let zones = this.zones(agent.session, measurement, spec)
+    await this.summarizeToolGroups(agent, target, policy, zones.tool, signal, roundReplacements)
+    measurement = meter.measure(agent.session)
+    zones = this.zones(agent.session, measurement, spec)
+    if (prune !== undefined && zones.tool !== null) {
+      const index = this.sourceIndex(agent.session)
+      // Keep ordinary pruning inside the tool zone, but include original recent
+      // results in the explicit provenance set so the pruner can still enforce
+      // its opt-in hard limit without ever visiting summaries or forget-zone data.
+      const candidates = agent.session.surface.nodes.slice(zones.tool.startIndex)
+        .filter(seq => index.isOriginalToolResult(seq))
+      const pruned = prune.pruneSession(agent.session, {
+        olderRange: { start: zones.tool.startSeq, end: zones.tool.endSeq },
+        candidateSeqs: candidates,
+      })
+      pruned.pruned.forEach(entry => roundReplacements.add(entry.replacementSeq))
       measurement = meter.measure(agent.session)
     }
-    if (measurement.totalTokens < spec.thresholdTokens) return null
 
-    let result: CompactionResult | null = null
-    for (let attempt = 0; attempt <= spec.compactionRetries; attempt += 1) {
-      const range = selectCompactableRange(agent.session, measurement, spec.retainTokens)
-      if (range === null) {
-        // Either the whole surface is retained (nothing older to reduce) or the
-        // guard rejected an isolated checkpoint head. A first-pass null means
-        // deterministic reduction already cleared pressure; a post-success null
-        // means the replacement checkpoint is the only remaining head, so any
-        // further model call would be an empty-benefit pass and the bounded
-        // convergence throw below reports the shortfall.
-        if (result === null) return null
-        break
+    if (measurement.totalTokens < forgetWatermark) return null
+    const pressure = measurement.totalTokens >= spec.thresholdTokens
+
+    // Clear tool-stage debt that has aged into the forget zone. These
+    // replacements remain excluded from semantic compaction for this pass, so
+    // the intermediate representation gets at least one later request unless
+    // a subsequent pressure pass deliberately re-enters it.
+    zones = this.zones(agent.session, measurement, spec)
+    if (zones.forget !== null) {
+      await this.summarizeToolGroups(agent, target, policy, zones.forget, signal, roundReplacements)
+      measurement = meter.measure(agent.session)
+      zones = this.zones(agent.session, measurement, spec)
+      if (prune !== undefined && zones.forget !== null) {
+        const index = this.sourceIndex(agent.session)
+        const candidates = agent.session.surface.nodes
+          .slice(zones.forget.startIndex, zones.forget.endIndex + 1)
+          .filter(seq => index.isOriginalToolResult(seq))
+        const pruned = prune.pruneSession(agent.session, {
+          olderRange: { start: zones.forget.startSeq, end: zones.forget.endSeq },
+          candidateSeqs: candidates,
+        })
+        pruned.pruned.forEach(entry => roundReplacements.add(entry.replacementSeq))
+        measurement = meter.measure(agent.session)
       }
-      result = await this.compactRegion(range.start, range.end, agent, signal)
-      measurement = meter.measure(agent.session)
-      if (measurement.totalTokens < spec.thresholdTokens) return result
     }
 
-    throw new Error(
-      `compaction still above threshold after ${spec.compactionRetries + 1} compaction attempts `
-      + `(${measurement.totalTokens} estimated tokens >= threshold ${spec.thresholdTokens})`,
-    )
+    const batchLimit = pressure ? policy.maxPressureBatches : policy.maxMaintenanceBatches
+    let result: CompactionResult | null = null
+    for (let batch = 0; batch < batchLimit; batch += 1) {
+      // Do not reuse an old zone after a replacement. This is especially
+      // important for pressure convergence where the first batch can move both
+      // boundaries substantially.
+      measurement = meter.measure(agent.session)
+      if (measurement.totalTokens < forgetWatermark) break
+      const currentZones = this.zones(agent.session, measurement, spec)
+      const selected = selectForgetBatch(agent.session, measurement, currentZones, {
+        targetBatchTokens: policy.targetBatchTokens,
+        maxBatchTokens: policy.maxBatchTokens,
+      })
+      if (selected === null) break
+      const selectedSeqs = agent.session.surface.nodes.slice(selected.startIndex, selected.endIndex + 1)
+      const sources = this.sourceIndex(agent.session)
+      if (selectedSeqs.some(seq => roundReplacements.has(seq)
+        || !sources.canCompactHistory(seq, policy.minReentryTurns, pressure))) break
+      if (this.hasPendingToolIntermediateWork(agent.session, selected.startSeq, selected.endSeq, prune)) break
+      result = await this.compactRegion(selected.startSeq, selected.endSeq, agent, signal)
+      measurement = meter.measure(agent.session)
+      if (!pressure || measurement.totalTokens < spec.thresholdTokens) break
+    }
+    if (pressure && measurement.totalTokens >= spec.thresholdTokens && result !== null) {
+      throw new Error(`compaction remains above pressure after ${batchLimit} freshly-zoned forget batches (${measurement.totalTokens} >= ${spec.thresholdTokens})`)
+    }
+    return result
+  }
+
+  /** Rebuild source types from Session provenance and durable successful audits. */
+  private sourceIndex(session: Session) {
+    const summarized = this.toolGroupAuditStore?.recordsForSession(session.id)
+      .filter(record => record.status === 'success')
+      .flatMap(record => record.replacementSeqs ?? []) ?? []
+    return buildSurfaceSourceIndex(session, summarized)
+  }
+
+  /** Whether a forget batch still contains raw content owed an intermediate tool pass. */
+  private hasPendingToolIntermediateWork(
+    session: Session,
+    start: SessionSeq,
+    end: SessionSeq,
+    prune: ToolResultPruner | undefined,
+  ): boolean {
+    const nodes = session.surface.nodes
+    const startIndex = nodes.indexOf(start)
+    const endIndex = nodes.indexOf(end)
+    if (startIndex < 0 || endIndex < startIndex) return true
+    const index = this.sourceIndex(session)
+    const selected = nodes.slice(startIndex, endIndex + 1)
+    if (prune !== undefined && selected.some(seq => {
+      const event = session.eventAt(seq)
+      return event?.type === 'tool/result' && index.isOriginalToolResult(seq)
+        && prune.measureContent(event.data.message.content[0].content) > prune.config.thresholdChars
+    })) return true
+    // A qualifying group is outstanding semantic tool work, even when not
+    // individually large enough for deterministic pruning.
+    return selectToolGroups(session, {
+      olderRange: { start, end },
+      minGroupResults: this.config.toolGroupSummarizer.minGroupResults,
+      minGroupChars: this.config.toolGroupSummarizer.minGroupChars,
+      minGroupTokens: this.config.toolGroupSummarizer.minGroupTokens,
+      maxGroupTokens: this.config.toolGroupSummarizer.maxGroupTokens,
+      maxGroups: 1,
+      estimateTokens: event => event.type === 'tool/result' || event.type === 'assistant/message'
+        ? this.ctx.tokenMeter.estimateMessage(event.data.message)
+        : 0,
+    }).some(group => group.toolResultSeqs.every(seq => index.isOriginalToolResult(seq)))
+  }
+
+  /** Derive current zones from one fresh meter snapshot and the routed capacity. */
+  private zones(session: Session, measurement: ReturnType<TokenMeter['measure']>, spec: ReturnType<typeof resolveCompactSpec>) {
+    return partitionSurfaceZones(session, measurement, {
+      recentRatio: spec.retainTokens / spec.contextWindow,
+      forgetBoundaryRatio: spec.forgetBoundaryRatio,
+      contextWindow: spec.contextWindow,
+    })
+  }
+
+  /**
+   * Overflow is the only path allowed to relax normal zones. It first prunes
+   * provenance-indexed original results, then progresses oldest-first through
+   * forget, tool, and recent ranges. No custom SessionEventMap entry is needed:
+   * each reduction uses the official compaction/prune or compaction transaction.
+   */
+  private async recoverOverflow(
+    agent: Agent,
+    prune: ToolResultPruner | undefined,
+    signal: AbortSignal,
+  ): Promise<CompactionResult | null> {
+    const session = agent.session
+    if (prune !== undefined) {
+      const sources = this.sourceIndex(session)
+      prune.pruneSession(session, { candidateSeqs: session.surface.nodes.filter(seq => sources.isOriginalToolResult(seq)) })
+    }
+    const target = routedTarget(session)
+    if (target === undefined) return null
+    const context = (await this.ctx.llm.resolveModelInfo(target.provider, target.model, signal)).context
+    if (context === undefined) return null
+    const policy = resolveTargetPolicy(this.config, target)
+    const spec = resolveCompactSpec(policy, context.contextWindow)
+    let latest: CompactionResult | null = null
+    // An overflow attempt may cross a protection boundary only after the prior
+    // zone has no eligible bounded batch or reaches its explicit safety cap.
+    // Reprice and repartition before EVERY batch; replacements invalidate every
+    // old positional boundary.
+    for (const level of ['overflow-forget', 'overflow-tool-zone', 'overflow-recent'] as const) {
+      for (let batch = 0; batch < policy.maxPressureBatches; batch += 1) {
+        const current = this.ctx.tokenMeter.measure(session)
+        if (current.totalTokens < spec.thresholdTokens) return latest
+        const zones = this.zones(session, current, spec)
+        const range = level === 'overflow-forget'
+          ? zones.forget
+          : level === 'overflow-tool-zone'
+            ? zones.tool
+            : zones.recent
+        if (range === null) break
+        const selected = selectForgetBatch(session, current, { ...zones, forget: range }, {
+          targetBatchTokens: spec.targetBatchTokens,
+          maxBatchTokens: spec.maxBatchTokens,
+        })
+        if (selected === null) break
+        const sourceIndex = this.sourceIndex(session)
+        const selectedSeqs = session.surface.nodes.slice(selected.startIndex, selected.endIndex + 1)
+        // A prior overflow replacement is still a history summary; a retry must
+        // not immediately re-summarize it before a later completed turn exists.
+        if (selectedSeqs.some(seq => !sourceIndex.canCompactHistory(seq, policy.minReentryTurns))) break
+        this.ctx.logger.warn(`context-overflow recovery level ${level}, batch ${batch + 1}`)
+        latest = await this.compactRegion(selected.startSeq, selected.endSeq, agent, signal)
+      }
+    }
+    return latest
   }
 
   private async summarizeToolGroups(
     agent: Agent,
     target: Pick<LlmCallConfig, 'provider' | 'model'>,
     policy: ReturnType<typeof resolveTargetPolicy>,
-    olderRange: { start: SessionSeq; end: SessionSeq } | null,
+    olderRange: { startSeq: SessionSeq; endSeq: SessionSeq } | null,
     signal: AbortSignal,
+    roundReplacements: Set<SessionSeq>,
   ): Promise<void> {
     const config = this.config.toolGroupSummarizer
     if (!config.enabled || olderRange === null) return
@@ -421,7 +552,7 @@ export class BasicCompactionEngine extends CompactionEngine {
     if (store === undefined) return
     const session = agent.session
     const groups = selectToolGroups(session, {
-      olderRange,
+      olderRange: olderRange === null ? null : { start: olderRange.startSeq, end: olderRange.endSeq },
       minGroupResults: config.minGroupResults,
       minGroupChars: config.minGroupChars,
       minGroupTokens: config.minGroupTokens,
@@ -432,6 +563,11 @@ export class BasicCompactionEngine extends CompactionEngine {
         : 0,
     })
     for (const group of groups) {
+      // Tool summaries have the same Session event type as raw results. Their
+      // durable replacement provenance, not their generated text, decides
+      // whether a future op1 call may consume the group.
+      const sources = this.sourceIndex(session)
+      if (group.toolResultSeqs.some(seq => !sources.isOriginalToolResult(seq))) continue
       const events = group.sourceSeqs.map(seq => session.eventAt(seq))
       const digest = contentDigest(events.map(event => JSON.stringify(event)))
       const fingerprint = toolGroupFingerprint({
@@ -444,6 +580,12 @@ export class BasicCompactionEngine extends CompactionEngine {
       })
       const records = store.recordsForSession(session.id)
       if (successfulAuditFor(records, fingerprint) !== undefined) continue
+      const settled = records.find(record => record.fingerprint === fingerprint && record.status !== 'open')
+      // Schema/source/route output failures are deterministic for this exact
+      // input and survive restart in the audit. A stream failure receives only
+      // one further in-process attempt, avoiding one LLM call per pre-step.
+      if (settled?.status === 'fallback') continue
+      if (settled?.status === 'failure' && this.transientToolGroupRetries.has(fingerprint)) continue
       const priorOpen = recoverableOpenAuditFor(records, fingerprint)
       const requestId = priorOpen?.requestId ?? `tg-${randomUUID()}`
       const open = priorOpen ?? openToolGroupAudit(requestId, session.id, group, session.surface.replaceGeneration, policy.summarizationProvider || target.provider, policy.summarizationModel || target.model, fingerprint)
@@ -452,12 +594,15 @@ export class BasicCompactionEngine extends CompactionEngine {
         const result = await summarizeToolGroup(this.ctx, session, group, agent, { provider: open.provider, model: open.model, maxTokens: config.maxSummaryTokens }, signal)
         assertToolGroupCommitStable(session.id, session.surface.replaceGeneration, group.sourceSeqs, open)
         const replacement = replaceToolGroup(session, group, result.summary)
+        replacement.replacementSeqs.forEach(seq => roundReplacements.add(seq))
         await store.finish(requestId, current => finishToolGroupAudit(current, 'success', { rawOutput: result.rawOutput, summary: result.summary, replacementSeqs: replacement.replacementSeqs }))
       } catch (error: unknown) {
         const reason = error instanceof ToolGroupSummaryFallbackError ? error.reason : 'failure'
         const message = error instanceof Error ? error.message : String(error)
+        const transient = reason === 'stream' || reason === 'failure'
+        if (transient) this.transientToolGroupRetries.add(fingerprint)
         try {
-          await store.finish(requestId, current => finishToolGroupAudit(current, reason === 'failure' ? 'failure' : 'fallback', { error: message }))
+          await store.finish(requestId, current => finishToolGroupAudit(current, transient ? 'failure' : 'fallback', { error: message }))
         } catch (auditError: unknown) {
           this.ctx.logger.warn(`tool-group summary audit finish failed: ${auditError instanceof Error ? auditError.message : String(auditError)}`)
         }

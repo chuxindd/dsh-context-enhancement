@@ -5,6 +5,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-09-06
+
+### Added
+
+- Added positional three-zone compaction: recent (0-20% of routed capacity), tool (20-50%), and forget (>50%) zones with tool-pair and step-safe boundaries.
+- Added bounded oldest-first forget batches, source-provenance classification, re-entry protection for history summaries, and pure three-zone regression coverage.
+
+### Changed
+
+- Split automatic maintenance into 40% tool maintenance, 70% one forget batch, and 80% pressure convergence with fresh measurement and zone partitioning after every replacement.
+- Restricted deterministic pruning to explicit original tool-result candidates; tool summaries are excluded through replacement provenance rather than generated text.
+- Changed overflow recovery order to original large results, forget zone, tool zone, then recent zone. Legacy `thresholdRatio`, `retainRatio`, and `retainTokens` remain supported with explicit conflict errors for ambiguous new-field combinations.
+
+
 ## [0.1.2] - 2026-05-28
 
 ### Changed

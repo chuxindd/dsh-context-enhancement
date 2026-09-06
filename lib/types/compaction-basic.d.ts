@@ -51,6 +51,8 @@ export declare class BasicCompactionEngine extends CompactionEngine {
     private readonly warnedPressureConfigTargets;
     private readonly overflowRetries;
     private readonly overflowAgents;
+    /** One controlled in-process retry for a transient tool-summary stream failure. */
+    private readonly transientToolGroupRetries;
     private toolGroupAuditStore;
     private toolGroupAuditStorePromise;
     constructor(ctx: Context, config?: BasicCompactionConfig);
@@ -84,6 +86,19 @@ export declare class BasicCompactionEngine extends CompactionEngine {
      * @returns the latest summary compaction result, or `null` when no summary ran.
      */
     compactIfNeeded(agent: Agent, trigger: CompactionTrigger, signal: AbortSignal): Promise<CompactionResult | null>;
+    /** Rebuild source types from Session provenance and durable successful audits. */
+    private sourceIndex;
+    /** Whether a forget batch still contains raw content owed an intermediate tool pass. */
+    private hasPendingToolIntermediateWork;
+    /** Derive current zones from one fresh meter snapshot and the routed capacity. */
+    private zones;
+    /**
+     * Overflow is the only path allowed to relax normal zones. It first prunes
+     * provenance-indexed original results, then progresses oldest-first through
+     * forget, tool, and recent ranges. No custom SessionEventMap entry is needed:
+     * each reduction uses the official compaction/prune or compaction transaction.
+     */
+    private recoverOverflow;
     private summarizeToolGroups;
     /**
      * Compact one inclusive positional range from the agent-owned surface using

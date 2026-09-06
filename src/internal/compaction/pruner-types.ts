@@ -79,6 +79,12 @@ export interface ToolResultPruneOptions {
    * whole-surface ordinary pass.
    */
   readonly olderRange?: ToolResultPruneRange | null
+  /**
+   * Explicit original tool-result nodes eligible for ordinary pruning. When set,
+   * this provenance-derived set is authoritative and prevents a pass from
+   * scanning or re-pruning tool-summary/tool-pruned replacements.
+   */
+  readonly candidateSeqs?: readonly SessionSeq[]
 }
 
 /** Cited source event and size accounting for one landed surface replacement. */

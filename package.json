@@ -1,7 +1,7 @@
 {
   "name": "dsh-context-enhancement",
   "description": "Persistent task state and context-aware compaction for DeepSeek Harness coding sessions.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "author": "chuxindd",
   "repository": {

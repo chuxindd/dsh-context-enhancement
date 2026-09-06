@@ -8,7 +8,7 @@ recent work and key decisions while older tool output is reduced earlier.
 It is intended for multi-step, long-running, tool-heavy development tasks and work
 that must continue after an interruption.
 
-> Current version: `0.1.4`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
+> Current version: `0.1.5`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
 
 [中文文档](./README.zh.md)
 
@@ -43,7 +43,7 @@ cleanup. The panel reports status; detailed events remain available in Trajector
 Pin a tag so later repository changes do not alter the deployment:
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.4'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.5'
 dsh --profile web
 ```
 
@@ -61,7 +61,7 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.4.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.5.tgz"
 dsh --profile web
 ```
 
@@ -108,17 +108,16 @@ This bundle manages long sessions through two parallel paths:
 The compaction flow does not wait until the context window is exhausted and then perform one indiscriminate summary. It applies increasingly stronger operations:
 
 ```text
-Current Session surface
+Current Session surface, measured from its newest tail
       |
-      +-- Recent tail: preserve the current working context
-      +-- Tool-group summaries: replace older complete tool groups with sourced notes
-      +-- Deterministic pruning: reduce oversized older tool results
-      +-- Semantic compaction: summarize older balanced history if pressure remains
+      +-- Recent zone (0-20% of model capacity): preserve the live working set
+      +-- Tool zone (20-50%): source-validated tool notes or deterministic raw-result pruning
+      +-- Forget zone (>50%): oldest-first bounded semantic history batches
 ```
 
 #### Recent-tail protection
 
-`compaction-basic` derives the retained tail from the routed model's context capacity and retention settings. Recent user messages, assistant actions, and tool results are not semantically summarized during ordinary pressure compaction. Tool-group selection is limited to the older range outside that tail.
+`compaction-basic` partitions the current surface by position and token age against the routed model capacity: recent is 0-20%, tool is 20-50%, and forget is older than 50%. Every boundary is snapped toward history to preserve complete tool pairs and steps. Ordinary maintenance never crosses those zones.
 
 Every boundary is checked by current Session-surface position rather than by assuming numeric sequence order. Tool calls and results must remain complete and balanced within their step or segment. A candidate that would cut through the middle of a tool segment is skipped.
 
@@ -140,7 +139,7 @@ Tool-group audit records live in the independent `context_enhancement_tool_group
 
 #### Deterministic pruning
 
-After tool-group processing, `tool-result-pruner` remeasures the current surface and recomputes the older range. It reduces only older tool results outside the retained tail while preserving replay boundaries and useful head/tail structure. Summarization preserves structured meaning; pruning is the predictable size-reduction fallback. Neither operation deletes the original Session events: both use surface replacement or shadowing for subsequent model requests.
+After tool-group processing, `tool-result-pruner` remeasures the current surface and recomputes the tool zone. It reduces only provenance-indexed original large results in that zone; already summarized results are never re-scanned or classified by text. A configured hard limit may still bound an exceptional original result in the recent zone. Neither operation deletes original Session events: both use surface replacement or shadowing for subsequent model requests.
 
 #### Semantic compaction
 
@@ -216,7 +215,7 @@ delete either location.
 Upgrade:
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.4'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.5'
 ```
 
 Roll back:
@@ -306,10 +305,10 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.4.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.5.tgz
 ```
 
-After all checks pass, commit the version change, create tag `v0.1.4`, and attach the
+After all checks pass, commit the version change, create tag `v0.1.5`, and attach the
 matching tarball to the GitHub release.
 
 ## Compatibility notes

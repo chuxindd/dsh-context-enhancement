@@ -237,11 +237,14 @@ describe('task-state-basic keyless long-session + replay', () => {
     for (const row of rows) {
       taskStateAuditSchema.parse(row)
       const finished = (row as { finished?: { outcome?: string; llmStreamCall?: boolean; rawOutput?: unknown[] } }).finished
-      expect(finished?.outcome).toBe('success')
-      // Success rows carry the llmStreamCall replay marker and complete output.
-      expect(finished?.llmStreamCall).toBe(true)
-      expect(Array.isArray(finished?.rawOutput)).toBe(true)
-      expect((finished?.rawOutput ?? []).length).toBeGreaterThan(0)
+      expect(['success', 'repair']).toContain(finished?.outcome)
+      // A repair certifies an already committed stable without inventing a
+      // second LLM call. Only success rows carry replayable model output.
+      if (finished?.outcome === 'success') {
+        expect(finished.llmStreamCall).toBe(true)
+        expect(Array.isArray(finished.rawOutput)).toBe(true)
+        expect((finished.rawOutput ?? []).length).toBeGreaterThan(0)
+      }
     }
     const timeline = deriveAuditTimeline(rowsForLifecycle(
       rows as Parameters<typeof rowsForLifecycle>[0],

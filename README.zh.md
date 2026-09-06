@@ -7,7 +7,7 @@
 
 适合多步骤、长时间、工具调用密集，或需要中断后继续的开发任务。
 
-> 当前版本：`0.1.4`。兼容 DeepSeek Harness `0.1.2-rc.1`。
+> 当前版本：`0.1.5`。兼容 DeepSeek Harness `0.1.2-rc.1`。
 
 ## 相比 standard 的变化
 
@@ -39,7 +39,7 @@
 安装固定 tag，避免后续提交改变当前部署：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.4'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.5'
 dsh --profile web
 ```
 
@@ -57,7 +57,7 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.4.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.5.tgz"
 dsh --profile web
 ```
 
@@ -104,17 +104,16 @@ pnpm run install:desktop-preset -- --force
 主线程压缩不是等窗口耗尽后只做一次“大总结”，而是按风险从低到高处理：
 
 ```text
-当前 Session surface
+按当前 surface 尾部位置和 token 年龄划分
       │
-      ├─ 近区：保留最近现场，不主动做语义摘要
-      ├─ 工具组摘要：把较早的完整工具调用组压缩为带来源的要点
-      ├─ 确定性裁剪：缩减仍然过大的旧工具结果
-      └─ 语义压缩：上下文仍超限时，压缩更早的完整历史区域
+      ├─ 近区（模型容量 0-20%）：完整保留当前现场
+      ├─ 工具区（20-50%）：工具要点化或原始大结果确定性裁剪
+      └─ 遗忘区（>50%）：从最老端选择有界安全语义压缩批次
 ```
 
 #### 1. 近区保护
 
-`compaction-basic` 先根据目标模型的上下文容量和 retention 配置计算保留尾部。近期用户消息、助手动作和工具结果不会因为一次普通 pressure compaction 被直接做语义摘要；工具组选择也只在保留尾部之外进行。
+`compaction-basic` 按目标模型容量及当前 surface 位置划分三区：近区为 0-20%，工具区为 20-50%，遗忘区为 50% 以前的历史。普通维护不会跨区：近区不处理，工具区只进行工具要点化或原始结果裁剪，语义压缩只处理遗忘区。
 
 所有边界都按当前 surface 的位置判断，而不是假设 Session seq 连续。工具调用与工具结果必须处于完整、平衡的 step/segment 内；如果范围从工具组中间切过，宁可跳过该组，也不截断调用链。
 
@@ -135,7 +134,7 @@ pnpm run install:desktop-preset -- --force
 
 #### 3. 确定性裁剪
 
-工具组摘要完成后，`tool-result-pruner` 会基于**最新 surface**重新计算旧区域，只处理保留尾部之外的旧工具结果。它保留头尾、结构和必要元数据，减少大段重复或低价值输出；摘要失败时它是主链的确定性 fallback。
+工具组摘要完成后，`tool-result-pruner` 会基于**最新 surface**重新计算工具区，只处理由 replacement 来源索引确认的原始大结果；已生成的工具要点不会被扫描或依赖文本标记再次裁剪。若配置硬上限，近区中异常大的原始结果仍可被限制。它保留头尾、结构和必要元数据，摘要失败时是主链的确定性 fallback。
 
 这里的“摘要”和“裁剪”职责不同：摘要保留结构化语义，裁剪只做可预测的体积缩减。两者都不会删除原始 Session 事件，而是通过 surface replacement/shadowing 改变后续模型请求看到的内容。
 
@@ -215,7 +214,7 @@ $DSH_HOME/storages/context_enhancement_task_state.json
 升级：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.4'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.5'
 ```
 
 回滚到上一版本：
@@ -308,10 +307,10 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.4.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.5.tgz
 ```
 
-全部通过后提交版本变更，创建 `v0.1.4` tag，并在 GitHub Release 上传同名 tarball。
+全部通过后提交版本变更，创建 `v0.1.5` tag，并在 GitHub Release 上传同名 tarball。
 
 ## 兼容性说明
 

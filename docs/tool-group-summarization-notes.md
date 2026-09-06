@@ -127,6 +127,14 @@
 - 删除了把未实现机制写成当前行为的表述；文档不再声称当前 Bundle 已实现原始事件归档、三次递进 checkpoint 或灾难重建。
 - 中英文 README 已同步核心术语和处理顺序；`pnpm run release:check` 通过。
 
+## 2026-09-06：0.1.5 分层三区改造
+
+- 主链改为按当前 surface 位置（不是 seq 数值）从尾部按模型容量划分：近区 0-20%、工具区 20-50%、遗忘区 >50%；边界同时满足 tool pair 和 step 完整性。
+- 调度水位独立于区域边界：40% 运行工具要点化和原始大结果裁剪，70% 增加一批遗忘区压缩，80% 在受控批数内每批重新计量、重新划区并继续收敛。
+- 本轮工具摘要和裁剪 replacement 进入排除集合，不可被本轮遗忘语义压缩；history summary 至少经历一个 `turn/end` 后才可重入。来源索引从 replacement/sourceEventSeqs、官方 prune/compaction 事件和持久成功 audit 重建，不读取摘要文本 marker。
+- 工具裁剪只接收明确的原始结果候选集合，摘要与裁剪候选互斥；确定性失败落入持久 fallback 记录，瞬时流失败只允许一轮受控重试，避免每个 pre-step 重复发起 LLM 调用。
+- 新增 `compaction-three-zone.spec.ts` 覆盖非单调 seq、边界、安全有限 batch、来源恢复和旧配置冲突规则；完整回归更新为允许 task-state 已定义的 `repair` 审计认证状态。
+
 ## 下一步读取顺序
 
 1. `src/task-state-basic.ts` 的 auxiliary call、request id、audit 与 lifecycle 围栏。
