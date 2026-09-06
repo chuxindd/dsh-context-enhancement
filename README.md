@@ -22,15 +22,12 @@
 
 主线程中的内容随新对话产生而逐渐老化，并依次进入三个互不重叠的区域：
 
-```text
-最老                                                        最新
-┌──────────────────┬────────────────────────┬──────────────────┐
-│ 遗忘区           │ 工具压缩区             │ 近区             │
-│                  │                        │                  │
-│ 操作③            │ 操作① / 操作②          │ 原始内容完整保留 │
-│ 分批语义压缩     │ 工具要点化或工具裁剪   │ 当前工作现场     │
-└──────────────────┴────────────────────────┴──────────────────┘
-```
+|  历史演变 (最老 $\rightarrow$ 最新) | 遗忘区 | 工具压缩区 | 近区 |
+|---|---|---|---|
+| 核心状态 |  逐渐模糊 |  精简提炼 |  当前活跃 |
+| 触发操作 | 操作③：分批语义压缩 | 操作① / 操作②：工具要点化或工具裁剪 | 原始内容完整保留 |
+| 场景定义 | 深度记忆归档 | 核心工具库 | 当前工作现场 |
+
 
 每段内容遵循统一生命周期：
 
@@ -79,8 +76,7 @@ Checkpoint 使用独立模型请求、输入预算、输出预算、超时和重
 | 较早工具输出         | 由默认压缩统一处理 | 在压缩前优先缩减，降低上下文占用                       |
 | 长对话压缩           | DSH 默认实现       | 优先保留近期工作，再整理较早历史                       |
 
-在 Web 会话中，标题栏的 **增强功能** 按钮显示四项运行状态：任务进度记忆、请求上下文
-同步、工具结果整理和长对话整理。该面板用于查看状态；详细事件仍在“轨迹”中。
+在 Web 会话中，标题栏的 **增强功能** 按钮显示四项运行状态：任务进度记忆、请求上下文同步、工具结果整理和长对话整理。该面板用于查看状态。
 
 ## 安装
 
@@ -100,9 +96,7 @@ dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
 dsh --profile web
 ```
 
-打开 `http://127.0.0.1:8080`，新建会话并选择 **上下文增强**。插件会保留
-`standard`、`minimal`、`ptc` 和 `cordis` 等原有模式，同时将 `contextual` 注册为默认
-模式。
+打开 `http://127.0.0.1:8080`，新建会话并选择 **上下文增强**。插件会保留`standard`、`minimal`、`ptc` 和 `cordis` 等原有模式，同时将 `contextual` 注册为默认模式。
 
 ### 从本地源码安装
 
@@ -118,21 +112,17 @@ dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.6.tgz"
 dsh --profile web
 ```
 
-在 Windows PowerShell 中，如果 DSH CLI 不接受含 `/` 的相对路径，请传入 tarball 的
-绝对路径。
+在 Windows PowerShell 中，如果 DSH CLI 不接受含 `/` 的相对路径，请传入 tarball 的绝对路径。
 
 ### Desktop 兼容步骤
 
-Desktop 启动器会重建 Agent preset 的发现目录，因此安装 Bundle 后还需要把
-`contextual` preset 写入用户目录。在本仓库或解压后的源码目录执行：
+Desktop 启动器会重建 Agent preset 的发现目录，因此安装 Bundle 后还需要把 `contextual` preset 写入用户目录。在本仓库或解压后的源码目录执行：
 
 ```powershell
 pnpm run install:desktop-preset
 ```
 
-默认写入 `%DSH_HOME%\.agent-presets\contextual`；未设置 `DSH_HOME` 时使用
-`%USERPROFILE%\.dsh\.agent-presets\contextual`。如果已有同名 preset，脚本会拒绝覆盖；
-确认需要替换时执行：
+默认写入 `%DSH_HOME%\.agent-presets\contextual`；未设置 `DSH_HOME` 时使用 `%USERPROFILE%\.dsh\.agent-presets\contextual`。如果已有同名 preset，脚本会拒绝覆盖；确认需要替换时执行：
 
 ```powershell
 pnpm run install:desktop-preset -- --force
@@ -146,13 +136,11 @@ pnpm run install:desktop-preset -- --force
 4. 点击会话标题栏的 **增强功能** 查看各能力是否启用及本会话触发次数。
 5. 打开“轨迹”查看压缩、裁剪等详细事件。
 
-任务状态达到事件阈值后异步更新，因此刚创建的会话可能显示“本会话尚未触发”。这不代表
-能力未启用。
+任务状态达到事件阈值后异步更新，因此刚创建的会话可能显示“本会话尚未触发”。这不代表能力未启用。
 
 ## 配置
 
-Bundle 默认配置位于 `cordis.patch.yml`，可在 profile/home patch 层覆盖。覆盖 `config`
-时需要提供完整配置，而不是只写变化字段。
+Bundle 默认配置位于 `cordis.patch.yml`，可在 profile/home patch 层覆盖。覆盖 `config`时需要提供完整配置，而不是只写变化字段。
 
 ### 任务状态 provider
 
@@ -173,12 +161,9 @@ Bundle 默认配置位于 `cordis.patch.yml`，可在 profile/home patch 层覆�
 
 ### 上下文压缩
 
-`contextual` 继承 DSH 官方配置字段，包括 `thresholdRatio`、`retainRatio`、
-`retainTokens`、`summarizationProvider`、`summarizationModel`、`maxTokens`、
-`compactionRetries`、`maxOverflowRetries`、`modelPolicies` 和 `auto`。
+`contextual` 继承 DSH 官方配置字段，包括 `thresholdRatio`、`retainRatio`、`retainTokens`、`summarizationProvider`、`summarizationModel`、`maxTokens`、`compactionRetries`、`maxOverflowRetries`、`modelPolicies` 和 `auto`。
 
-工具输出缩减使用 `thresholdChars`、`headChars` 和 `tailChars`。修改阈值前建议先通过轨迹
-观察真实会话；阈值过低会增加处理频率，保留量过低会损失排查问题所需的原始输出。
+工具输出缩减使用 `thresholdChars`、`headChars` 和 `tailChars`。修改阈值前建议先通过轨迹观察真实会话；阈值过低会增加处理频率，保留量过低会损失排查问题所需的原始输出。
 
 ## 数据、升级与卸载
 
@@ -208,8 +193,7 @@ dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.3'
 dsh plugin --profile web remove dsh-context-enhancement
 ```
 
-每次安装、升级、回滚或卸载后都需要重启 profile。卸载会移除 `contextual` 默认覆盖并
-恢复官方压缩组合，但不会删除任务状态文件和 Session 日志。
+每次安装、升级、回滚或卸载后都需要重启 profile。卸载会移除 `contextual` 默认覆盖并恢复官方压缩组合，但不会删除任务状态文件和 Session 日志。
 
 ## 本地开发
 
@@ -222,8 +206,7 @@ pnpm test
 pnpm run build
 ```
 
-仓库提交 `lib/` 构建产物，因为 GitHub tag 安装不会运行 `prepare` 或 `postinstall`。
-修改 `src/` 后必须运行 `pnpm run build`，并把对应的 `lib/` 变化一起提交。
+仓库提交 `lib/` 构建产物，因为 GitHub tag 安装不会运行 `prepare` 或 `postinstall`。修改 `src/` 后必须运行 `pnpm run build`，并把对应的 `lib/` 变化一起提交。
 
 常用命令：
 
@@ -253,8 +236,7 @@ pnpm run build
 
 开发约束：
 
-- 不要为任务状态新增 DSH `SessionEventMap` 事件；审计数据位于独立 storage domain，保证
-  卸载后旧 Session 日志仍可由官方代码读取。
+- 不要为任务状态新增 DSH `SessionEventMap` 事件；审计数据位于独立 storage domain，保证卸载后旧 Session 日志仍可由官方代码读取。
 - 修改持久 schema 时必须说明兼容和迁移策略，并增加重启、损坏数据和旧版本数据测试。
 - 修改压缩策略时应覆盖工具调用配对、选择边界、空收益、溢出与确定性回退。
 - 修改客户端后同时更新中英文 locale、projection 测试和 `lib/client.js`。
@@ -268,8 +250,7 @@ Issue：<https://github.com/chuxindd/dsh-context-enhancement/issues>
 
 1. 从独立分支完成改动，避免混入无关格式化或生成文件。
 2. 为行为变化增加或更新测试。
-3. 运行 `pnpm run typecheck`、`pnpm test`、`pnpm run build` 和
-   `pnpm run release:check`。
+3. 运行 `pnpm run typecheck`、`pnpm test`、`pnpm run build` 和 `pnpm run release:check`。
 4. 提交源码及对应的 `lib/` 构建产物。
 5. 在 PR 中说明问题、实现选择、兼容影响和人工验证方式。
 6. 如果改变持久数据、Agent 组合或压缩语义，明确写出升级与回滚影响。
