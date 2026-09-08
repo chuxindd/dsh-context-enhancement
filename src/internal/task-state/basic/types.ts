@@ -5,13 +5,17 @@
  * @module dsh-context-enhancement/internal/task-state/basic/types
  */
 
-import type { TaskStateEntryId, TaskStateTruncationRecord } from '../contract/types.ts'
+import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import type { TaskStateEntryId, TaskStateStable, TaskStateTruncationRecord } from '../contract/types.ts'
+
+/** One committed-stable observer notified after the provider's authority put. */
+export type TaskStateCommittedListener = (sessionId: SessionId, stable: TaskStateStable) => void
 
 /** Validated deployment policy of one task-state-basic mount. */
 export interface TaskStateBasicConfig {
-  /** Registered provider route used for every auxiliary collect-and-merge request. */
+  /** Fallback provider used before a Session has a routed request. */
   readonly provider: string
-  /** Provider-owned model id used for every auxiliary collect-and-merge request. */
+  /** Fallback model used before a Session has a routed request. */
   readonly model: string
   /** Minimum eligible Session events since the committed cursor that automatically start a batch. */
   readonly minEvents: number

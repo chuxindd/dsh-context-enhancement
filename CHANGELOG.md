@@ -5,6 +5,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-09-08
+
+### Fixed
+
+- Added revision-controlled editing for the committed task summary, with durable Host persistence and live projection refresh after save.
+- Moved the four contextual capability statuses from the removed 0.1.6 header popover into the context view above the live task-state summary.
+- Task-state status distinguishes committed stable revisions from request participation instead of presenting every request as a successful save or read.
+- Reworked the context view as a responsive, theme-aware page with a contained status header, summary cards, and centered loading, error, and empty states.
+- Included the README banner asset in the published package so registry and tarball documentation does not render a broken image.
+- Removed speculative editing and write-back promises from the context-view copy.
+
+## [0.1.8] - 2026-09-08
+
+### Fixed
+
+- Task-state updates now reuse each Session's latest conversation provider and model instead of always using the configured fallback route.
+- The context view now distinguishes a contextual Session awaiting its first committed summary from a Session that does not use the contextual preset.
+
 ## [0.1.6] - 2026-09-06
 
 ### Changed

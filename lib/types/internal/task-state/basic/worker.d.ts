@@ -77,6 +77,8 @@ export declare class TaskStateWorker {
     get id(): SessionId;
     /** Whether this worker still admits new batches. */
     get isOpen(): boolean;
+    /** Serialize one external mutation behind any admitted batch cycle. */
+    enqueueMutation<T>(operation: () => Promise<T>): Promise<T>;
     /**
      * Raise the pending eligible-event watermark and count one projectable
      * eligible event. Observer-only, synchronous. The provider forwards only
@@ -120,8 +122,8 @@ export declare class TaskStateWorker {
 export interface WorkerEnvironment {
     /** Pinned model-visible system instruction. */
     readonly system: string;
-    /** Exact provider-owned model route for every auxiliary request. */
-    readonly route: {
+    /** Resolve one Session's latest model route when an auxiliary batch starts. */
+    readonly resolveRoute: (sessionId: SessionId) => {
         readonly provider: string;
         readonly model: string;
     };

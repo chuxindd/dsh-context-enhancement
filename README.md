@@ -1,8 +1,12 @@
+<p align="center">
+  <img src="./assets/banner.png" alt="dsh-context-enhancement" width="100%" />
+</p>
+
 # Dsh-Context-Enhancement
 
-`dsh-context-enhancement` 是为 DeepSeek Harness（DSH）定制的上下文增强插件，面向单一长会话的上下文管理，提供“工具要点化”和“遗忘区压缩”、“独立会话摘要”的能力，力求化解会话在触发 /compact 上下文压缩后损失信息过多，导致前后表现“判若两人”的技术困境。
+`dsh-context-enhancement` 是为 DeepSeek Harness（DSH）定制的上下文增强插件，面向单一长会话的上下文管理，提供“工具要点化”和“遗忘区压缩”、“独立会话摘要”的能力，力求化解会话在触发 /compact 上下文压缩后损失信息过多，导致前后表现“判若两人”的技术困境。本项目是在一众 DSH 记忆插件中，少有的面对单一上下文进行治理的插件。
 
-> 当前版本：`0.1.6`。兼容 DeepSeek Harness `0.1.2-rc.1`。
+> 当前版本：`0.1.10`。兼容 DeepSeek Harness `0.1.2-rc.1`。
 > 本项目还在测试阶段，代码由 GPT5.6 Sol 完成，欢迎批评指教。
 
 ## 工作原理
@@ -74,7 +78,7 @@ Checkpoint 使用独立模型请求、输入预算、输出预算、超时和重
 | 较早工具输出         | 由默认压缩统一处理 | 在压缩前优先缩减，降低上下文占用                       |
 | 长对话压缩           | DSH 默认实现       | 优先保留近期工作，再整理较早历史                       |
 
-在 Web 会话中，标题栏的 **增强功能** 按钮显示四项运行状态：任务进度记忆、请求上下文同步、工具结果整理和长对话整理。该面板用于查看状态。
+在 Web 会话的 **上下文优化** 页面中，顶部显示任务进度记忆、请求上下文同步、工具结果整理和长对话整理四项运行状态，下方展示当前会话已经提交的任务摘要。点击摘要标题右侧的 **编辑** 可以修改目标、焦点、待办、下一步、事实、决策、约束和风险；保存会持久化为一个新的摘要修订，并实时刷新页面。依据和待办引用由会话事件生成，不在编辑器中修改。
 
 ## 安装
 
@@ -90,7 +94,7 @@ Checkpoint 使用独立模型请求、输入预算、输出预算、超时和重
 安装固定 tag，避免后续提交改变当前部署：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
 dsh --profile web
 ```
 
@@ -106,7 +110,7 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.6.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.10.tgz"
 dsh --profile web
 ```
 
@@ -131,10 +135,12 @@ pnpm run install:desktop-preset -- --force
 1. 启动 Web profile，打开或新建会话。
 2. 在 Agent 选择器中选择 **上下文增强**。
 3. 正常执行任务；任务状态与上下文整理均自动运行，不需要手动维护。
-4. 点击会话标题栏的 **增强功能** 查看各能力是否启用及本会话触发次数。
+4. 打开 **上下文优化** 页面，查看各能力状态、触发记录和当前任务摘要；需要纠偏时点击 **编辑**，保存后生成新的持久修订。
 5. 打开“轨迹”查看压缩、裁剪等详细事件。
 
 任务状态达到事件阈值后异步更新，因此刚创建的会话可能显示“本会话尚未触发”。这不代表能力未启用。
+
+编辑采用修订号冲突保护。如果保存期间后台摘要已经提交了更新，页面会保留编辑内容并提示冲突；取消编辑后可读取最新修订再重新修改。
 
 ## 配置
 
@@ -144,7 +150,7 @@ Bundle 默认配置位于 `cordis.patch.yml`，可在 profile/home patch 层覆�
 
 | 字段 | 默认值 | 作用 |
 | --- | ---: | --- |
-| `provider` / `model` | `deepseek-official` / `deepseek-v4-flash` | 后台任务状态更新使用的模型路由 |
+| `provider` / `model` | `deepseek-official` / `deepseek-v4-flash` | 会话尚无已记录请求路由时使用的兜底模型；任务状态更新通常复用该会话最近一次主对话路由 |
 | `minEvents` | `20` | 已提交位置之后，自动启动一次更新所需的最少事件数 |
 | `maxEvents` | `200` | 单次更新最多处理的事件数 |
 | `maxInputBytes` | `60000` | 单次结构化输入的 UTF-8 字节预算 |
@@ -176,7 +182,7 @@ $DSH_HOME/storages/context_enhancement_task_state.json
 升级：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
 ```
 
 回滚到上一版本：
@@ -265,10 +271,10 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.6.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.10.tgz
 ```
 
-全部通过后提交版本变更，创建 `v0.1.6` tag，并在 GitHub Release 上传同名 tarball。
+全部通过后提交版本变更，创建 `v0.1.10` tag，并在 GitHub Release 上传同名 tarball。
 
 ## 兼容性说明
 

@@ -268,6 +268,12 @@ export type TaskStateUpdateFinishedData = {
     /** Failure stage and bounded diagnostic; no successful replay marker. */
     readonly error: TaskStateFailureFacts;
 } | {
+    readonly outcome: 'manual';
+    readonly requestId: TaskStateRequestId;
+    readonly revision: number;
+    readonly sourceCursor: number;
+    readonly llmStreamCall?: never;
+} | {
     readonly outcome: 'repair';
     /** Request id of the repaired update when its open phase is available. */
     readonly requestId?: TaskStateRequestId;

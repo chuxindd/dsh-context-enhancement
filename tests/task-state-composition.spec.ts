@@ -46,7 +46,10 @@ const MODEL_JSON = JSON.stringify({
 
 /** Scripted adapter returning one fixed valid task-state JSON text block. */
 class TaskStateAdapter extends LlmAdapter {
-  override async * stream(_options: GenerateOptions): AsyncIterable<StreamChunk> {
+  readonly requests: GenerateOptions[] = []
+
+  override async * stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    this.requests.push(options)
     yield { type: 'block-start', index: 0, blockType: 'text' }
     yield { type: 'text-delta', index: 0, text: MODEL_JSON }
     yield { type: 'block-end', index: 0, block: { type: 'text', text: MODEL_JSON } }
@@ -177,6 +180,92 @@ async function waitUntil(predicate: () => boolean | Promise<boolean>, timeoutMs:
 }
 
 describe('task-state-basic real composition', () => {
+  it('persists a manual edit, publishes it, and rejects a stale revision', async () => {
+    root = await mkdtemp(join(tmpdir(), 'dsh-task-state-manual-edit-'))
+    const createdAt = 1_700_000_000_000
+    const first = await mountComposition()
+    const session = first.sessions.create(SessionId('manual-edit'), { meta: { cwd: root, createdAt } })
+    appendUser(session, 'create the first stable')
+    await waitUntil(() => first.taskState.getStable(session.id) !== undefined, 3_000)
+    const provider = first.get('taskState') as TaskStateBasicService
+    const committed: number[] = []
+    const dispose = provider.subscribeCommitted((_id, stable) => { committed.push(stable.revision) })
+    const result = await provider.editStable({
+      sessionId: session.id,
+      expectedRevision: 1,
+      value: {
+        currentObjective: 'Corrected objective',
+        currentFocus: 'Corrected focus',
+        openWork: ['Open item'],
+        nextActions: ['Next item'],
+        facts: ['Edited fact'],
+        decisions: ['Edited decision'],
+        constraints: ['Edited constraint'],
+        risks: ['Edited risk'],
+      },
+    })
+    expect(result).toMatchObject({ ok: true, stable: { revision: 2 } })
+    expect(first.taskState.getStable(session.id)).toMatchObject({
+      revision: 2,
+      continuation: { currentObjective: 'Corrected objective' },
+      facts: [{ content: 'Edited fact' }],
+    })
+    expect(committed).toEqual([2])
+    await expect(provider.editStable({
+      sessionId: session.id,
+      expectedRevision: 1,
+      value: {
+        currentObjective: 'Stale', currentFocus: '', openWork: [], nextActions: [],
+        facts: [], decisions: [], constraints: [], risks: [],
+      },
+    })).resolves.toMatchObject({ ok: false, code: 'conflict', stable: { revision: 2 } })
+    await expect(provider.editStable({
+      sessionId: session.id,
+      expectedRevision: 2,
+      value: {
+        currentObjective: 'Too large', currentFocus: '', openWork: [], nextActions: [],
+        facts: ['x'.repeat(2_001)], decisions: [], constraints: [], risks: [],
+      },
+    })).resolves.toMatchObject({ ok: false, code: 'invalid' })
+    const stored = JSON.parse(await readFile(join(root, 'storage', 'context_enhancement_task_state.json'), 'utf8')) as {
+      tables: { audit: Record<string, { finished?: { outcome?: string } }> }
+    }
+    expect(Object.values(stored.tables.audit).some(row => row.finished?.outcome === 'manual')).toBe(true)
+    dispose()
+
+    await first.fiber.dispose()
+    contexts.splice(contexts.indexOf(first), 1)
+    const second = await mountComposition('sessions-2', false)
+    const resumed = second.sessions.create(SessionId('manual-edit'), { meta: { cwd: root, createdAt } })
+    expect(second.taskState.getStable(resumed.id)).toMatchObject({
+      revision: 2,
+      continuation: { currentObjective: 'Corrected objective' },
+      facts: [{ content: 'Edited fact' }],
+    })
+  })
+
+  it('uses the latest Session request route instead of the configured fallback', async () => {
+    root = await mkdtemp(join(tmpdir(), 'dsh-task-state-session-route-'))
+    const ctx = await mountComposition()
+    const sessionRoute = new TaskStateAdapter()
+    ctx.llm.registerAdapter(['session-route'], sessionRoute)
+    const session = ctx.sessions.create(SessionId('session-route'), { meta: { cwd: root } })
+    session.append('request/header', {
+      header: { config: { provider: 'session-route', model: 'session-model' } },
+      reason: 'initial',
+    })
+
+    appendUser(session, 'use the conversation route')
+    await waitUntil(() => ctx.taskState.getStable(session.id) !== undefined, 3_000)
+
+    expect(sessionRoute.requests).toHaveLength(1)
+    expect(sessionRoute.requests[0]).toMatchObject({
+      provider: 'session-route',
+      model: 'session-model',
+      purpose: 'task-state',
+    })
+  })
+
   it('commits a first stable through a real session writer and storage domain', async () => {
     root = await mkdtemp(join(tmpdir(), 'dsh-task-state-domain-'))
     const ctx = await mountComposition()

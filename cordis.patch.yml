@@ -54,6 +54,8 @@
         maxEntriesPerKind: 50
         maxEntryBytes: 4000
         maxListItems: 40
+    - id: task-state-control
+      name: dsh-context-enhancement/task-state-control
 
 # ── web profile: point the agent-preset roster at the bundled preset ─────────
 

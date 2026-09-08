@@ -78,6 +78,21 @@ export declare class BasicCompactionEngine extends CompactionEngine {
      * force one useful balanced reduction. Pressure first prunes only the older
      * head outside the retained tail (region-aware), remeasures, and stops early
      * when the deterministic reduction cleared pressure.
+     *
+     * Once tool-stage debt that has aged into the forget zone is cleared, normal
+     * (non-overflow) pressure performs ONE semantic compaction over the complete
+     * current forget zone: the retained ~20% recent tail is untouched and the tool
+     * zone keeps its governance result, so the single whole-zone summary is what
+     * releases the remaining head. It is deliberately not chopped into
+     * `targetBatchTokens`/`maxBatchTokens` batches; those budgets only bound the
+     * bounded 70% maintenance tier. Safety guards still apply to the whole zone:
+     * the pass never consumes its own same-invocation tool replacements, never
+     * splits the zone, and leaves unknown third-party replacements and pending
+     * tool intermediate work deferred; tool pairing, step boundaries, surface
+     * stability, and the shrink requirement live inside `compactRegion`. Known
+     * replacements produced by an earlier invocation (tool summaries, pruned
+     * results, prior history summaries) are historical once a later whole-zone
+     * pass contains them, so they are allowed into the semantic compact.
      * @param agent - agent whose latest durable routed request is measured.
      * @param trigger - normal step-boundary pressure or context-overflow recovery.
      * @param signal - live turn cancellation signal forwarded to summarization.

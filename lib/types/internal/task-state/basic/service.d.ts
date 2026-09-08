@@ -4,7 +4,9 @@
  * published committed pointers, the versioned input filter, per-Session
  * background scheduling, independent auxiliary LLM calls, output validation,
  * private writes, and lifecycle. It subclasses the read-only Service
- * Definition; it never exposes a write, finalize, status, or changed method.
+ * Definition; its plugin-owned control Remote may invoke the provider's
+ * revision-checked `editStable` method without widening `ctx.taskState` for
+ * ordinary consumers.
  *
  * Startup opens and validates the domain, then publishes each stored
  * lifecycle-matching stable directly — no model call, no history fold, no
@@ -27,9 +29,11 @@ import { Context, Service } from '@deepseek-ai/cordis';
 import z from '@deepseek-ai/schemastery';
 import type { SessionId } from '@deepseek-ai/dsh-session/types';
 import { TaskStateService, type TaskStateStable } from '../contract/index.ts';
-import type { TaskStateBasicConfig } from './types.ts';
+import type { TaskStateBasicConfig, TaskStateCommittedListener } from './types.ts';
+import type { TaskStateEditRequest, TaskStateEditResult } from '../control/types.ts';
 export type { TaskStateBasicConfig } from './types.ts';
 export type { TaskStateFilteredEvent, TaskStateBatchProjection, TaskStateHostNormalization, TaskStateBatchErrorCode, TaskStateBatchFailure, } from './types.ts';
+export type { TaskStateCommittedListener } from './types.ts';
 /**
  * The basic task-state provider service. A host-level plugin (not agent- or
  * preset-scoped): it opens ONE process-global domain and serves every Session
@@ -49,6 +53,8 @@ export declare class TaskStateBasicService extends TaskStateService {
     private admissionOpen;
     /** Set when the domain failed to open: the provider serves nothing further. */
     private disabled;
+    /** Registered committed-stable observers, notified after each authority put. */
+    private readonly committedListeners;
     /**
      * @param ctx - host context carrying storage-domain, sessions, and llm.
      * @param config - validated required deployment policy.
@@ -96,6 +102,26 @@ export declare class TaskStateBasicService extends TaskStateService {
     private putStable;
     /** Publish the committed pointer only after the authority put resolved. */
     private publishCommitted;
+    /**
+     * Observe every committed stable after its authority put resolved. The
+     * listener receives the Session identity and the committed stable; startup
+     * reconciliation and live audit repairs never publish, so an observer sees
+     * exactly the values that advanced the published pointer.
+     *
+     * The subscription is caller-owned: the returned disposer removes this
+     * listener and must be run by the caller's teardown. The provider unload
+     * additionally clears every remaining subscription so a disposed provider
+     * never notifies. This is a minimal observer seam for Host-side consumers
+     * (remote streams); it never writes the Session log and never changes the
+     * storage authority or the lifecycle fence.
+     * @param listener - committed-stable observer to add.
+     * @returns a disposer removing this listener.
+     */
+    subscribeCommitted(listener: TaskStateCommittedListener): () => void;
+    /** Replace the user-editable stable content under optimistic revision control. */
+    editStable(request: TaskStateEditRequest): Promise<TaskStateEditResult>;
+    /** Validate, bound-check, and identity-map user-authored stable fields. */
+    private resolveManualContent;
     /** The published committed pointer, or `undefined`. */
     private publishedStable;
     /** Read the synchronous committed stable of one Session. */

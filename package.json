@@ -1,7 +1,7 @@
 {
   "name": "dsh-context-enhancement",
   "description": "Persistent task state and context-aware compaction for DeepSeek Harness coding sessions.",
-  "version": "0.1.6",
+  "version": "0.1.10",
   "license": "MIT",
   "author": "chuxindd",
   "repository": {
@@ -37,6 +37,10 @@
       "types": "./lib/types/task-state-basic.d.ts",
       "default": "./lib/task-state-basic.js"
     },
+    "./task-state-control": {
+      "types": "./lib/types/task-state-control.d.ts",
+      "default": "./lib/task-state-control.js"
+    },
     "./task-state-prompt": {
       "types": "./lib/types/task-state-prompt.d.ts",
       "default": "./lib/task-state-prompt.js"
@@ -60,12 +64,14 @@
     "lib/index.js",
     "lib/task-state.js",
     "lib/task-state-basic.js",
+    "lib/task-state-control.js",
     "lib/task-state-prompt.js",
     "lib/compaction-basic.js",
     "lib/tool-result-pruner.js",
     "lib/client.js",
     "lib/*.js",
     "lib/types/**/*.d.ts",
+    "assets",
     "cordis.patch.yml",
     "presets",
     "scripts/install-desktop-preset.mjs",
@@ -79,6 +85,7 @@
   "sideEffects": [
     "./lib/task-state.js",
     "./lib/task-state-basic.js",
+    "./lib/task-state-control.js",
     "./lib/task-state-prompt.js",
     "./lib/compaction-basic.js",
     "./lib/tool-result-pruner.js"
@@ -103,12 +110,18 @@
     },
     "client": {
       "platform": "web",
-      "inject": ["@deepseek-ai/dsh-client-locale", "@deepseek-ai/dsh-client-ui-conversation", "@deepseek-ai/dsh-client-ui-renderer", "@deepseek-ai/dsh-client-ui-session", "@deepseek-ai/dsh-client-ui-slots"]
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-renderer",
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-api-gateway"
+      ]
     }
   },
   "dependencies": {
     "@deepseek-ai/cordis": "4.0.2",
-    "@deepseek-ai/schemastery": "3.18.2",
     "@deepseek-ai/dsh-agent": "0.1.2-rc.1",
     "@deepseek-ai/dsh-brand": "0.1.2-rc.1",
     "@deepseek-ai/dsh-commands": "0.1.2-rc.1",
@@ -120,11 +133,11 @@
     "@deepseek-ai/dsh-timeout": "0.1.2-rc.1",
     "@deepseek-ai/dsh-token-meter": "0.1.2-rc.1",
     "@deepseek-ai/dsh-util-values": "0.1.2-rc.1",
+    "@deepseek-ai/schemastery": "3.18.2",
     "zod": "4.4.3"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "4.0.2",
-    "@deepseek-ai/schemastery": "3.18.2",
     "@deepseek-ai/dsh-agent": "0.1.2-rc.1",
     "@deepseek-ai/dsh-brand": "0.1.2-rc.1",
     "@deepseek-ai/dsh-commands": "0.1.2-rc.1",
@@ -135,22 +148,24 @@
     "@deepseek-ai/dsh-system-prompt": "0.1.2-rc.1",
     "@deepseek-ai/dsh-timeout": "0.1.2-rc.1",
     "@deepseek-ai/dsh-token-meter": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-util-values": "0.1.2-rc.1"
+    "@deepseek-ai/dsh-util-values": "0.1.2-rc.1",
+    "@deepseek-ai/schemastery": "3.18.2"
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.2",
     "@deepseek-ai/cordis-plugin-include": "1.0.7",
     "@deepseek-ai/cordis-plugin-loader": "1.0.3",
     "@deepseek-ai/dsh-agent": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-api-session-controller": "0.1.2-rc.1",
     "@deepseek-ai/dsh-agent-presets": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-api-gateway": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-api-session-controller": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-app-boot": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-brand": "0.1.2-rc.1",
     "@deepseek-ai/dsh-client-locale": "0.1.2-rc.1",
     "@deepseek-ai/dsh-client-ui-conversation": "0.1.2-rc.1",
     "@deepseek-ai/dsh-client-ui-renderer": "0.1.2-rc.1",
     "@deepseek-ai/dsh-client-ui-session": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-client-ui-slots": "0.1.2-rc.1", 
-    "@deepseek-ai/dsh-app-boot": "0.1.2-rc.1",
-    "@deepseek-ai/dsh-brand": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-client-ui-slots": "0.1.2-rc.1",
     "@deepseek-ai/dsh-cmdline": "0.1.2-rc.1",
     "@deepseek-ai/dsh-commands": "0.1.2-rc.1",
     "@deepseek-ai/dsh-compaction": "0.1.2-rc.1",
@@ -169,12 +184,15 @@
     "@deepseek-ai/dsh-token-meter": "0.1.2-rc.1",
     "@deepseek-ai/dsh-tools": "0.1.2-rc.1",
     "@deepseek-ai/dsh-typert-protocol": "0.1.2-rc.1",
+    "@deepseek-ai/dsh-typert-registry": "0.1.2-rc.1",
     "@deepseek-ai/dsh-util-values": "0.1.2-rc.1",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.20.0",
     "@types/react": "~18.3.1",
+    "@types/react-dom": "18.3.1",
     "js-yaml": "^4.2.0",
     "react": "^18.2.0",
+    "react-dom": "18.3.1",
     "tsdown": "^0.22.2",
     "tsx": "^4.20.6",
     "typescript": "^6.0.3",

@@ -74,7 +74,7 @@ describe('task-state audit domain (pure, keyless)', () => {
     expect(timeline[1]?.certifiedRevision).toBeUndefined()
   })
 
-  it('highestCertifiedRevision counts only success and repair finished phases', () => {
+  it('highestCertifiedRevision counts model, manual, and repair certifications', () => {
     const ok = openAuditRow(TaskStateRequestId('ok'), IDENTITY, requestData(3, [8]), 100)
     const settledOk = finishAuditRow(ok, {
       outcome: 'success',
@@ -92,7 +92,15 @@ describe('task-state audit domain (pure, keyless)', () => {
       error: { stage: 'parse', code: 'PARSE', message: 'bad json' },
     })
     const open = openAuditRow(TaskStateRequestId('open'), IDENTITY, requestData(4, [9]), 300)
-    expect(highestCertifiedRevision([settledOk, settledFailed, open])).toBe(3)
+    const manual = openAuditRow(TaskStateRequestId('manual'), IDENTITY, requestData(4, []), 250)
+    const settledManual = finishAuditRow(manual, {
+      outcome: 'manual',
+      requestId: manual.requestId,
+      revision: 4,
+      sourceCursor: 8,
+    })
+    expect(highestCertifiedRevision([settledOk, settledFailed, settledManual, open])).toBe(4)
+    expect(deriveAuditTimeline([settledManual])[0]).toMatchObject({ certified: true, certifiedRevision: 4 })
   })
 
   it('selects the single newest open row whose target revision equals the committed one', () => {

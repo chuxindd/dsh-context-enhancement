@@ -6,7 +6,7 @@
  * request id, in the provider's `audit` table. A row is written in two
  * phases — the OPEN phase carries the complete pre-dispatch request evidence
  * and is put durably BEFORE the model is dispatched; the FINISHED phase
- * (success, failure, or repair) later fills the same row. The authoritative
+ * (success, failure, manual, or repair) later fills the same row. The authoritative
  * committed stable lives in the `sessions` table; the audit table exists only
  * for auxiliary-call reconstruction, diagnostics, and replay and never
  * becomes a second authority. There is no cross-table atomicity assumption:
@@ -77,6 +77,7 @@ export declare const taskStateAuditFinishedSchema: z.ZodObject<{
     outcome: z.ZodEnum<{
         success: "success";
         failure: "failure";
+        manual: "manual";
         repair: "repair";
     }>;
     requestId: z.ZodOptional<z.ZodString>;
@@ -139,7 +140,7 @@ export interface TaskStateAuditTimelineEntry {
     readonly request: TaskStateUpdateRequestData;
     /** The finished phase, when the request settled; `undefined` while open. */
     readonly finished: TaskStateUpdateFinishedData | undefined;
-    /** Whether a success or repair finished certifies a commit. */
+    /** Whether a model, manual, or repair finished phase certifies a commit. */
     readonly certified: boolean;
     /** Revision the finished phase certifies, when `certified`. */
     readonly certifiedRevision: number | undefined;
@@ -154,7 +155,7 @@ export interface TaskStateAuditTimelineEntry {
  */
 export declare function deriveAuditTimeline(rows: readonly TaskStateAuditRecord[]): TaskStateAuditTimelineEntry[];
 /**
- * The highest revision any success or repair finished phase certifies across
+ * The highest revision any model, manual, or repair finished phase certifies across
  * one lifecycle's audit rows. Used by startup reconciliation to decide whether
  * the committed sessions-table stable still lacks a durable credential.
  * @param rows - audit records of one lifecycle.

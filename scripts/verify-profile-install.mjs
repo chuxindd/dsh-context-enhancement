@@ -26,7 +26,7 @@
  * and reports its exit code.
  *
  * Usage: node scripts/verify-profile-install.mjs [path-to-tarball]
- * The tarball defaults to `dsh-context-enhancement-0.1.6.tgz` beside this
+ * The tarball defaults to `dsh-context-enhancement-0.1.10.tgz` beside this
  * repo. Requires a real DSH rc.1 deployment (its CLI and closure under
  * `~/.dsh/profiles/node_modules`) — this script only READS that deployment.
  */
@@ -118,7 +118,7 @@ process.exit(0)
 `
 
 async function main() {
-  const tarball = resolve(process.argv[2] ?? join(repoRoot, 'dsh-context-enhancement-0.1.6.tgz'))
+  const tarball = resolve(process.argv[2] ?? join(repoRoot, 'dsh-context-enhancement-0.1.10.tgz'))
   if (!existsSync(cliBin)) { bad(`cannot find the DSH rc.1 CLI at ${cliBin}`); return }
   if (!existsSync(tarball)) { bad(`cannot find the tarball at ${tarball}`); return }
 

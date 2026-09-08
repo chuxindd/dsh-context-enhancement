@@ -6,7 +6,7 @@
  * request id, in the provider's `audit` table. A row is written in two
  * phases — the OPEN phase carries the complete pre-dispatch request evidence
  * and is put durably BEFORE the model is dispatched; the FINISHED phase
- * (success, failure, or repair) later fills the same row. The authoritative
+ * (success, failure, manual, or repair) later fills the same row. The authoritative
  * committed stable lives in the `sessions` table; the audit table exists only
  * for auxiliary-call reconstruction, diagnostics, and replay and never
  * becomes a second authority. There is no cross-table atomicity assumption:
@@ -89,7 +89,7 @@ export const taskStateAuditOpenSchema = z.object({
 
 /** One permissive finished-phase view used to validate a restored row. */
 export const taskStateAuditFinishedSchema = z.object({
-  outcome: z.enum(['success', 'failure', 'repair']),
+  outcome: z.enum(['success', 'failure', 'manual', 'repair']),
   requestId: z.string().optional(),
   revision: nonNegativeSafeInteger.optional(),
   sourceCursor: nonNegativeSafeInteger.optional(),
@@ -175,7 +175,7 @@ export interface TaskStateAuditTimelineEntry {
   readonly request: TaskStateUpdateRequestData
   /** The finished phase, when the request settled; `undefined` while open. */
   readonly finished: TaskStateUpdateFinishedData | undefined
-  /** Whether a success or repair finished certifies a commit. */
+  /** Whether a model, manual, or repair finished phase certifies a commit. */
   readonly certified: boolean
   /** Revision the finished phase certifies, when `certified`. */
   readonly certifiedRevision: number | undefined
@@ -194,7 +194,7 @@ export function deriveAuditTimeline(rows: readonly TaskStateAuditRecord[]): Task
     .sort((a, b) => a.time - b.time || String(a.requestId).localeCompare(String(b.requestId)))
     .map((row) => {
       const finished = row.finished
-      const certified = finished !== undefined && (finished.outcome === 'success' || finished.outcome === 'repair')
+      const certified = finished !== undefined && (finished.outcome === 'success' || finished.outcome === 'manual' || finished.outcome === 'repair')
       return {
         requestId: String(row.requestId),
         time: row.time,
@@ -209,7 +209,7 @@ export function deriveAuditTimeline(rows: readonly TaskStateAuditRecord[]): Task
 }
 
 /**
- * The highest revision any success or repair finished phase certifies across
+ * The highest revision any model, manual, or repair finished phase certifies across
  * one lifecycle's audit rows. Used by startup reconciliation to decide whether
  * the committed sessions-table stable still lacks a durable credential.
  * @param rows - audit records of one lifecycle.
@@ -220,7 +220,7 @@ export function highestCertifiedRevision(rows: readonly TaskStateAuditRecord[]):
   for (const row of rows) {
     const finished = row.finished
     if (finished === undefined) continue
-    if (finished.outcome !== 'success' && finished.outcome !== 'repair') continue
+    if (finished.outcome !== 'success' && finished.outcome !== 'manual' && finished.outcome !== 'repair') continue
     if (finished.revision > latest) latest = finished.revision
   }
   return latest

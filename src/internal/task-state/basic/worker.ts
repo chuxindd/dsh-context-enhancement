@@ -118,6 +118,17 @@ export class TaskStateWorker {
     return this.open && !this.disposed
   }
 
+  /** Serialize one external mutation behind any admitted batch cycle. */
+  enqueueMutation<T>(operation: () => Promise<T>): Promise<T> {
+    if (!this.isOpen) return Promise.reject(new Error(SESSION_DISPOSED_ABORT_CODE))
+    const result = this.chain.then(async () => {
+      if (!this.isOpen) throw new Error(SESSION_DISPOSED_ABORT_CODE)
+      return operation()
+    })
+    this.chain = result.then(() => undefined, () => undefined)
+    return result
+  }
+
   /**
    * Raise the pending eligible-event watermark and count one projectable
    * eligible event. Observer-only, synchronous. The provider forwards only
@@ -257,7 +268,7 @@ export class TaskStateWorker {
       this.ctx.logger.debug(`task-state-basic: ${this.sessionId} batch over ${window.includedSeqs.length} eligible seqs`)
       const attempt: TaskStateUpdateAttempt = {
         ctx: this.ctx,
-        route: this.env.route,
+        route: this.env.resolveRoute(this.sessionId),
         base,
         projection: this.env.frame(this.sessionId, base, window),
         includedSeqs: window.includedSeqs,
@@ -353,8 +364,8 @@ export class TaskStateWorker {
 export interface WorkerEnvironment {
   /** Pinned model-visible system instruction. */
   readonly system: string
-  /** Exact provider-owned model route for every auxiliary request. */
-  readonly route: { readonly provider: string; readonly model: string }
+  /** Resolve one Session's latest model route when an auxiliary batch starts. */
+  readonly resolveRoute: (sessionId: SessionId) => { readonly provider: string; readonly model: string }
   /** Resolve the live Session, or `undefined` once it left the store. */
   readonly liveSession: (sessionId: SessionId) => Session | undefined
   /** Read the committed source cursor of one Session (-1 before the first commit). */

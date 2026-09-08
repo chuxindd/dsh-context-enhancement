@@ -1,8 +1,12 @@
+<p align="center">
+  <img src="./assets/banner.png" alt="dsh-context-enhancement" width="100%" />
+</p>
+
 # dsh-context-enhancement
 
-`dsh-context-enhancement` is a context-enhancement plugin tailored for DeepSeek Harness (DSH). It manages context within a single long-running session and provides tool-result distillation, forget-zone compaction, and an independent session checkpoint.
+`dsh-context-enhancement` is a context-enhancement plugin tailored for DeepSeek Harness (DSH). It manages context within a single long-running session and provides tool-result distillation, forget-zone compaction, and an independent session checkpoint. Among the many DSH memory plugins, it is one of the few that focuses on governing a single context.
 
-> Current version: `0.1.6`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
+> Current version: `0.1.10`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
 > This project is still in testing. The code was developed with GPT-5.6 Sol, and feedback is welcome.
 
 ## How It Works
@@ -81,7 +85,7 @@ The `contextual` preset preserves the coding tools, planning, subagents, and wor
 | Older tool output | Handled by the default compactor | Reduced before semantic history compaction |
 | Long-session compaction | Default DSH implementation | Preserves recent work first, then compacts older history |
 
-In Web sessions, the **Enhanced features** action in the session header shows four runtime capabilities: task progress memory, request context synchronization, tool-result cleanup, and long-conversation cleanup. The panel reports status; detailed events remain available in Trajectory.
+In Web sessions, the **Context optimization** view shows four runtime capabilities at the top—task progress memory, request context synchronization, tool-result cleanup, and long-conversation cleanup—and the current committed task summary below them. Click **Edit** beside the summary heading to change its objective, focus, open work, next actions, facts, decisions, constraints, and risks. Saving persists a new revision and refreshes the live view. Evidence and todo references remain event-derived and read-only.
 
 ## Installation
 
@@ -97,7 +101,7 @@ In Web sessions, the **Enhanced features** action in the session header shows fo
 Install a fixed tag so later commits do not change the deployed version:
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
 dsh --profile web
 ```
 
@@ -113,7 +117,7 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.6.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.10.tgz"
 dsh --profile web
 ```
 
@@ -138,10 +142,12 @@ pnpm run install:desktop-preset -- --force
 1. Start the Web profile and open or create a session.
 2. Select **上下文增强** in the Agent picker.
 3. Work normally; task-state updates and context management run automatically.
-4. Open **Enhanced features** in the session header to inspect enabled capabilities and their trigger counts for the current session.
+4. Open **Context optimization** to inspect capability status, trigger records, and the current task summary. Click **Edit** when the summary needs a correction; saving creates a new durable revision.
 5. Open Trajectory to inspect detailed compaction and pruning events.
 
 Task state updates asynchronously after its event threshold is reached. A new session may report that an effect has not triggered yet even though the capability is enabled.
+
+Editing uses optimistic revision checks. If a background task-state update commits while the editor is open, the draft remains visible and saving reports a conflict. Cancel the edit to load the newer revision before applying the correction again.
 
 ## Configuration
 
@@ -151,7 +157,7 @@ The Bundle defaults are defined in `cordis.patch.yml` and can be overridden thro
 
 | Field | Default | Purpose |
 | --- | ---: | --- |
-| `provider` / `model` | `deepseek-official` / `deepseek-v4-flash` | Model route used for background task-state updates |
+| `provider` / `model` | `deepseek-official` / `deepseek-v4-flash` | Fallback route before a Session has a recorded request; task-state updates normally reuse that Session's latest conversation route |
 | `minEvents` | `20` | Minimum number of events after the committed position before an update starts automatically |
 | `maxEvents` | `200` | Maximum number of events processed by one update |
 | `maxInputBytes` | `60000` | UTF-8 input budget for one structured update |
@@ -183,7 +189,7 @@ Ordinary Sessions remain under `$DSH_HOME/sessions`. Uninstalling the plugin doe
 Upgrade:
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.6'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
 ```
 
 Roll back to the previous version:
@@ -270,10 +276,10 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.6.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.10.tgz
 ```
 
-After all checks pass, commit the version changes, create the `v0.1.6` tag, and attach the matching tarball to the GitHub Release.
+After all checks pass, commit the version changes, create the `v0.1.10` tag, and attach the matching tarball to the GitHub Release.
 
 ## Compatibility Notes
 

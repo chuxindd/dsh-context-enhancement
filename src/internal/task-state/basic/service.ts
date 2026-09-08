@@ -4,7 +4,9 @@
  * published committed pointers, the versioned input filter, per-Session
  * background scheduling, independent auxiliary LLM calls, output validation,
  * private writes, and lifecycle. It subclasses the read-only Service
- * Definition; it never exposes a write, finalize, status, or changed method.
+ * Definition; its plugin-owned control Remote may invoke the provider's
+ * revision-checked `editStable` method without widening `ctx.taskState` for
+ * ordinary consumers.
  *
  * Startup opens and validates the domain, then publishes each stored
  * lifecycle-matching stable directly — no model call, no history fold, no
@@ -24,14 +26,19 @@
  * @module dsh-context-enhancement/internal/task-state/basic/service
  */
 
+import { randomUUID } from 'node:crypto'
+import { Buffer } from 'node:buffer'
 import { Context, Service } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import type { Session } from '@deepseek-ai/dsh-session'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import {
   TaskStateService,
+  TaskStateEntryId,
+  TaskStateRequestId,
   type TaskStateRecord,
   type TaskStateStable,
+  type TaskStateStableContent,
   type TaskStateUpdateFinishedData,
   type TaskStateUpdateRequestData,
 } from '../contract/index.ts'
@@ -47,10 +54,12 @@ import type { KvTable } from '@deepseek-ai/dsh-storage-domain'
 import { MAX_TIMER_DELAY_MS } from '@deepseek-ai/dsh-timeout'
 import { taskStateDomainSpec } from './domain.ts'
 import { resolveTaskStateBasicConfig } from './config.ts'
-import type { TaskStateBasicConfig } from './types.ts'
+import type { TaskStateBasicConfig, TaskStateCommittedListener } from './types.ts'
 import { TASK_STATE_SYSTEM_INSTRUCTION, frameProjection } from './prompt.ts'
+import { commitStable } from './host.ts'
 import { filterEvent, isEligibleType } from './filter.ts'
 import { TaskStateWorker } from './worker.ts'
+import type { TaskStateEditRequest, TaskStateEditResult, TaskStateEditValue } from '../control/types.ts'
 
 export type { TaskStateBasicConfig } from './types.ts'
 export type {
@@ -60,6 +69,7 @@ export type {
   TaskStateBatchErrorCode,
   TaskStateBatchFailure,
 } from './types.ts'
+export type { TaskStateCommittedListener } from './types.ts'
 
 /** One live Session's committed pointer and its owning worker. */
 interface SessionRuntime {
@@ -111,6 +121,8 @@ export class TaskStateBasicService extends TaskStateService {
   private admissionOpen = true
   /** Set when the domain failed to open: the provider serves nothing further. */
   private disabled = false
+  /** Registered committed-stable observers, notified after each authority put. */
+  private readonly committedListeners = new Set<TaskStateCommittedListener>()
 
   /**
    * @param ctx - host context carrying storage-domain, sessions, and llm.
@@ -154,6 +166,7 @@ export class TaskStateBasicService extends TaskStateService {
       await Promise.all(workers.map(worker => worker.dispose()))
       await this.drainRepairs()
       this.runtimes.clear()
+      this.committedListeners.clear()
       await domain.close()
     }, 'task-state-basic.domainAndWorkers')
     this.sessionsTable = domain.table('sessions')
@@ -283,7 +296,12 @@ export class TaskStateBasicService extends TaskStateService {
       runtime = {
         worker: new TaskStateWorker(this.ctx, session, this.config, {
           system: TASK_STATE_SYSTEM_INSTRUCTION,
-          route: { provider: this.config.provider, model: this.config.model },
+          resolveRoute: id => {
+            const current = this.ctx.sessions.get(id)?.requestHeader()?.config
+            return current === undefined
+              ? { provider: this.config.provider, model: this.config.model }
+              : { provider: current.provider, model: current.model }
+          },
           liveSession: id => this.ctx.sessions.get(id),
           committedCursor: id => this.publishedStable(id)?.sourceCursor ?? -1,
           readBase: id => this.publishedStable(id) ?? null,
@@ -451,6 +469,137 @@ export class TaskStateBasicService extends TaskStateService {
     const runtime = this.runtimes.get(id)
     if (runtime === undefined) return
     runtime.stable = stable
+    for (const listener of this.committedListeners) {
+      try {
+        listener(id, stable)
+      } catch (error: unknown) {
+        this.ctx.logger.warn(`task-state-basic: committed observer for "${id}" failed: ${String(error)}`)
+      }
+    }
+  }
+
+  /**
+   * Observe every committed stable after its authority put resolved. The
+   * listener receives the Session identity and the committed stable; startup
+   * reconciliation and live audit repairs never publish, so an observer sees
+   * exactly the values that advanced the published pointer.
+   *
+   * The subscription is caller-owned: the returned disposer removes this
+   * listener and must be run by the caller's teardown. The provider unload
+   * additionally clears every remaining subscription so a disposed provider
+   * never notifies. This is a minimal observer seam for Host-side consumers
+   * (remote streams); it never writes the Session log and never changes the
+   * storage authority or the lifecycle fence.
+   * @param listener - committed-stable observer to add.
+   * @returns a disposer removing this listener.
+   */
+  subscribeCommitted(listener: TaskStateCommittedListener): () => void {
+    this.committedListeners.add(listener)
+    return () => { this.committedListeners.delete(listener) }
+  }
+
+  /** Replace the user-editable stable content under optimistic revision control. */
+  async editStable(request: TaskStateEditRequest): Promise<TaskStateEditResult> {
+    if (this.disabled || !this.admissionOpen) {
+      return { ok: false, code: 'unavailable', message: 'Task-state storage is unavailable.' }
+    }
+    const session = this.ctx.sessions.get(request.sessionId)
+    if (session === undefined) {
+      return { ok: false, code: 'not-found', message: 'The session is no longer available.' }
+    }
+    const runtime = this.runtimeFor(session)
+    return runtime.worker.enqueueMutation(async () => {
+      const current = runtime.stable
+      if (current === undefined) {
+        return { ok: false, code: 'not-found', message: 'No task-state summary exists for this session.' }
+      }
+      if (current.revision !== request.expectedRevision) {
+        return { ok: false, code: 'conflict', message: 'The summary changed while it was being edited.', stable: current }
+      }
+      let content: TaskStateStableContent
+      try {
+        content = this.resolveManualContent(current, request.value)
+      } catch (error: unknown) {
+        return { ok: false, code: 'invalid', message: String(error instanceof Error ? error.message : error) }
+      }
+      const stable = commitStable(
+        content,
+        current.schemaVersion,
+        current.revision + 1,
+        current.filterVersion,
+        current.sourceCursor,
+      )
+      const requestId = TaskStateRequestId(`ts-manual-${randomUUID()}`)
+      const identity = lifecycleOf(session)
+      const open: TaskStateUpdateRequestData = {
+        requestId,
+        revision: stable.revision,
+        base: current,
+        includedSeqs: [],
+        filterVersion: current.filterVersion,
+        system: 'User-authored task-state edit.',
+        route: { provider: 'dsh-context-enhancement', model: 'manual-edit' },
+        maxTokens: 0,
+        schema: { version: current.schemaVersion, material: { source: 'manual-edit' } },
+        truncation: [],
+      }
+      await this.putOpenAudit(request.sessionId, open)
+      await this.putStable(request.sessionId, stable)
+      this.publishCommitted(request.sessionId, stable)
+      try {
+        await this.finishOpenAudit(requestId, identity, stable, {
+          outcome: 'manual', requestId, revision: stable.revision, sourceCursor: stable.sourceCursor,
+        })
+      } catch (error: unknown) {
+        this.ctx.logger.error(`task-state-basic: ${request.sessionId} manual-edit audit finish failed: ${String(error)}`)
+        await this.scheduleAuditRepair(request.sessionId, stable, String(requestId))
+      }
+      return { ok: true, stable }
+    })
+  }
+
+  /** Validate, bound-check, and identity-map user-authored stable fields. */
+  private resolveManualContent(current: TaskStateStable, value: TaskStateEditValue): TaskStateStableContent {
+    const text = (field: string, input: string, empty: boolean): string => {
+      const resolved = input.trim()
+      if (!empty && resolved.length === 0) throw new Error(`${field} contains an empty item.`)
+      if (Buffer.byteLength(resolved, 'utf8') > this.config.maxEntryBytes) {
+        throw new Error(`${field} exceeds ${this.config.maxEntryBytes} UTF-8 bytes.`)
+      }
+      return resolved
+    }
+    const plainList = (field: string, input: readonly string[]): string[] => {
+      if (input.length > this.config.maxListItems) throw new Error(`${field} has too many items.`)
+      return input.map((item, index) => text(`${field}[${index}]`, item, false))
+    }
+    const entries = (
+      field: 'facts' | 'decisions' | 'constraints' | 'risks',
+      prefix: 'fact' | 'decision' | 'constraint' | 'risk',
+      input: readonly string[],
+    ) => {
+      if (input.length > this.config.maxEntriesPerKind) throw new Error(`${field} has too many items.`)
+      const available = [...current[field]]
+      return input.map((item, index) => {
+        const content = text(`${field}[${index}]`, item, false)
+        const existingIndex = available.findIndex(entry => entry.content === content)
+        if (existingIndex >= 0) return available.splice(existingIndex, 1)[0]!
+        return { id: TaskStateEntryId(`${prefix}-${randomUUID()}`), content }
+      })
+    }
+    return {
+      facts: entries('facts', 'fact', value.facts),
+      decisions: entries('decisions', 'decision', value.decisions),
+      constraints: entries('constraints', 'constraint', value.constraints),
+      risks: entries('risks', 'risk', value.risks),
+      continuation: {
+        currentObjective: text('currentObjective', value.currentObjective, true),
+        currentFocus: text('currentFocus', value.currentFocus, true),
+        openWork: plainList('openWork', value.openWork),
+        nextActions: plainList('nextActions', value.nextActions),
+      },
+      evidence: current.evidence,
+      todoReferences: current.todoReferences,
+    }
   }
 
   /** The published committed pointer, or `undefined`. */

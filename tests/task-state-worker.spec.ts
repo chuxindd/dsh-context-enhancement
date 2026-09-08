@@ -84,7 +84,7 @@ function fakeEnv(ctx: Context): FakeWorkerEnv {
     dead: false,
     failFinished: false,
     system: 'update the task state',
-    route: { provider: 'current-route', model: 'current-model' },
+    resolveRoute: () => ({ provider: 'current-route', model: 'current-model' }),
     liveSession: (id: SessionId) => (state.dead ? undefined : ctx.sessions.get(id)),
     committedCursor: () => state.stored.length === 0 ? -1 : state.stored[state.stored.length - 1]!.sourceCursor,
     readBase: () => state.stored.length === 0 ? null : state.stored[state.stored.length - 1]!,
@@ -157,6 +157,21 @@ function appendUser(session: Session, text: string): number {
 }
 
 describe('task-state-basic worker', () => {
+  it('serializes an external mutation behind the admitted batch', async () => {
+    const { session, env, worker } = await setup(60)
+    const seq = appendUser(session, 'batch before edit')
+    worker.observe(seq)
+    worker.maybeSchedule()
+    const order: string[] = []
+    const mutation = worker.enqueueMutation(async () => { order.push('edit') })
+    await waitUntil(() => env.stored.length === 1, 2_000)
+    order.unshift('batch')
+    await mutation
+    expect(order).toEqual(['batch', 'edit'])
+    await worker.dispose()
+    await expect(worker.enqueueMutation(async () => {})).rejects.toThrow('task-state-basic/session-disposed')
+  })
+
   it('commits a batch when the eligible watermark passes the threshold', async () => {
     const { session, env, worker } = await setup()
     const seq = appendUser(session, 'first prompt')

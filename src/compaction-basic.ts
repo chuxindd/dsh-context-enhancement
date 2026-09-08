@@ -88,7 +88,6 @@ type PressureStopReason = ForgetBatchBlockReason
   | 'reentry-deferred'
   | 'tool-stage-deferred'
   | 'no-progress'
-  | 'convergence-guard'
 
 /** Resolve the exact provider/model durably routed for the latest request. */
 function routedTarget(
@@ -328,6 +327,21 @@ export class BasicCompactionEngine extends CompactionEngine {
    * force one useful balanced reduction. Pressure first prunes only the older
    * head outside the retained tail (region-aware), remeasures, and stops early
    * when the deterministic reduction cleared pressure.
+   *
+   * Once tool-stage debt that has aged into the forget zone is cleared, normal
+   * (non-overflow) pressure performs ONE semantic compaction over the complete
+   * current forget zone: the retained ~20% recent tail is untouched and the tool
+   * zone keeps its governance result, so the single whole-zone summary is what
+   * releases the remaining head. It is deliberately not chopped into
+   * `targetBatchTokens`/`maxBatchTokens` batches; those budgets only bound the
+   * bounded 70% maintenance tier. Safety guards still apply to the whole zone:
+   * the pass never consumes its own same-invocation tool replacements, never
+   * splits the zone, and leaves unknown third-party replacements and pending
+   * tool intermediate work deferred; tool pairing, step boundaries, surface
+   * stability, and the shrink requirement live inside `compactRegion`. Known
+   * replacements produced by an earlier invocation (tool summaries, pruned
+   * results, prior history summaries) are historical once a later whole-zone
+   * pass contains them, so they are allowed into the semantic compact.
    * @param agent - agent whose latest durable routed request is measured.
    * @param trigger - normal step-boundary pressure or context-overflow recovery.
    * @param signal - live turn cancellation signal forwarded to summarization.
@@ -385,7 +399,6 @@ export class BasicCompactionEngine extends CompactionEngine {
     }
 
     if (measurement.totalTokens < forgetWatermark) return null
-    const pressure = measurement.totalTokens >= spec.thresholdTokens
 
     // Clear tool-stage debt that has aged into the forget zone. These
     // replacements remain excluded from semantic compaction for this pass, so
@@ -410,52 +423,91 @@ export class BasicCompactionEngine extends CompactionEngine {
       }
     }
 
-    const maintenanceLimit = pressure
-      ? agent.session.surface.nodes.length
-      : policy.maxMaintenanceBatches
-    let result: CompactionResult | null = null
-    let batch = 0
-    while (batch < maintenanceLimit) {
-      // Do not reuse an old zone after a replacement. Pressure continues while
-      // each freshly selected batch makes measurable progress below 80%.
-      measurement = meter.measure(agent.session)
-      if (measurement.totalTokens < forgetWatermark) break
-      const currentZones = this.zones(agent.session, measurement, spec)
-      const plan = planForgetBatch(agent.session, measurement, currentZones, {
-        targetBatchTokens: policy.targetBatchTokens,
-        maxBatchTokens: policy.maxBatchTokens,
-      })
-      if (plan.kind === 'blocked') {
-        this.logPressureStop(plan.reason, measurement.totalTokens, spec.thresholdTokens)
-        break
+    // Judge pressure on the surface AFTER the tool-stage governance above, so a
+    // governed session that no longer reaches 80% stays in bounded maintenance.
+    if (measurement.totalTokens < forgetWatermark) return null
+    const pressure = measurement.totalTokens >= spec.thresholdTokens
+
+    // Normal 70% maintenance tier (forgetWatermark <= total < pressureRatio).
+    // Unchanged from the historical planner: one or more oldest bounded batches,
+    // each capped by targetBatchTokens/maxBatchTokens, so ordinary growth is
+    // kept below pressure without paying for one huge semantic call.
+    if (!pressure) {
+      let result: CompactionResult | null = null
+      let batch = 0
+      while (batch < policy.maxMaintenanceBatches) {
+        // Do not reuse an old zone after a replacement. Re-price and re-derive
+        // fresh positional boundaries before every bounded batch.
+        measurement = meter.measure(agent.session)
+        if (measurement.totalTokens < forgetWatermark) break
+        const currentZones = this.zones(agent.session, measurement, spec)
+        const plan = planForgetBatch(agent.session, measurement, currentZones, {
+          targetBatchTokens: policy.targetBatchTokens,
+          maxBatchTokens: policy.maxBatchTokens,
+        })
+        if (plan.kind === 'blocked') break
+        const selected = plan.range
+        const selectedSeqs = agent.session.surface.nodes.slice(selected.startIndex, selected.endIndex + 1)
+        const sources = this.sourceIndex(agent.session)
+        if (selectedSeqs.some(seq => roundReplacements.has(seq))) break
+        if (selectedSeqs.some(seq => !sources.canCompactHistory(seq, policy.minReentryTurns))) break
+        if (this.hasPendingToolIntermediateWork(agent.session, selected.startSeq, selected.endSeq, prune)) break
+        const beforeTokens = measurement.totalTokens
+        result = await this.compactRegion(selected.startSeq, selected.endSeq, agent, signal)
+        batch += 1
+        measurement = meter.measure(agent.session)
+        if (measurement.totalTokens >= beforeTokens) break
+        if (measurement.totalTokens < spec.thresholdTokens) break
       }
-      const selected = plan.range
-      const selectedSeqs = agent.session.surface.nodes.slice(selected.startIndex, selected.endIndex + 1)
-      const sources = this.sourceIndex(agent.session)
-      if (selectedSeqs.some(seq => roundReplacements.has(seq))) {
-        this.logPressureStop('same-pass-tool-replacement', measurement.totalTokens, spec.thresholdTokens)
-        break
-      }
-      if (selectedSeqs.some(seq => !sources.canCompactHistory(seq, policy.minReentryTurns, pressure))) {
-        this.logPressureStop('reentry-deferred', measurement.totalTokens, spec.thresholdTokens)
-        break
-      }
-      if (this.hasPendingToolIntermediateWork(agent.session, selected.startSeq, selected.endSeq, prune)) {
-        this.logPressureStop('tool-stage-deferred', measurement.totalTokens, spec.thresholdTokens)
-        break
-      }
-      const beforeTokens = measurement.totalTokens
-      result = await this.compactRegion(selected.startSeq, selected.endSeq, agent, signal)
-      batch += 1
-      measurement = meter.measure(agent.session)
-      if (measurement.totalTokens >= beforeTokens) {
-        this.logPressureStop('no-progress', measurement.totalTokens, spec.thresholdTokens)
-        break
-      }
-      if (!pressure || measurement.totalTokens < spec.thresholdTokens) break
+      return result
     }
-    if (pressure && batch >= maintenanceLimit && measurement.totalTokens >= spec.thresholdTokens) {
-      this.logPressureStop('convergence-guard', measurement.totalTokens, spec.thresholdTokens)
+
+    // Pressure: ONE semantic compaction over the COMPLETE current forget zone.
+    // The retained ~20% recent tail is untouched and the tool zone keeps its
+    // governance result, so this single whole-zone summary is what releases the
+    // head. It is deliberately NOT chopped into targetBatchTokens/maxBatchTokens
+    // batches — those budgets only bound the maintenance tier and overflow
+    // recovery above. The full zone is a strict prefix of the newest half of the
+    // window, so it stays within the summarizer's input budget. The same safety
+    // guards that bounded batches apply to the whole zone; when the zone cannot
+    // be compacted whole, the pass stops and records why instead of splitting or
+    // bypassing a protection.
+    zones = this.zones(agent.session, measurement, spec)
+    const forget = zones.forget
+    if (forget === null) {
+      this.logPressureStop('no-forget-range', measurement.totalTokens, spec.thresholdTokens)
+      return null
+    }
+    const forgetSeqs = agent.session.surface.nodes.slice(forget.startIndex, forget.endIndex + 1)
+    const sources = this.sourceIndex(agent.session)
+    if (forgetSeqs.some(seq => roundReplacements.has(seq))) {
+      this.logPressureStop('same-pass-tool-replacement', measurement.totalTokens, spec.thresholdTokens)
+      return null
+    }
+    // The whole zone re-enters known replacements immediately: any replacement
+    // this engine durably produced on an EARLIER invocation (a 70% tool
+    // summary/prune, or a prior whole-zone history summary) is historical now —
+    // newer dialogue has accumulated past it inside this forget zone, so its
+    // content has reached the conversation at least once and must be allowed
+    // into this pass's semantic compact. The completed-turn deferral is meant
+    // for a replacement that is still younger than the newest request; when the
+    // current forget zone contains one, newer surface content necessarily
+    // exists after it. Only the round-local `roundReplacements` set (this exact
+    // invocation's own fresh replacements, which cannot be inside its forget
+    // zone at the same time) and unknown third-party replacements keep a deferral.
+    if (forgetSeqs.some(seq => !sources.canCompactHistory(seq, policy.minReentryTurns, true))) {
+      this.logPressureStop('reentry-deferred', measurement.totalTokens, spec.thresholdTokens)
+      return null
+    }
+    if (this.hasPendingToolIntermediateWork(agent.session, forget.startSeq, forget.endSeq, prune)) {
+      this.logPressureStop('tool-stage-deferred', measurement.totalTokens, spec.thresholdTokens)
+      return null
+    }
+    const beforeTokens = measurement.totalTokens
+    const result = await this.compactRegion(forget.startSeq, forget.endSeq, agent, signal)
+    measurement = meter.measure(agent.session)
+    if (measurement.totalTokens >= beforeTokens) {
+      this.logPressureStop('no-progress', measurement.totalTokens, spec.thresholdTokens)
     }
     return result
   }
