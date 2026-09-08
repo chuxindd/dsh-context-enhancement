@@ -29,7 +29,7 @@
  * @module dsh-context-enhancement/client/ContextEnhancementView
  */
 
-import { useState, useSyncExternalStore, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react'
 import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { PropsLocale, PropsRuntime, HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
 import type {} from '@deepseek-ai/dsh-agent-presets/types'
@@ -65,6 +65,20 @@ type EffectRow = Readonly<{
   detail: ContextEnhancementKey
   countLabel: ContextEnhancementKey
 }>
+
+const EDITABLE_FIELDS: readonly Readonly<{
+  key: keyof TaskStateEditValue
+  label: ContextEnhancementKey
+}>[] = [
+  { key: 'currentObjective', label: 'section.currentObjective' },
+  { key: 'currentFocus', label: 'section.currentFocus' },
+  { key: 'openWork', label: 'section.openWork' },
+  { key: 'nextActions', label: 'section.nextActions' },
+  { key: 'facts', label: 'section.facts' },
+  { key: 'decisions', label: 'section.decisions' },
+  { key: 'constraints', label: 'section.constraints' },
+  { key: 'risks', label: 'section.risks' },
+]
 
 const EFFECTS: readonly EffectRow[] = [
   { key: 'taskStateBasic', label: 'status.taskStateBasic', detail: 'status.taskStateBasicDetail', countLabel: 'status.evidenceSaved' },
@@ -130,9 +144,6 @@ const emptyCardStyle: CSSProperties = {
   maxWidth: 580,
   margin: '24px auto 0',
   padding: '44px 28px',
-  border: '0.5px solid var(--dsw-alias-border-l3)',
-  borderRadius: 12,
-  background: 'var(--dsw-alias-bg-base)',
   textAlign: 'center',
 }
 const emptyIconStyle: CSSProperties = {
@@ -147,13 +158,23 @@ const emptyIconStyle: CSSProperties = {
   fontSize: 20,
 }
 const summaryGridStyle: CSSProperties = {
+  columns: '260px',
+  columnGap: 28,
+  marginTop: 20,
+}
+const featuresGridStyle: CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
   gap: '22px 28px',
   marginTop: 20,
 }
 const summarySectionStyle: CSSProperties = {
-  minWidth: 0,
+  display: 'inline-block',
+  width: '100%',
+  breakInside: 'avoid',
+  marginBottom: 24,
+  verticalAlign: 'top',
+  boxSizing: 'border-box',
 }
 const sectionTitleRowStyle: CSSProperties = {
   display: 'flex',
@@ -184,13 +205,28 @@ const summaryTextStyle: CSSProperties = {
   lineHeight: 1.6,
 }
 const editButtonStyle: CSSProperties = {
-  padding: '7px 13px', border: '0.5px solid var(--dsw-alias-border-l2)', borderRadius: 8,
+  padding: '6px 12px', border: '0.5px solid var(--dsw-alias-border-l2)', borderRadius: 6,
   background: 'var(--dsw-alias-bg-base)', color: 'var(--dsw-alias-label-secondary)',
-  font: 'inherit', fontSize: 13, cursor: 'pointer',
+  font: 'inherit', fontSize: 12, cursor: 'pointer',
+}
+const sectionEditButtonStyle: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 4,
+  marginLeft: 'auto',
+  padding: '2px 8px',
+  border: '0.5px solid var(--dsw-alias-border-l2)',
+  borderRadius: 6,
+  background: 'var(--dsw-alias-bg-base)',
+  color: 'var(--dsw-alias-label-tertiary)',
+  font: 'inherit',
+  fontSize: 12,
+  lineHeight: '18px',
+  cursor: 'pointer',
 }
 const textareaStyle: CSSProperties = {
-  boxSizing: 'border-box', width: '100%', minHeight: 82, padding: '10px 12px',
-  border: '0.5px solid var(--dsw-alias-border-l2)', borderRadius: 9,
+  boxSizing: 'border-box', width: '100%', minHeight: 82, padding: '8px 10px',
+  border: '0.5px solid var(--dsw-alias-border-l2)', borderRadius: 8,
   background: 'var(--dsw-alias-bg-base)', color: 'var(--dsw-alias-label-primary)',
   font: 'inherit', fontSize: 13, lineHeight: 1.55, resize: 'vertical',
 }
@@ -212,85 +248,36 @@ function splitLines(value: string): string[] {
   return value.split(/\r?\n/).map(item => item.trim()).filter(item => item.length > 0)
 }
 
-type TaskStateEditDraft = Record<keyof TaskStateEditValue, string>
-type TaskStateEditSession = Readonly<{
+type ActiveFieldEdit = Readonly<{
+  field: keyof TaskStateEditValue
+  draft: string
   expectedRevision: number
-  value: TaskStateEditValue
 }>
 
-function editDraftOf(value: TaskStateEditValue): TaskStateEditDraft {
-  return {
-    currentObjective: value.currentObjective,
-    currentFocus: value.currentFocus,
-    openWork: value.openWork.join('\n'),
-    nextActions: value.nextActions.join('\n'),
-    facts: value.facts.join('\n'),
-    decisions: value.decisions.join('\n'),
-    constraints: value.constraints.join('\n'),
-    risks: value.risks.join('\n'),
+function editDraftFor(stable: TaskStateStable, field: keyof TaskStateEditValue): string {
+  switch (field) {
+    case 'currentObjective': return stable.continuation.currentObjective
+    case 'currentFocus': return stable.continuation.currentFocus
+    case 'openWork': return stable.continuation.openWork.join('\n')
+    case 'nextActions': return stable.continuation.nextActions.join('\n')
+    case 'facts': return stable.facts.map(e => e.content).join('\n')
+    case 'decisions': return stable.decisions.map(e => e.content).join('\n')
+    case 'constraints': return stable.constraints.map(e => e.content).join('\n')
+    case 'risks': return stable.risks.map(e => e.content).join('\n')
   }
 }
 
-function editValueFromDraft(draft: TaskStateEditDraft): TaskStateEditValue {
-  return {
-    currentObjective: draft.currentObjective.trim(),
-    currentFocus: draft.currentFocus.trim(),
-    openWork: splitLines(draft.openWork),
-    nextActions: splitLines(draft.nextActions),
-    facts: splitLines(draft.facts),
-    decisions: splitLines(draft.decisions),
-    constraints: splitLines(draft.constraints),
-    risks: splitLines(draft.risks),
+function updateEditValue(base: TaskStateEditValue, field: keyof TaskStateEditValue, draft: string): TaskStateEditValue {
+  switch (field) {
+    case 'currentObjective': return { ...base, currentObjective: draft.trim() }
+    case 'currentFocus': return { ...base, currentFocus: draft.trim() }
+    case 'openWork': return { ...base, openWork: splitLines(draft) }
+    case 'nextActions': return { ...base, nextActions: splitLines(draft) }
+    case 'facts': return { ...base, facts: splitLines(draft) }
+    case 'decisions': return { ...base, decisions: splitLines(draft) }
+    case 'constraints': return { ...base, constraints: splitLines(draft) }
+    case 'risks': return { ...base, risks: splitLines(draft) }
   }
-}
-
-function EditForm({ value, saving, error, t, onCancel, onSubmit }: {
-  value: TaskStateEditValue
-  saving: boolean
-  error: string | null
-  t: ContextEnhancementViewProps['t']
-  onCancel: () => void
-  onSubmit: (value: TaskStateEditValue) => Promise<void>
-}): ReactNode {
-  const [draft, setDraft] = useState(() => editDraftOf(value))
-  const field = (key: keyof TaskStateEditValue, label: ContextEnhancementKey, tall = false) => (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 7, minWidth: 0, color: 'var(--dsw-alias-label-secondary)', fontSize: 13 }}>
-      <span>{t(label)}</span>
-      <textarea
-        style={{ ...textareaStyle, minHeight: tall ? 112 : 76 }}
-        value={draft[key]}
-        onChange={(event) => {
-          setDraft(current => ({ ...current, [key]: event.currentTarget.value }))
-        }}
-      />
-    </label>
-  )
-  const submit = (event: FormEvent): void => {
-    event.preventDefault()
-    void onSubmit(editValueFromDraft(draft))
-  }
-  return (
-    <form className="dsh-ce-editor" style={{ marginTop: 20 }} onSubmit={submit}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px 28px' }}>
-        {field('currentObjective', 'section.currentObjective')}
-        {field('currentFocus', 'section.currentFocus')}
-        {field('openWork', 'section.openWork', true)}
-        {field('nextActions', 'section.nextActions', true)}
-        {field('facts', 'section.facts', true)}
-        {field('decisions', 'section.decisions', true)}
-        {field('constraints', 'section.constraints', true)}
-        {field('risks', 'section.risks', true)}
-      </div>
-      <p style={{ ...statusDetailStyle, marginBottom: 0 }}>{t('edit.linesHint')}</p>
-      {error !== null && <p role="alert" style={{ color: 'var(--dsw-alias-state-error-primary)', fontSize: 13 }}>{error}</p>}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 18 }}>
-        <button type="button" style={editButtonStyle} disabled={saving} onClick={onCancel}>{t('edit.cancel')}</button>
-        <button type="submit" style={{ ...editButtonStyle, borderColor: 'var(--dsw-alias-state-business-primary)', background: 'var(--dsw-alias-state-business-primary)', color: 'var(--dsw-alias-label-primary-foreground)' }} disabled={saving}>
-          {saving ? t('edit.saving') : t('edit.save')}
-        </button>
-      </div>
-    </form>
-  )
 }
 const sectionListStyle: CSSProperties = {
   margin: 0,
@@ -390,24 +377,109 @@ function StatusPanel({ evidence, stable, t }: {
   )
 }
 
-/** One heading+list tile of the flat summary. */
-function Section({
+/** One heading+list or heading+text tile of the flat summary with inline editing support. */
+function SummarySection({
   title,
+  fieldKey,
   items,
+  text,
+  editingField,
+  saving,
+  editError,
+  t,
+  onStartEdit,
+  onUpdateDraft,
+  onSave,
+  onCancel,
   empty,
 }: {
   title: string
-  items: readonly string[]
+  fieldKey: keyof TaskStateEditValue
+  items?: readonly string[] | undefined
+  text?: string | undefined
+  editingField: ActiveFieldEdit | null
+  saving: boolean
+  editError: string | null
+  t: ContextEnhancementViewProps['t']
+  onStartEdit?: ((field: keyof TaskStateEditValue) => void) | undefined
+  onUpdateDraft?: ((draft: string) => void) | undefined
+  onSave?: (() => Promise<void>) | undefined
+  onCancel?: (() => void) | undefined
   empty: string
 }): ReactNode {
+  const isEditing = editingField?.field === fieldKey
+  const isList = items !== undefined
+
   return (
     <section style={summarySectionStyle}>
       <div style={sectionTitleRowStyle}>
         <span style={sectionDotStyle} aria-hidden="true" />
         <h3 style={summaryHeadingStyle}>{title}</h3>
+        {!isEditing && onStartEdit && (
+          <button
+            type="button"
+            className="dsh-ce-section-edit"
+            style={sectionEditButtonStyle}
+            title={t('edit.action')}
+            aria-label={`${t('edit.action')} ${title}`}
+            onClick={() => onStartEdit(fieldKey)}
+          >
+            ✎ {t('edit.action')}
+          </button>
+        )}
       </div>
       <div style={sectionContentStyle}>
-        {items.length === 0 ? <p className="dsh-ce-empty" style={summaryTextStyle}>{empty}</p> : (
+        {isEditing && onUpdateDraft && onSave && onCancel ? (
+          <div>
+            <textarea
+              style={{
+                ...textareaStyle,
+                minHeight: isList ? 112 : 72,
+              }}
+              value={editingField.draft}
+              onChange={(event) => onUpdateDraft(event.currentTarget.value)}
+              disabled={saving}
+              autoFocus
+            />
+            {isList && (
+              <p style={{ ...statusDetailStyle, marginTop: 4, marginBottom: 0 }}>
+                {t('edit.linesHint')}
+              </p>
+            )}
+            {editError !== null && (
+              <p role="alert" style={{ color: 'var(--dsw-alias-state-error-primary)', fontSize: 12, margin: '4px 0 0' }}>
+                {editError}
+              </p>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
+              <button
+                type="button"
+                style={editButtonStyle}
+                disabled={saving}
+                onClick={onCancel}
+              >
+                {t('edit.cancel')}
+              </button>
+              <button
+                type="button"
+                style={{
+                  ...editButtonStyle,
+                  borderColor: 'var(--dsw-alias-state-business-primary)',
+                  background: 'var(--dsw-alias-state-business-primary)',
+                  color: 'var(--dsw-alias-label-primary-foreground)',
+                }}
+                disabled={saving}
+                onClick={() => { void onSave() }}
+              >
+                {saving ? t('edit.saving') : t('edit.save')}
+              </button>
+            </div>
+          </div>
+        ) : text !== undefined && text !== '' ? (
+          <p className={fieldKey === 'currentObjective' ? 'dsh-ce-objective' : undefined} style={summaryTextStyle}>
+            {text}
+          </p>
+        ) : items !== undefined && items.length > 0 ? (
           <ul style={sectionListStyle}>
             {items.map((item, index) => (
               <li key={`${index}`} style={sectionListItemStyle}>
@@ -416,6 +488,8 @@ function Section({
               </li>
             ))}
           </ul>
+        ) : (
+          <p className="dsh-ce-empty" style={summaryTextStyle}>{empty}</p>
         )}
       </div>
     </section>
@@ -453,15 +527,66 @@ function isEmptyStable(stable: TaskStateStable): boolean {
 
 /**
  * The flat display body of one committed stable.
- * @param props - section title accessor, the committed stable, and empty copy.
+ * @param props - section title accessor, the committed stable, and editing handlers.
  * @returns the tiled summary.
  */
-function StableBody({ stable, section, emptyNoEntries }: {
+function StableBody({
+  stable,
+  section,
+  t,
+  editingField = null,
+  saving = false,
+  editError = null,
+  onStartEdit,
+  onUpdateDraft,
+  onSave,
+  onCancel,
+}: {
   stable: TaskStateStable
   section: (key: string) => string
-  emptyNoEntries: string
+  t: ContextEnhancementViewProps['t']
+  editingField?: ActiveFieldEdit | null | undefined
+  saving?: boolean | undefined
+  editError?: string | null | undefined
+  onStartEdit?: ((field: keyof TaskStateEditValue) => void) | undefined
+  onUpdateDraft?: ((draft: string) => void) | undefined
+  onSave?: (() => Promise<void>) | undefined
+  onCancel?: (() => void) | undefined
 }): ReactNode {
   const continuation = stable.continuation
+
+  const renderSection = (
+    fieldKey: keyof TaskStateEditValue,
+    titleKey: string,
+    options: { text?: string | undefined; items?: readonly string[] | undefined },
+  ): ReactNode => {
+    const isEditing = editingField?.field === fieldKey
+    const hasContent = options.text !== undefined
+      ? options.text !== ''
+      : (options.items !== undefined && options.items.length > 0)
+
+    if (!hasContent && !isEditing && onStartEdit === undefined) return null
+
+    return (
+      <SummarySection
+        key={fieldKey}
+        title={section(titleKey)}
+        fieldKey={fieldKey}
+        items={options.items}
+        text={options.text}
+        editingField={editingField}
+        saving={saving}
+        editError={editError}
+        t={t}
+        onStartEdit={onStartEdit}
+        onUpdateDraft={onUpdateDraft}
+        onSave={onSave}
+        onCancel={onCancel}
+        empty={t('empty.noEntries')}
+      />
+    )
+  }
+
   return (
     <div className="dsh-ce-stable">
       <dl className="dsh-ce-meta" style={metaStyle}>
@@ -480,117 +605,61 @@ function StableBody({ stable, section, emptyNoEntries }: {
       </dl>
 
       <div style={summaryGridStyle}>
-      {continuation.currentObjective === '' ? null : (
-        <section style={summarySectionStyle}>
-          <div style={sectionTitleRowStyle}>
-            <span style={sectionDotStyle} aria-hidden="true" />
-            <h3 style={summaryHeadingStyle}>{section('section.currentObjective')}</h3>
-          </div>
-          <div style={sectionContentStyle}>
-            <p className="dsh-ce-objective" style={summaryTextStyle}>{continuation.currentObjective}</p>
-          </div>
-        </section>
-      )}
+        {renderSection('currentObjective', 'section.currentObjective', { text: continuation.currentObjective })}
+        {renderSection('currentFocus', 'section.currentFocus', { text: continuation.currentFocus })}
+        {renderSection('openWork', 'section.openWork', { items: continuation.openWork })}
+        {renderSection('nextActions', 'section.nextActions', { items: continuation.nextActions })}
+        {renderSection('facts', 'section.facts', { items: stable.facts.map(entry => entry.content) })}
+        {renderSection('decisions', 'section.decisions', { items: stable.decisions.map(entry => entry.content) })}
+        {renderSection('constraints', 'section.constraints', { items: stable.constraints.map(entry => entry.content) })}
+        {renderSection('risks', 'section.risks', { items: stable.risks.map(entry => entry.content) })}
 
-      {continuation.currentFocus === '' ? null : (
-        <section style={summarySectionStyle}>
-          <div style={sectionTitleRowStyle}>
-            <span style={sectionDotStyle} aria-hidden="true" />
-            <h3 style={summaryHeadingStyle}>{section('section.currentFocus')}</h3>
-          </div>
-          <div style={sectionContentStyle}>
-            <p style={summaryTextStyle}>{continuation.currentFocus}</p>
-          </div>
-        </section>
-      )}
+        {stable.evidence.length > 0 && (
+          <section style={summarySectionStyle}>
+            <div style={sectionTitleRowStyle}>
+              <span style={sectionDotStyle} aria-hidden="true" />
+              <h3 style={summaryHeadingStyle}>{section('section.evidence')}</h3>
+            </div>
+            <div style={sectionContentStyle}>
+              <ReferenceList
+                rows={stable.evidence.map(ref => ({ seq: ref.seq, text: ref.note }))}
+              />
+            </div>
+          </section>
+        )}
 
-      {continuation.openWork.length > 0 && (
-        <Section
-          title={section('section.openWork')}
-          items={continuation.openWork}
-          empty={emptyNoEntries}
-        />
-      )}
-
-      {continuation.nextActions.length > 0 && (
-        <Section
-          title={section('section.nextActions')}
-          items={continuation.nextActions}
-          empty={emptyNoEntries}
-        />
-      )}
-
-      {stable.facts.length > 0 && (
-        <Section
-          title={section('section.facts')}
-          items={stable.facts.map(entry => entry.content)}
-          empty={emptyNoEntries}
-        />
-      )}
-
-      {stable.decisions.length > 0 && (
-        <Section
-          title={section('section.decisions')}
-          items={stable.decisions.map(entry => entry.content)}
-          empty={emptyNoEntries}
-        />
-      )}
-
-      {stable.constraints.length > 0 && (
-        <Section
-          title={section('section.constraints')}
-          items={stable.constraints.map(entry => entry.content)}
-          empty={emptyNoEntries}
-        />
-      )}
-
-      {stable.risks.length > 0 && (
-        <Section
-          title={section('section.risks')}
-          items={stable.risks.map(entry => entry.content)}
-          empty={emptyNoEntries}
-        />
-      )}
-
-      {stable.evidence.length > 0 && (
-        <section style={summarySectionStyle}>
-          <div style={sectionTitleRowStyle}>
-            <span style={sectionDotStyle} aria-hidden="true" />
-            <h3 style={summaryHeadingStyle}>{section('section.evidence')}</h3>
-          </div>
-          <div style={sectionContentStyle}>
-            <ReferenceList
-              rows={stable.evidence.map(ref => ({ seq: ref.seq, text: ref.note }))}
-            />
-          </div>
-        </section>
-      )}
-
-      {stable.todoReferences.length > 0 && (
-        <section style={summarySectionStyle}>
-          <div style={sectionTitleRowStyle}>
-            <span style={sectionDotStyle} aria-hidden="true" />
-            <h3 style={summaryHeadingStyle}>{section('section.todoReferences')}</h3>
-          </div>
-          <div style={sectionContentStyle}>
-            <ReferenceList
-              rows={stable.todoReferences.map(ref => ({ seq: ref.seq, text: ref.content }))}
-            />
-          </div>
-        </section>
-      )}
+        {stable.todoReferences.length > 0 && (
+          <section style={summarySectionStyle}>
+            <div style={sectionTitleRowStyle}>
+              <span style={sectionDotStyle} aria-hidden="true" />
+              <h3 style={summaryHeadingStyle}>{section('section.todoReferences')}</h3>
+            </div>
+            <div style={sectionContentStyle}>
+              <ReferenceList
+                rows={stable.todoReferences.map(ref => ({ seq: ref.seq, text: ref.content }))}
+              />
+            </div>
+          </section>
+        )}
       </div>
     </div>
   )
 }
 
 /** Centered summary placeholder used while no readable stable is available. */
-function EmptySummary({ title, body, className, role }: { title: string; body: string; className?: string; role?: 'status' | 'alert' }): ReactNode {
+function EmptySummary({ title, body, className, role, action }: {
+  title: string
+  body: string
+  className?: string
+  role?: 'status' | 'alert'
+  action?: ReactNode
+}): ReactNode {
   return (
     <div className={className} style={emptyCardStyle} role={role}>
       <div style={emptyIconStyle} aria-hidden="true">✦</div>
       <h2 style={{ margin: 0, fontSize: 20, lineHeight: '28px', fontWeight: 600 }}>{title}</h2>
       <p style={{ ...summaryTextStyle, maxWidth: 440, margin: '10px auto 0' }}>{body}</p>
+      {action}
     </div>
   )
 }
@@ -598,16 +667,16 @@ function EmptySummary({ title, body, className, role }: { title: string; body: s
 /** Explanatory onboarding view shown when the session is not using the contextual preset. */
 function NonContextualGuide({ t }: { t: ContextEnhancementViewProps['t'] }): ReactNode {
   return (
-    <div className="dsh-ce dsh-ce-noncontextual" style={pageStyle}>
-      <section style={{ padding: '24px 28px', borderBottom: '0.5px solid var(--dsw-alias-border-l3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--dsw-alias-state-business-primary)', fontSize: 13, fontWeight: 600 }}>
-          <span style={{ fontSize: 14 }} aria-hidden="true">✦</span>
-          <span>{t('empty.nonContextual.badge')}</span>
+    <div className="dsh-ce dsh-ce-noncontextual" style={pageStyle} data-conversation-composer-overlay="">
+      <section style={{ padding: '36px 28px 32px', textAlign: 'center', borderBottom: '0.5px solid var(--dsw-alias-border-l3)' }}>
+        <div style={emptyIconStyle} aria-hidden="true">✦</div>
+        <div style={{ color: 'var(--dsw-alias-state-business-primary)', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
+          {t('empty.nonContextual.badge')}
         </div>
-        <h1 style={{ margin: '8px 0 0', fontSize: 18, lineHeight: '26px', fontWeight: 600, color: 'var(--dsw-alias-label-primary)' }}>
+        <h1 style={{ margin: 0, fontSize: 20, lineHeight: '28px', fontWeight: 600, color: 'var(--dsw-alias-label-primary)' }}>
           {t('empty.nonContextual.title')}
         </h1>
-        <p style={{ margin: '8px 0 0', fontSize: 13, lineHeight: 1.6, color: 'var(--dsw-alias-label-secondary)', maxWidth: 720 }}>
+        <p style={{ margin: '10px auto 0', fontSize: 13, lineHeight: 1.6, color: 'var(--dsw-alias-label-secondary)', maxWidth: 620 }}>
           {t('empty.nonContextual.body')}
         </p>
       </section>
@@ -635,7 +704,7 @@ function NonContextualGuide({ t }: { t: ContextEnhancementViewProps['t'] }): Rea
         <p style={{ ...statusDetailStyle, marginBottom: 0 }}>
           {t('empty.nonContextual.featuresIntro')}
         </p>
-        <div style={summaryGridStyle}>
+        <div style={featuresGridStyle}>
           <div style={summarySectionStyle}>
             <div style={sectionTitleRowStyle}>
               <span style={sectionDotStyle} aria-hidden="true" />
@@ -693,7 +762,7 @@ export function ContextEnhancementView({
   const session = useSyncExternalStore<TaskStateControlSessionState>(source.subscribe, source.getSnapshot, source.getSnapshot)
   const agentPreset = useSessions((state: SessionListState) => state.byId[sessionId]?.projectionValues?.agentPreset)
   const evidence = useProjection('contextEnhancement')
-  const [editing, setEditing] = useState<TaskStateEditSession | null>(null)
+  const [editingField, setEditingField] = useState<ActiveFieldEdit | null>(null)
   const [saving, setSaving] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
   const connection = session.connection
@@ -720,7 +789,7 @@ export function ContextEnhancementView({
         <button type="button" style={{ marginTop: 18, padding: '7px 16px', border: '0.5px solid var(--dsw-alias-border-l2)', borderRadius: 8, background: 'var(--dsw-alias-bg-base)', color: 'var(--dsw-alias-label-primary)', cursor: 'pointer' }} onClick={() => { retryTaskState() }}>
           {t('error.retry')}
         </button>
-        {session.stable !== null && <StableBody stable={session.stable} section={key => t(key as never)} emptyNoEntries={t('empty.noEntries')} />}
+        {session.stable !== null && <StableBody stable={session.stable} section={key => t(key as never)} t={t} />}
       </div>
     )
   } else if (session.stable === null) {
@@ -731,50 +800,92 @@ export function ContextEnhancementView({
     )
   } else {
     const stable = session.stable
-    const save = async (value: TaskStateEditValue): Promise<void> => {
-      if (editing === null) return
+
+    const startEdit = (field: keyof TaskStateEditValue) => {
+      setEditError(null)
+      setEditingField({
+        field,
+        draft: editDraftFor(stable, field),
+        expectedRevision: stable.revision,
+      })
+    }
+
+    const saveEdit = async () => {
+      if (editingField === null) return
       setSaving(true)
       setEditError(null)
       try {
-        const result = await editTaskState({ sessionId, expectedRevision: editing.expectedRevision, value })
+        const fullValue = editValueOf(stable)
+        const updatedValue = updateEditValue(fullValue, editingField.field, editingField.draft)
+        const result = await editTaskState({
+          sessionId,
+          expectedRevision: editingField.expectedRevision,
+          value: updatedValue,
+        })
         if (!result.ok) {
           setEditError(result.message)
           return
         }
-        setEditing(null)
+        setEditingField(null)
       } catch (error: unknown) {
         setEditError(String(error instanceof Error ? error.message : error))
       } finally {
         setSaving(false)
       }
     }
+
     summary = (
       <div className="dsh-ce-summary">
-        <header style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 20 }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: 16 }}>{t('summary.title')}</h2>
-            <p style={{ ...statusDetailStyle, marginBottom: 0 }}>{t('view.subtitle')}</p>
-          </div>
-          {editing === null && (
-            <button type="button" style={editButtonStyle} onClick={() => {
-              setEditError(null)
-              setEditing({ expectedRevision: stable.revision, value: editValueOf(stable) })
-            }}>
-              ✎ {t('edit.action')}
-            </button>
-          )}
+        <header>
+          <h2 style={{ margin: 0, fontSize: 16 }}>{t('summary.title')}</h2>
+          <p style={{ ...statusDetailStyle, marginBottom: 0 }}>{t('view.subtitle')}</p>
         </header>
-        {editing === null
-          ? isEmptyStable(stable)
-            ? <EmptySummary className="dsh-ce-empty-stable" title={t('empty.noStable.title')} body={t('empty.noStable.body')} />
-            : <StableBody stable={stable} section={key => t(key as never)} emptyNoEntries={t('empty.noEntries')} />
-          : <EditForm value={editing.value} saving={saving} error={editError} t={t} onCancel={() => { setEditing(null); setEditError(null) }} onSubmit={save} />}
+        {isEmptyStable(stable) && editingField === null ? (
+          <div className="dsh-ce-empty-stable">
+            <EmptySummary
+              title={t('empty.noStable.title')}
+              body={t('empty.noStable.body')}
+              action={
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 18 }}>
+                  {EDITABLE_FIELDS.map(field => (
+                    <button
+                      key={field.key}
+                      type="button"
+                      style={editButtonStyle}
+                      title={`${t('edit.action')} ${t(field.label)}`}
+                      aria-label={`${t('edit.action')} ${t(field.label)}`}
+                      onClick={() => startEdit(field.key)}
+                    >
+                      ✎ {t(field.label)}
+                    </button>
+                  ))}
+                </div>
+              }
+            />
+          </div>
+        ) : (
+          <StableBody
+            stable={stable}
+            section={key => t(key as never)}
+            t={t}
+            editingField={editingField}
+            saving={saving}
+            editError={editError}
+            onStartEdit={startEdit}
+            onUpdateDraft={draft => setEditingField(curr => curr ? { ...curr, draft } : null)}
+            onSave={saveEdit}
+            onCancel={() => {
+              setEditingField(null)
+              setEditError(null)
+            }}
+          />
+        )}
       </div>
     )
   }
 
   return (
-    <div className="dsh-ce" style={pageStyle}>
+    <div className="dsh-ce" style={pageStyle} data-conversation-composer-overlay="">
       <StatusPanel evidence={evidence} stable={session.stable} t={t} />
       <main style={summaryAreaStyle}>{summary}</main>
     </div>

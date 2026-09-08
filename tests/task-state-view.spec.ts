@@ -206,6 +206,8 @@ describe('ContextEnhancementView', () => {
     expect(html).toContain('dsh-ce-empty-stable')
     expect(html).toContain(zh['empty.noStable.title'])
     expect(html).toContain(zh['edit.action'])
+    expect(html).toContain(zh['section.currentObjective'])
+    expect(html).toContain(zh['section.risks'])
   })
 
   it('renders the complete summary and an edit action for a populated stable', () => {
@@ -255,6 +257,24 @@ describe('ContextEnhancementView', () => {
     expect(html).toContain(zh['section.todoReferences'])
     expect(html).toContain('Todo ref content')
     expect(html).toContain('dsh-ce-seq')
+
+    // Empty editable fields remain discoverable so users can add new entries.
+    const sparseHtml = renderToString(
+      React.createElement(ContextEnhancementView, {
+        ...contextualRuntime(),
+        useTaskState: () => createSource({
+          stable: mockStable({ decisions: [], constraints: [], risks: [] }),
+          connection: 'live',
+          generation: 1,
+        }),
+        retryTaskState: () => {},
+        t: translate as never,
+        viewRequest: null,
+      } as never),
+    )
+    expect(sparseHtml).toContain(zh['section.decisions'])
+    expect(sparseHtml).toContain(zh['section.constraints'])
+    expect(sparseHtml).toContain(zh['section.risks'])
 
     // The former 0.1.6 popover capabilities now live at the top of the view.
     expect(html).toContain(zh['status.title'])
