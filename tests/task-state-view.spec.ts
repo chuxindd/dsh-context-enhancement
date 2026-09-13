@@ -11,9 +11,9 @@ import { apply, inject } from '../src/client/index.ts'
 
 function mockStable(overrides: Partial<TaskStateStable> = {}): TaskStateStable {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     revision: 1,
-    filterVersion: 'task-state-basic/filter-v2',
+    filterVersion: 'task-state-basic/filter-v3',
     sourceCursor: 42,
     digest: 'digest-12345',
     facts: [{ id: 'fact-1' as never, content: 'Fact content' }],
@@ -28,6 +28,8 @@ function mockStable(overrides: Partial<TaskStateStable> = {}): TaskStateStable {
     },
     evidence: [{ seq: 10, note: 'Evidence note' }],
     todoReferences: [{ seq: 11, content: 'Todo ref content' }],
+    goalView: { status: 'none' },
+    todoView: { status: 'none', items: [] },
     ...overrides,
   }
 }

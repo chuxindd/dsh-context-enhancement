@@ -1,0 +1,614 @@
+{
+  "experiment": "B3-E03-pressure-thrashing-regression",
+  "title": "B3 修复后 E03 压力抖动回归实验",
+  "measurement": "fake token meter (fixture tokens), fake LLM, temporary Session, unmodified harness",
+  "invokedAs": "BasicCompactionEngine.prototype.compactIfNeeded(agent, \"pressure\", signal)",
+  "policy": {
+    "contextWindow": 100000,
+    "pressureThresholdTokens": 80000,
+    "pressureExitTokens": 70000,
+    "forgetMaintenanceWatermarkTokens": 70000,
+    "toolMaintenanceWatermarkTokens": 40000,
+    "typicalToolResultFixtureTokens": 4000,
+    "minNetReleaseTokens": 1024,
+    "minNetReleaseRatio": 0.15
+  },
+  "fixture": {
+    "initialTotalTokens": 82000,
+    "initialTotalRatio": 0.82,
+    "cycles": 5,
+    "appendedPerCycle": {
+      "toolCalls": 1,
+      "toolResults": 1,
+      "toolCallFixtureTokens": 1000,
+      "toolResultFixtureTokens": 4000,
+      "appendedTo": "the OPEN turn (turn 3), one new step per cycle"
+    }
+  },
+  "invocationError": null,
+  "rows": [
+    {
+      "cycle": 0,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 0,
+        "toolCalls": 0,
+        "toolResultFixtureTokens": 0,
+        "toolCallFixtureTokens": 0
+      },
+      "maintenanceInvocations": 1,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 82000,
+      "beforeSurfaceTokens": 82000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 32000,
+        "toolTokens": 30000,
+        "recentTokens": 20000,
+        "retainedTailTokens": 20000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 6,
+        "tokens": 14000,
+        "sourceKinds": [
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 57802,
+        "outputChars": 3612,
+        "inputTokens": 14451,
+        "outputTokens": 903,
+        "outputTextChars": 3611,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 988,
+      "afterTotalTokens": 68000,
+      "afterSurfaceTokens": 68000,
+      "netReleasedTokens": 14000,
+      "netReleaseRatio": 0.17073170731707318,
+      "headroomTokens": 12000,
+      "derivedHeadroomWithFramedCheckpointTokens": 11012,
+      "stopReasons": [
+        "pressure-exit"
+      ],
+      "shadowedNodes": 7,
+      "surfaceGenerationBefore": 0,
+      "surfaceGenerationAfter": 1,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 18000,
+        "toolTokens": 30000,
+        "recentTokens": 20000,
+        "retainedTailTokens": 20000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 24,
+        "tool-call": 4,
+        "tool-result": 4
+      },
+      "totalBeforeAppendTokens": null,
+      "totalAfterAppendTokens": null,
+      "pressurePassLedger": {
+        "exitTokens": null,
+        "exitReached": null,
+        "terminalReason": null,
+        "batchesRun": null,
+        "stopReasons": [
+          "pressure-exit"
+        ]
+      }
+    },
+    {
+      "cycle": 1,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 2,
+      "trigger": "pressure",
+      "tier": "maintenance",
+      "beforeTotalTokens": 73000,
+      "beforeSurfaceTokens": 73000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 22000,
+        "toolTokens": 26000,
+        "recentTokens": 25000,
+        "retainedTailTokens": 25000
+      },
+      "selected": null,
+      "summary": {
+        "requests": 0,
+        "inputChars": 0,
+        "outputChars": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "outputTextChars": null,
+        "outputTextPrefix": null
+      },
+      "framedCheckpointTokens": null,
+      "afterTotalTokens": 73000,
+      "afterSurfaceTokens": 73000,
+      "netReleasedTokens": 0,
+      "netReleaseRatio": 0,
+      "headroomTokens": 7000,
+      "derivedHeadroomWithFramedCheckpointTokens": null,
+      "stopReasons": [],
+      "shadowedNodes": 0,
+      "surfaceGenerationBefore": 1,
+      "surfaceGenerationAfter": 1,
+      "replacementCommitted": false,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 22000,
+        "toolTokens": 26000,
+        "recentTokens": 25000,
+        "retainedTailTokens": 25000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 24,
+        "tool-call": 5,
+        "tool-result": 5
+      },
+      "totalBeforeAppendTokens": 68000,
+      "totalAfterAppendTokens": 73000,
+      "pressurePassLedger": {
+        "exitTokens": null,
+        "exitReached": null,
+        "terminalReason": null,
+        "batchesRun": null,
+        "stopReasons": null
+      }
+    },
+    {
+      "cycle": 2,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 3,
+      "trigger": "pressure",
+      "tier": "maintenance",
+      "beforeTotalTokens": 78000,
+      "beforeSurfaceTokens": 78000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 28000,
+        "toolTokens": 20000,
+        "recentTokens": 30000,
+        "retainedTailTokens": 30000
+      },
+      "selected": null,
+      "summary": {
+        "requests": 0,
+        "inputChars": 0,
+        "outputChars": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "outputTextChars": null,
+        "outputTextPrefix": null
+      },
+      "framedCheckpointTokens": null,
+      "afterTotalTokens": 78000,
+      "afterSurfaceTokens": 78000,
+      "netReleasedTokens": 0,
+      "netReleaseRatio": 0,
+      "headroomTokens": 2000,
+      "derivedHeadroomWithFramedCheckpointTokens": null,
+      "stopReasons": [],
+      "shadowedNodes": 0,
+      "surfaceGenerationBefore": 1,
+      "surfaceGenerationAfter": 1,
+      "replacementCommitted": false,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 20000,
+        "recentTokens": 30000,
+        "retainedTailTokens": 30000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 24,
+        "tool-call": 6,
+        "tool-result": 6
+      },
+      "totalBeforeAppendTokens": 73000,
+      "totalAfterAppendTokens": 78000,
+      "pressurePassLedger": {
+        "exitTokens": null,
+        "exitReached": null,
+        "terminalReason": null,
+        "batchesRun": null,
+        "stopReasons": null
+      }
+    },
+    {
+      "cycle": 3,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 4,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 83000,
+      "beforeSurfaceTokens": 83000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 32000,
+        "toolTokens": 16000,
+        "recentTokens": 35000,
+        "retainedTailTokens": 35000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 7,
+        "tokens": 14000,
+        "sourceKinds": [
+          "user/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          47,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 61754,
+        "outputChars": 3859,
+        "inputTokens": 15439,
+        "outputTokens": 965,
+        "outputTextChars": 3858,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 1050,
+      "afterTotalTokens": 69000,
+      "afterSurfaceTokens": 69000,
+      "netReleasedTokens": 14000,
+      "netReleaseRatio": 0.1686746987951807,
+      "headroomTokens": 11000,
+      "derivedHeadroomWithFramedCheckpointTokens": 9950,
+      "stopReasons": [
+        "pressure-exit"
+      ],
+      "shadowedNodes": 8,
+      "surfaceGenerationBefore": 1,
+      "surfaceGenerationAfter": 2,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 18000,
+        "toolTokens": 16000,
+        "recentTokens": 35000,
+        "retainedTailTokens": 35000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 17,
+        "tool-call": 7,
+        "tool-result": 7
+      },
+      "totalBeforeAppendTokens": 78000,
+      "totalAfterAppendTokens": 83000,
+      "pressurePassLedger": {
+        "exitTokens": null,
+        "exitReached": null,
+        "terminalReason": null,
+        "batchesRun": null,
+        "stopReasons": [
+          "pressure-exit"
+        ]
+      }
+    },
+    {
+      "cycle": 4,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 5,
+      "trigger": "pressure",
+      "tier": "maintenance",
+      "beforeTotalTokens": 74000,
+      "beforeSurfaceTokens": 74000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 24000,
+        "toolTokens": 10000,
+        "recentTokens": 40000,
+        "retainedTailTokens": 40000
+      },
+      "selected": null,
+      "summary": {
+        "requests": 0,
+        "inputChars": 0,
+        "outputChars": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "outputTextChars": null,
+        "outputTextPrefix": null
+      },
+      "framedCheckpointTokens": null,
+      "afterTotalTokens": 74000,
+      "afterSurfaceTokens": 74000,
+      "netReleasedTokens": 0,
+      "netReleaseRatio": 0,
+      "headroomTokens": 6000,
+      "derivedHeadroomWithFramedCheckpointTokens": null,
+      "stopReasons": [],
+      "shadowedNodes": 0,
+      "surfaceGenerationBefore": 2,
+      "surfaceGenerationAfter": 2,
+      "replacementCommitted": false,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 24000,
+        "toolTokens": 10000,
+        "recentTokens": 40000,
+        "retainedTailTokens": 40000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 17,
+        "tool-call": 8,
+        "tool-result": 8
+      },
+      "totalBeforeAppendTokens": 69000,
+      "totalAfterAppendTokens": 74000,
+      "pressurePassLedger": {
+        "exitTokens": null,
+        "exitReached": null,
+        "terminalReason": null,
+        "batchesRun": null,
+        "stopReasons": null
+      }
+    },
+    {
+      "cycle": 5,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 6,
+      "trigger": "pressure",
+      "tier": "maintenance",
+      "beforeTotalTokens": 79000,
+      "beforeSurfaceTokens": 79000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 28000,
+        "toolTokens": 6000,
+        "recentTokens": 45000,
+        "retainedTailTokens": 45000
+      },
+      "selected": null,
+      "summary": {
+        "requests": 0,
+        "inputChars": 0,
+        "outputChars": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "outputTextChars": null,
+        "outputTextPrefix": null
+      },
+      "framedCheckpointTokens": null,
+      "afterTotalTokens": 79000,
+      "afterSurfaceTokens": 79000,
+      "netReleasedTokens": 0,
+      "netReleaseRatio": 0,
+      "headroomTokens": 1000,
+      "derivedHeadroomWithFramedCheckpointTokens": null,
+      "stopReasons": [],
+      "shadowedNodes": 0,
+      "surfaceGenerationBefore": 2,
+      "surfaceGenerationAfter": 2,
+      "replacementCommitted": false,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 6000,
+        "recentTokens": 45000,
+        "retainedTailTokens": 45000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 17,
+        "tool-call": 9,
+        "tool-result": 9
+      },
+      "totalBeforeAppendTokens": 74000,
+      "totalAfterAppendTokens": 79000,
+      "pressurePassLedger": {
+        "exitTokens": null,
+        "exitReached": null,
+        "terminalReason": null,
+        "batchesRun": null,
+        "stopReasons": null
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "fromMaintenance": 0,
+      "toMaintenance": 1,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": false,
+      "laterMaintenanceTier": "maintenance",
+      "headroomAfterEarlierMaintenance": 12000,
+      "headroomBelowTypicalToolResult": false,
+      "thrashGap": false
+    },
+    {
+      "fromMaintenance": 1,
+      "toMaintenance": 2,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": false,
+      "laterMaintenanceTier": "maintenance",
+      "headroomAfterEarlierMaintenance": 7000,
+      "headroomBelowTypicalToolResult": false,
+      "thrashGap": false
+    },
+    {
+      "fromMaintenance": 2,
+      "toMaintenance": 3,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": true,
+      "laterMaintenanceTier": "pressure",
+      "headroomAfterEarlierMaintenance": 2000,
+      "headroomBelowTypicalToolResult": true,
+      "thrashGap": true
+    },
+    {
+      "fromMaintenance": 3,
+      "toMaintenance": 4,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": false,
+      "laterMaintenanceTier": "maintenance",
+      "headroomAfterEarlierMaintenance": 11000,
+      "headroomBelowTypicalToolResult": false,
+      "thrashGap": false
+    },
+    {
+      "fromMaintenance": 4,
+      "toMaintenance": 5,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": false,
+      "laterMaintenanceTier": "maintenance",
+      "headroomAfterEarlierMaintenance": 6000,
+      "headroomBelowTypicalToolResult": false,
+      "thrashGap": false
+    }
+  ],
+  "criteria": {
+    "requiredConsecutiveThrashGaps": 3,
+    "thrashStreak": 1,
+    "headroomGapStreak": 1,
+    "completeLedger": true
+  },
+  "verdictFromCriteria": "fixed",
+  "perCycleSummary": [
+    {
+      "cycle": 0,
+      "tier": "pressure",
+      "beforeTotal": 82000,
+      "afterTotal": 68000,
+      "netReleased": 14000,
+      "headroom": 12000,
+      "committed": true,
+      "stopReasons": [
+        "pressure-exit"
+      ]
+    },
+    {
+      "cycle": 1,
+      "tier": "maintenance",
+      "beforeTotal": 73000,
+      "afterTotal": 73000,
+      "netReleased": 0,
+      "headroom": 7000,
+      "committed": false,
+      "stopReasons": []
+    },
+    {
+      "cycle": 2,
+      "tier": "maintenance",
+      "beforeTotal": 78000,
+      "afterTotal": 78000,
+      "netReleased": 0,
+      "headroom": 2000,
+      "committed": false,
+      "stopReasons": []
+    },
+    {
+      "cycle": 3,
+      "tier": "pressure",
+      "beforeTotal": 83000,
+      "afterTotal": 69000,
+      "netReleased": 14000,
+      "headroom": 11000,
+      "committed": true,
+      "stopReasons": [
+        "pressure-exit"
+      ]
+    },
+    {
+      "cycle": 4,
+      "tier": "maintenance",
+      "beforeTotal": 74000,
+      "afterTotal": 74000,
+      "netReleased": 0,
+      "headroom": 6000,
+      "committed": false,
+      "stopReasons": []
+    },
+    {
+      "cycle": 5,
+      "tier": "maintenance",
+      "beforeTotal": 79000,
+      "afterTotal": 79000,
+      "netReleased": 0,
+      "headroom": 1000,
+      "committed": false,
+      "stopReasons": []
+    }
+  ],
+  "b3Verification": {
+    "exitLineConfigured": 70000,
+    "initialPressureExitBehavior": "pressure tier: 68000 total after maintenance (exit line = 70000)",
+    "stopReasonsAcrossAllCycles": [
+      "pressure-exit",
+      "pressure-exit"
+    ],
+    "allCyclesCommittedReplacement": false
+  }
+}

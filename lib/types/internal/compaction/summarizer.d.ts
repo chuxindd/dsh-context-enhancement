@@ -14,6 +14,7 @@
  */
 import type { Context } from '@deepseek-ai/cordis';
 import type { ContentBlock, Message, TokenUsage, ToolSchema } from '@deepseek-ai/dsh-llm';
+import type { TokenMeter } from '@deepseek-ai/dsh-token-meter';
 import type { Agent } from '@deepseek-ai/dsh-agent';
 interface SummaryConfig {
     readonly summarizationProvider: string;
@@ -71,5 +72,21 @@ export declare function summarizeWithLlm(ctx: Context, config: SummaryConfig, in
  * @returns content for the synthesized replacement user message.
  */
 export declare function frameSummary(summary: readonly ContentBlock[]): ContentBlock[];
+/**
+ * Price the fixed compaction instruction with the session estimator, so the
+ * envelope-budget input cap accounts for the only novel part of the auxiliary
+ * request.
+ * @param meter - effective session token meter.
+ * @returns heuristic price of the trailing instruction user message.
+ */
+export declare function compactionInstructionTokens(meter: TokenMeter): number;
+/**
+ * Price the smallest possible framed checkpoint. A span at or below this price
+ * can never satisfy the shrink requirement, so the budget pass must decline it
+ * before paying for a call.
+ * @param meter - effective session token meter.
+ * @returns heuristic price of a checkpoint with an empty summary body.
+ */
+export declare function minimumCheckpointTokens(meter: TokenMeter): number;
 export {};
 //# sourceMappingURL=summarizer.d.ts.map

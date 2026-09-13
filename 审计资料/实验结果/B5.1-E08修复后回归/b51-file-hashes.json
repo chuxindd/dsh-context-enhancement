@@ -1,0 +1,61 @@
+{
+  "recordedAt": "2026-09-13T06:06:20.761Z",
+  "files": [
+    {
+      "path": "src/internal/task-state/prompt/index.ts",
+      "sha256": "b29f424301ac533218bf607ef60d3685f7dcabc2514a7f39e18aef926a596d4f",
+      "bytes": 21230,
+      "lines": 510,
+      "mtimeIso": "2026-09-13T05:54:07.829Z"
+    },
+    {
+      "path": "src/internal/task-state/contract/index.ts",
+      "sha256": "7aae1df69f88992d7424b2c56065f2dc224cc6494e35fbab69d73de549984561",
+      "bytes": 5955,
+      "lines": 152,
+      "mtimeIso": "2026-09-13T05:46:25.249Z"
+    },
+    {
+      "path": "src/internal/task-state/contract/types.ts",
+      "sha256": "6f123b081044bb93013429687a41c4061f9a47bda3dc74862b50782ceced2fac",
+      "bytes": 29200,
+      "lines": 642,
+      "mtimeIso": "2026-09-13T05:46:15.358Z"
+    },
+    {
+      "path": "src/task-state-prompt.ts",
+      "sha256": "1f1d41b4f65099481a9d4e89748de4d17e1da3dff9990826acce6784ade05d93",
+      "bytes": 1144,
+      "lines": 23,
+      "mtimeIso": "2026-09-13T05:47:02.471Z"
+    },
+    {
+      "path": "src/internal/compaction/source-index.ts",
+      "sha256": "216fbd746e8551071bebcda11bc4f6d7bbaebec25f008459c7cb948e6261dbf5",
+      "bytes": 8962,
+      "lines": 196,
+      "mtimeIso": "2026-09-13T05:47:37.869Z"
+    },
+    {
+      "path": "tests/task-state-prompt.spec.ts",
+      "sha256": "3eab557892e8c55e5b24039575b1a3b5e33eebae9e6fb316cd65d89fc9f37436",
+      "bytes": 9982,
+      "lines": 208,
+      "mtimeIso": "2026-09-13T05:54:49.024Z"
+    },
+    {
+      "path": "tests/task-state-prompt-fixed-slot.spec.ts",
+      "sha256": "187fd11dc53f3519e4c5bcbf78a720bca89a6c98d81b9e89e80c89c7ef1a618d",
+      "bytes": 40491,
+      "lines": 883,
+      "mtimeIso": "2026-09-13T06:03:32.304Z"
+    },
+    {
+      "path": "审计资料/B5.1-实施记录.md",
+      "sha256": "febfc1f0afafa14ede2bbdc62521af1d56cc01b705ce0e551853d06498638390",
+      "bytes": 28679,
+      "lines": 235,
+      "mtimeIso": "2026-09-13T06:06:10.357Z"
+    }
+  ]
+}

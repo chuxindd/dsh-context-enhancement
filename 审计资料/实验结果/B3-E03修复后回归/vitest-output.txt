@@ -1,0 +1,11 @@
+ PASS  审计资料/实验结果/B3-E03修复后回归/b3-e03-regression.spec.ts
+  B3-E03 修复后回归：同等 fixture，判断 thrashStreak
+    ✓ runs 1 initial + 5 cycle maintenance invocations and records every ledger field (24ms)
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  11:00:53
+   Duration  634ms (transform 173ms, setup 439ms, tests 25ms, environment 0ms)
+   Runner:  vitest 4.1.11
+   Config:  审计资料/实验结果/harness/vitest.experiment.config.ts
+   Command: pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/B3-E03修复后回归/b3-e03-regression.spec.ts --reporter=verbose

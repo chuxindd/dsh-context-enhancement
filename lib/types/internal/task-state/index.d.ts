@@ -20,6 +20,8 @@ export { TASK_STATE_INPUT_SCHEMA_VERSION, TASK_STATE_STABLE_SCHEMA_VERSION, TASK
 export { boundField, boundUtf8, MARKER_BYTES, TRUNCATION_MARKER } from './basic/bytes.ts';
 export type { ByteBoundResult } from './basic/bytes.ts';
 export { resolveTaskStateBasicConfig } from './basic/config.ts';
+export { authorityUrgency, isAuthorityEventType, NO_GOAL_VIEW, NO_TODO_VIEW, resolveAuthorityViews, todoReferencesOf, } from './basic/authority.ts';
+export type { TaskStateAuthorityResolution, TaskStateAuthorityViewName, } from './basic/authority.ts';
 export { commitStable, digestOf, normalizeCandidate, parseCandidate } from './basic/host.ts';
 export { renderTaskStateSnapshot, TASK_STATE_TRUNCATION_MARKER } from './prompt/render.ts';
 //# sourceMappingURL=index.d.ts.map

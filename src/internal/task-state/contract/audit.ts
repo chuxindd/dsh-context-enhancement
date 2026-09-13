@@ -28,6 +28,7 @@
 
 import { z } from 'zod'
 import type { TaskStateRequestId } from './brand.ts'
+import { taskStateInheritedPrefixSchema } from './spec.ts'
 import type {
   TaskStateSessionIdentity,
   TaskStateUpdateFinishedData,
@@ -65,6 +66,7 @@ export const taskStateAuditOpenSchema = z.object({
   request: z.object({
     requestId: nonEmptyTrimmed,
     revision: nonNegativeSafeInteger,
+    trigger: z.enum(['startup', 'threshold', 'urgent', 'trailing', 'manual']).optional(),
     base: stableEnvelopeSchema.nullable(),
     includedSeqs: z.array(nonNegativeSafeInteger),
     filterVersion: nonEmptyTrimmed,
@@ -84,12 +86,16 @@ export const taskStateAuditOpenSchema = z.object({
       limitBytes: nonNegativeSafeInteger,
       keptBytes: nonNegativeSafeInteger,
     })).default([]),
+    // The inherited fork boundary this window was bounded by. Absent on every
+    // row of a lifecycle that began on its own events, which is the only shape
+    // such a lifecycle can produce.
+    inherited: taskStateInheritedPrefixSchema.optional(),
   }),
 })
 
 /** One permissive finished-phase view used to validate a restored row. */
 export const taskStateAuditFinishedSchema = z.object({
-  outcome: z.enum(['success', 'failure', 'manual', 'repair']),
+  outcome: z.enum(['success', 'failure', 'manual', 'repair', 'terminal-infeasible', 'aborted']),
   requestId: z.string().optional(),
   revision: nonNegativeSafeInteger.optional(),
   sourceCursor: nonNegativeSafeInteger.optional(),
@@ -165,6 +171,49 @@ export function finishAuditRow(
   return row
 }
 
+/**
+ * Audit outcome classification distinguishing committed commits, permanent terminal
+ * infeasibility, retryable transient failures, and aborted attempts.
+ */
+export type TaskStateAuditClassification =
+  | 'committed'
+  | 'terminal-infeasible'
+  | 'transient-failure'
+  | 'aborted'
+
+/**
+ * Classify one audit row into its semantic state:
+ * - `committed`: success, manual edit, or certified repair;
+ * - `terminal-infeasible`: permanent budget failure or explicitly quarantined terminal attempt;
+ * - `aborted`: cancelled or in-flight un-settled attempt;
+ * - `transient-failure`: non-terminal failure eligible for subsequent retry.
+ * @param row - the audit record to classify.
+ * @returns the four-way audit classification.
+ */
+export function classifyAuditRow(row: TaskStateAuditRecord): TaskStateAuditClassification {
+  if (row.finished === undefined) {
+    return 'aborted'
+  }
+  const outcome = row.finished.outcome
+  if (outcome === 'success' || outcome === 'manual' || outcome === 'repair') {
+    return 'committed'
+  }
+  if (outcome === 'terminal-infeasible') {
+    return 'terminal-infeasible'
+  }
+  if (outcome === 'aborted') {
+    return 'aborted'
+  }
+  const code = row.finished.error?.code
+  if (code === 'ABORTED' || code === 'SERVICE_DISPOSED') {
+    return 'aborted'
+  }
+  if (code === 'BUDGET') {
+    return 'terminal-infeasible'
+  }
+  return 'transient-failure'
+}
+
 /** The resolved per-request view a keyless replay test can read. */
 export interface TaskStateAuditTimelineEntry {
   /** Branded request id. */
@@ -179,6 +228,8 @@ export interface TaskStateAuditTimelineEntry {
   readonly certified: boolean
   /** Revision the finished phase certifies, when `certified`. */
   readonly certifiedRevision: number | undefined
+  /** Four-way audit outcome classification. */
+  readonly classification: TaskStateAuditClassification
 }
 
 /**
@@ -204,6 +255,7 @@ export function deriveAuditTimeline(rows: readonly TaskStateAuditRecord[]): Task
         certifiedRevision: certified && finished !== undefined && finished.outcome !== undefined
           ? finished.revision
           : undefined,
+        classification: classifyAuditRow(row),
       }
     })
 }

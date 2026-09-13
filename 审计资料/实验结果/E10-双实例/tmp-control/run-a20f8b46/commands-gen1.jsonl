@@ -1,0 +1,15 @@
+{"id":"cmd-001","worker":"A","gen":1,"op":"open"}
+{"id":"cmd-002","worker":"B","gen":1,"op":"open"}
+{"id":"cmd-003","worker":"A","gen":1,"op":"put","table":"sessions","key":"e10-session-a","recipe":{"marker":"A-t1","createdAt":1700000000000,"cwd":"C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46","revision":1,"sourceCursor":5,"digest":"E10-DIGEST-A-t1"}}
+{"id":"cmd-004","worker":"B","gen":1,"op":"inspect"}
+{"id":"cmd-005","worker":"B","gen":1,"op":"get","table":"sessions","key":"e10-session-a"}
+{"id":"cmd-006","worker":"B","gen":1,"op":"put","table":"sessions","key":"e10-session-b","recipe":{"marker":"B-t1","createdAt":1700000000000,"cwd":"C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46","revision":1,"sourceCursor":7,"digest":"E10-DIGEST-B-t1"}}
+{"id":"cmd-007","worker":"A","gen":1,"op":"inspect"}
+{"id":"cmd-008","worker":"A","gen":1,"op":"put","table":"sessions","key":"e10-session-a","recipe":{"marker":"A-t2","createdAt":1700000000000,"cwd":"C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46","revision":2,"sourceCursor":11,"digest":"E10-DIGEST-A-t2"}}
+{"id":"cmd-009","worker":"A","gen":1,"op":"put","table":"audit","key":"ts-e10-shared-audit-row","recipe":{"marker":"A-audit-t1","createdAt":1700000000000,"cwd":"C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46","revision":1,"sourceCursor":5,"requestId":"ts-e10-A-audit-t1","time":1700000101000}}
+{"id":"cmd-010","worker":"B","gen":1,"op":"put","table":"audit","key":"ts-e10-shared-audit-row","recipe":{"marker":"B-audit-t1","createdAt":1700000000000,"cwd":"C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46","revision":2,"sourceCursor":13,"requestId":"ts-e10-B-audit-t1","time":1700000102000}}
+{"id":"cmd-011","worker":"A","gen":1,"op":"get","table":"audit","key":"ts-e10-shared-audit-row"}
+{"id":"cmd-012","worker":"A","gen":1,"op":"close"}
+{"id":"cmd-013","worker":"A","gen":1,"op":"exit"}
+{"id":"cmd-014","worker":"B","gen":1,"op":"close"}
+{"id":"cmd-015","worker":"B","gen":1,"op":"exit"}

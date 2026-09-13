@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/B4.1-E07修复后回归/b41-e07-regression.spec.ts > B4.1 · E07 fixed fixture (startup backlog after a restart) > folds the unprocessed eligible tail on reopen with no new Session event, after the recovered baseline is published 2585ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  11:33:01
+   Duration  3.16s (transform 166ms, setup 0ms, import 412ms, tests 2.59s, environment 0ms)
+

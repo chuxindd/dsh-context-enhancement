@@ -1,0 +1,446 @@
+[
+  {
+    "id": "dsh-context-enhancement@0.1.10",
+    "name": "dsh-context-enhancement",
+    "version": "0.1.10",
+    "size": 1395917,
+    "unpackedSize": 2628505,
+    "shasum": "1ad7d7c11d70672242388ba2a39a449bbf946951",
+    "integrity": "sha512-l65d63D9ygcuQ7PdNahctCVHtX0lTFFMzrrNBBUw4Qlf45FMM20tffVU0jYdg29wv8Z8VyhdDykv5Ej1hNRHNQ==",
+    "filename": "dsh-context-enhancement-0.1.10.tgz",
+    "files": [
+      {
+        "path": "CHANGELOG.md",
+        "size": 11681,
+        "mode": 420
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "size": 4913,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE",
+        "size": 1093,
+        "mode": 420
+      },
+      {
+        "path": "README.en.md",
+        "size": 14094,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 13174,
+        "mode": 420
+      },
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "size": 3574,
+        "mode": 420
+      },
+      {
+        "path": "assets/banner.png",
+        "size": 997250,
+        "mode": 420
+      },
+      {
+        "path": "cordis.patch.yml",
+        "size": 3385,
+        "mode": 420
+      },
+      {
+        "path": "lib/audit-DbO0V0N_.js",
+        "size": 24969,
+        "mode": 420
+      },
+      {
+        "path": "lib/client.js",
+        "size": 216387,
+        "mode": 420
+      },
+      {
+        "path": "lib/compaction-basic.js",
+        "size": 425879,
+        "mode": 420
+      },
+      {
+        "path": "lib/contract-C2nAZOQi.js",
+        "size": 4107,
+        "mode": 420
+      },
+      {
+        "path": "lib/filter-CczOGkqh.js",
+        "size": 18635,
+        "mode": 420
+      },
+      {
+        "path": "lib/index.js",
+        "size": 1506,
+        "mode": 420
+      },
+      {
+        "path": "lib/lib-Bq6jN40l.js",
+        "size": 4781,
+        "mode": 420
+      },
+      {
+        "path": "lib/lib-DkAdRvjl.js",
+        "size": 6763,
+        "mode": 420
+      },
+      {
+        "path": "lib/lib-UkEFLxaM.js",
+        "size": 91021,
+        "mode": 420
+      },
+      {
+        "path": "lib/rolldown-runtime-8H4AJuhK.js",
+        "size": 382,
+        "mode": 420
+      },
+      {
+        "path": "lib/schemas-B9RBVgB9.js",
+        "size": 218391,
+        "mode": 420
+      },
+      {
+        "path": "lib/source-index-BiRfSNPU.js",
+        "size": 41241,
+        "mode": 420
+      },
+      {
+        "path": "lib/task-state-basic.js",
+        "size": 122088,
+        "mode": 420
+      },
+      {
+        "path": "lib/task-state-control.js",
+        "size": 6552,
+        "mode": 420
+      },
+      {
+        "path": "lib/task-state-prompt.js",
+        "size": 29205,
+        "mode": 420
+      },
+      {
+        "path": "lib/task-state.js",
+        "size": 2093,
+        "mode": 420
+      },
+      {
+        "path": "lib/tool-result-pruner.js",
+        "size": 14275,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/client/ContextEnhancementView.d.ts",
+        "size": 3301,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/client/index.d.ts",
+        "size": 405,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/client/locales.d.ts",
+        "size": 5369,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/client/task-state-control-store.d.ts",
+        "size": 11171,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/client/task-state-control.d.ts",
+        "size": 5095,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/client/task-state-remote.d.ts",
+        "size": 790,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/compaction-basic.d.ts",
+        "size": 21518,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/effect-projection.d.ts",
+        "size": 2276,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/index.d.ts",
+        "size": 257,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/config.d.ts",
+        "size": 792,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/envelope-budget.d.ts",
+        "size": 8244,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/pruner-config.d.ts",
+        "size": 1465,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/pruner-types.d.ts",
+        "size": 5605,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/region.d.ts",
+        "size": 6586,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/selection-guard.d.ts",
+        "size": 3275,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/source-index.d.ts",
+        "size": 12188,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/summarizer.d.ts",
+        "size": 4569,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-group-audit-store.d.ts",
+        "size": 789,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-group-audit.d.ts",
+        "size": 18241,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-group-domain.d.ts",
+        "size": 758,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-group-replacement.d.ts",
+        "size": 3197,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-group-summarizer.d.ts",
+        "size": 1615,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-group-summary.d.ts",
+        "size": 1490,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-groups.d.ts",
+        "size": 3006,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-pairing.d.ts",
+        "size": 3465,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/tool-segments.d.ts",
+        "size": 3703,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/types.d.ts",
+        "size": 8637,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/compaction/zones.d.ts",
+        "size": 9459,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/authority.d.ts",
+        "size": 6711,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/batch.d.ts",
+        "size": 4111,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/bytes.d.ts",
+        "size": 2136,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/config.d.ts",
+        "size": 1042,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/domain.d.ts",
+        "size": 3852,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/filter.d.ts",
+        "size": 4609,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/host.d.ts",
+        "size": 4401,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/inherited.d.ts",
+        "size": 4498,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/prompt.d.ts",
+        "size": 2514,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/service.d.ts",
+        "size": 14126,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/types.d.ts",
+        "size": 7257,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/update.d.ts",
+        "size": 7753,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/basic/worker.d.ts",
+        "size": 21337,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/contract/audit.d.ts",
+        "size": 10741,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/contract/brand.d.ts",
+        "size": 1802,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/contract/index.d.ts",
+        "size": 6046,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/contract/spec.d.ts",
+        "size": 9519,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/contract/types.d.ts",
+        "size": 33234,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/control/service.d.ts",
+        "size": 718,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/control/types.d.ts",
+        "size": 4711,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/index.d.ts",
+        "size": 2165,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/prompt/index.d.ts",
+        "size": 8196,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/prompt/render.d.ts",
+        "size": 3788,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/internal/task-state/prompt/types.d.ts",
+        "size": 1129,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/task-state-basic.d.ts",
+        "size": 1384,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/task-state-control.d.ts",
+        "size": 172,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/task-state-prompt.d.ts",
+        "size": 1191,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/task-state.d.ts",
+        "size": 2985,
+        "mode": 420
+      },
+      {
+        "path": "lib/types/tool-result-pruner.d.ts",
+        "size": 8099,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 7116,
+        "mode": 420
+      },
+      {
+        "path": "presets/contextual/agent.cordis.yml",
+        "size": 14711,
+        "mode": 420
+      },
+      {
+        "path": "presets/contextual/preset.yml",
+        "size": 284,
+        "mode": 420
+      },
+      {
+        "path": "scripts/install-desktop-preset.mjs",
+        "size": 1462,
+        "mode": 420
+      }
+    ],
+    "entryCount": 86,
+    "bundled": []
+  }
+]

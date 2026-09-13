@@ -24,13 +24,15 @@
 import { Context, Service } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import { freezeMessage } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock } from '@deepseek-ai/dsh-llm'
+import type { ContentBlock, ToolResultBlock } from '@deepseek-ai/dsh-llm'
 import type { Session, SessionEvent, SessionSeq, ToolResultMessage } from '@deepseek-ai/dsh-session'
 // Type-only: the `compaction/*` SessionEventMap merges (the shadow-price event).
 import type {} from '@deepseek-ai/dsh-compaction'
 // Type-only: the `ctx.tokenMeter` Context merge for the declared injection.
 import type {} from '@deepseek-ai/dsh-token-meter'
 import { codePointLength, DEFAULTS, PRUNE_MARKER, resolveConfig } from './internal/compaction/pruner-config.ts'
+import { reductionProvenance, shadowPriceWithProvenance } from './internal/compaction/source-index.ts'
+import { toolResultTextLength } from './internal/compaction/tool-groups.ts'
 import type {
   PrunedEntry,
   PruneResult,
@@ -100,6 +102,19 @@ export class ToolResultPruner extends Service {
   }
 
   /**
+   * Measure one tool-result MESSAGE's content the way {@link pruneSession}
+   * reduces it: Unicode code points across EVERY text block — message-level
+   * text blocks and the text blocks nested in each tool-result block alike —
+   * so a pending-work probe that asks this metric can never call a multi-block
+   * result small when the deterministic pass would still reduce it.
+   * @param blocks - message-level content blocks of one tool result.
+   * @returns total Unicode code points across every text block.
+   */
+  measureMessageText(blocks: readonly ContentBlock[]): number {
+    return toolResultTextLength(blocks)
+  }
+
+  /**
    * Replace an over-budget text middle while retaining rich-block order. Text
    * slicing is by Unicode code point, not UTF-16 code unit, so a retained
    * boundary cannot split a surrogate pair. Grapheme clusters may still split.
@@ -122,6 +137,86 @@ export class ToolResultPruner extends Service {
   pruneRecentContent(blocks: readonly ContentBlock[]): ContentBlock[] | null {
     if (this.config.hardLimitChars === undefined) return null
     return this.reduceContent(blocks, this.config.hardLimitChars)
+  }
+
+  /**
+   * Reduce one whole tool-result MESSAGE below the ordinary threshold while
+   * preserving its message-level block structure: every original content block
+   * survives (rich and message-level text blocks ride along in place), and the
+   * shared removed window spans every text block of the message. Returns null
+   * for a message whose total text is within budget.
+   */
+  private pruneMessageContent(messageContent: readonly ContentBlock[]): ContentBlock[] | null {
+    return this.reduceMessageContent(messageContent, this.config.thresholdChars)
+  }
+
+  /** The recent-result hard limit applied to a whole message's content. */
+  private pruneRecentMessageContent(messageContent: readonly ContentBlock[]): ContentBlock[] | null {
+    if (this.config.hardLimitChars === undefined) return null
+    return this.reduceMessageContent(messageContent, this.config.hardLimitChars)
+  }
+
+  /**
+   * Message-level twin of {@link reduceContent}: the measured total and the
+   * removed span cover EVERY text block of the message (message-level text and
+   * the text nested inside tool-result blocks alike), while all other blocks —
+   * including the tool-result blocks that carry them — keep their positions.
+   * An empty content array measures zero and never reduces.
+   */
+  private reduceMessageContent(messageContent: readonly ContentBlock[], triggerChars: number): ContentBlock[] | null {
+    const totalChars = this.measureMessageText(messageContent)
+    if (totalChars <= triggerChars) return null
+
+    const removedStart = this.config.headChars
+    const removedEnd = totalChars - this.config.tailChars
+    const state = { consumed: 0, markerInserted: false }
+    const pruned = this.reduceMessageBlocks(messageContent, removedStart, removedEnd, state)
+    if (!state.markerInserted) throw new Error('tool-result prune: failed to locate the removed text span')
+    const charsAfter = this.measureMessageText(pruned)
+    if (charsAfter > this.config.thresholdChars || charsAfter >= totalChars) {
+      throw new Error('tool-result prune: replacement must be smaller and within threshold')
+    }
+    return pruned
+  }
+
+  /**
+   * Walk one message-level (or nested tool-result) block list, sharing the
+   * removed window across every text unit in surface order. Non-text blocks
+   * pass through untouched; a tool-result block recurses so its own text joins
+   * the same measured stream. Slicing is by Unicode code point, so a retained
+   * boundary cannot split a surrogate pair.
+   */
+  private reduceMessageBlocks(
+    blocks: readonly ContentBlock[],
+    removedStart: number,
+    removedEnd: number,
+    state: { consumed: number; markerInserted: boolean },
+  ): ContentBlock[] {
+    const pruned: ContentBlock[] = []
+    for (const block of blocks) {
+      if (block.type === 'tool-result') {
+        pruned.push({ ...block, content: this.reduceMessageBlocks(block.content, removedStart, removedEnd, state) })
+        continue
+      }
+      if (block.type !== 'text') {
+        pruned.push(block)
+        continue
+      }
+      const points = Array.from(block.text)
+      const blockStart = state.consumed
+      const blockEnd = blockStart + points.length
+      const headEnd = Math.min(points.length, Math.max(0, removedStart - blockStart))
+      const tailStart = Math.min(points.length, Math.max(0, removedEnd - blockStart))
+      const intersectsRemoved = blockStart < removedEnd && blockEnd > removedStart
+      const marker = intersectsRemoved && !state.markerInserted ? PRUNE_MARKER : ''
+      if (marker.length > 0) state.markerInserted = true
+      const text = points.slice(0, headEnd).join('')
+        + marker
+        + points.slice(tailStart).join('')
+      state.consumed = blockEnd
+      if (text.length > 0) pruned.push({ ...block, text })
+    }
+    return pruned
   }
 
   /**
@@ -192,7 +287,8 @@ export class ToolResultPruner extends Service {
    * node through the injected token meter, so pure consumers can subtract it
    * without per-node state.
    * @param session - session whose current surface is rewritten.
-   * @param options - optional eligible older span for region-aware passes.
+   * @param options - optional eligible older span for region-aware passes, plus
+   * the per-replacement landing callback a partial pass reports through.
    * @returns landed replacements and aggregate Unicode-code-point savings.
    * @throws when the session rejects a replacement, or an `olderRange` names a
    * seq absent from the current surface; replacements committed earlier in the
@@ -231,28 +327,49 @@ export class ToolResultPruner extends Service {
     const pruned: PrunedEntry[] = []
     let charsRemoved = 0
     for (const { seq, event, ordinaryEligible } of candidates) {
-      const result = event.data.message.content[0]
+      // Measurement and reduction walk EVERY message-level content block, so an
+      // empty content array has nothing to measure (skip, stay raw) and a
+      // corrupt or synthetic multi-block message cannot crash the pass.
+      const originalContent: readonly ContentBlock[] = event.data.message.content
+      if (originalContent.length === 0) continue
       const content = ordinaryEligible
-        ? this.pruneContent(result.content)
-        : this.pruneRecentContent(result.content)
+        ? this.pruneMessageContent(originalContent)
+        : this.pruneRecentMessageContent(originalContent)
       if (content === null) continue
-      const charsBefore = this.measureContent(result.content)
-      const charsAfter = this.measureContent(content)
+      const charsBefore = this.measureMessageText(originalContent)
+      const charsAfter = this.measureMessageText(content)
       const message = freezeMessage<ToolResultMessage>({
         ...event.data.message,
-        content: [{
-          ...result,
-          content,
-        }] as [typeof result],
+        // The reduction preserves the message-level block structure; for the
+        // well-formed single tool-result block this is exactly that block with
+        // its pruned inner content.
+        content: content as [ToolResultBlock],
       })
       // Shadow-price protocol: the metering event and its replacement are
       // appended synchronously adjacent, so pure consumers subtract the
-      // shadowed node's heuristic price without retaining per-node state.
-      session.append('compaction/prune', {
-        shadowedRange: { start: seq, end: seq },
-        shadowedSeqs: [seq],
-        shadowedTokenCount: this.ctx.tokenMeter.estimateMessage(event.data.message),
+      // shadowed node's heuristic price without retaining per-node state. That
+      // same event carries this reduction's durable provenance, so a restarted
+      // or replayed Session classifies the replacement as `tool-pruned` from the
+      // Session log alone — no audit document takes part — while a foreign
+      // pruner that logs only the price stays fail-closed (`unknown-replacement`)
+      // instead of being read as this package's own model-free reduction.
+      const provenance = reductionProvenance({
+        kind: 'tool-pruned',
+        // A model-free prune stands for exactly the one node it shadows and
+        // derives from it alone, so it cites that node once.
+        coveredSeqs: [seq],
+        sourceEventSeqs: [seq],
+        // No tool group took part, and the record says so rather than inventing
+        // an identity a recovery could mistake for a summarized group.
+        groupId: null,
+        generation: session.surface.replaceGeneration,
+        content: message.content,
       })
+      session.append('compaction/prune', shadowPriceWithProvenance(
+        seq,
+        this.ctx.tokenMeter.estimateMessage(event.data.message),
+        provenance,
+      ))
       const replacement = session.append('tool/result', {
         ...event.data,
         message,
@@ -260,14 +377,19 @@ export class ToolResultPruner extends Service {
         surfaceOp: { op: 'replace', start: seq, end: seq },
         sourceEventSeqs: [seq],
       })
-      pruned.push({
+      const entry: PrunedEntry = {
         originalSeq: seq,
         replacementSeq: replacement.seq,
         callId: event.data.message.source.callId,
         charsBefore,
         charsAfter,
-      })
+      }
+      pruned.push(entry)
       charsRemoved += charsBefore - charsAfter
+      // Report the landed replacement before touching the next candidate: a
+      // later throw in this same pass leaves it durable, and the caller must be
+      // able to exclude it from this invocation's remaining work.
+      options?.onReplacement?.(entry)
     }
     return { pruned, charsRemoved }
   }

@@ -6,7 +6,7 @@
 
 `dsh-context-enhancement` 是为 DeepSeek Harness（DSH）定制的上下文增强插件，面向单一长会话的上下文管理，提供“工具要点化”和“遗忘区压缩”、“独立会话摘要”的能力，力求化解会话在触发 /compact 上下文压缩后损失信息过多，导致前后表现“判若两人”的技术困境。本项目是在一众 DSH 记忆插件中，少有的面对单一上下文进行治理的插件。
 
-> 当前版本：`0.1.10`。兼容 DeepSeek Harness `0.1.2-rc.1`。
+> 当前版本：`0.1.11`。兼容 DeepSeek Harness `0.1.2-rc.1`。
 > 本项目还在测试阶段，代码由 GPT5.6 Sol 完成，欢迎批评指教。
 
 ## 工作原理
@@ -94,7 +94,7 @@ Checkpoint 使用独立模型请求、输入预算、输出预算、超时和重
 安装固定 tag，避免后续提交改变当前部署：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.11'
 dsh --profile web
 ```
 
@@ -110,7 +110,7 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.10.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.11.tgz"
 dsh --profile web
 ```
 
@@ -182,7 +182,7 @@ $DSH_HOME/storages/context_enhancement_task_state.json
 升级：
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.11'
 ```
 
 回滚到上一版本：
@@ -271,10 +271,10 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.10.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.11.tgz
 ```
 
-全部通过后提交版本变更，创建 `v0.1.10` tag，并在 GitHub Release 上传同名 tarball。
+全部通过后提交版本变更，创建 `v0.1.11` tag，并在 GitHub Release 上传同名 tarball。
 
 ## 兼容性说明
 

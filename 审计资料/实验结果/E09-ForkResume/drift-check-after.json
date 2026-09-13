@@ -1,0 +1,17 @@
+{
+  "hashCheck": {
+    "declared": 342,
+    "beforeMatch": 342,
+    "afterMatch": 342,
+    "mismatch": 0,
+    "missing": 0
+  },
+  "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+  "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+  "gitStatusLinesBefore": 134,
+  "gitStatusLinesAfter": 134,
+  "statusDiff": 0,
+  "coreFilesDrift": "none",
+  "nonAuditDirectoryDrift": "none",
+  "writesOnlyInside": "审计资料/实验结果/E09-ForkResume/"
+}

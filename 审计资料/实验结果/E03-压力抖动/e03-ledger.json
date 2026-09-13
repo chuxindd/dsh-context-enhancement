@@ -1,0 +1,525 @@
+{
+  "experiment": "E03-pressure-thrashing",
+  "measurement": "fake token meter (fixture tokens), fake LLM, temporary Session, unmodified harness",
+  "invokedAs": "BasicCompactionEngine.prototype.compactIfNeeded(agent, \"pressure\", signal)",
+  "policy": {
+    "contextWindow": 100000,
+    "pressureThresholdTokens": 80000,
+    "forgetMaintenanceWatermarkTokens": 70000,
+    "toolMaintenanceWatermarkTokens": 40000,
+    "typicalToolResultFixtureTokens": 4000
+  },
+  "fixture": {
+    "initialTotalTokens": 82000,
+    "initialTotalRatio": 0.82,
+    "cycles": 5,
+    "appendedPerCycle": {
+      "toolCalls": 1,
+      "toolResults": 1,
+      "toolCallFixtureTokens": 1000,
+      "toolResultFixtureTokens": 4000,
+      "appendedTo": "the OPEN turn (turn 3), one new step per cycle"
+    }
+  },
+  "invocationError": null,
+  "rows": [
+    {
+      "cycle": 0,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 0,
+        "toolCalls": 0,
+        "toolResultFixtureTokens": 0,
+        "toolCallFixtureTokens": 0
+      },
+      "maintenanceInvocations": 1,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 82000,
+      "beforeSurfaceTokens": 82000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 32000,
+        "toolTokens": 30000,
+        "recentTokens": 20000,
+        "retainedTailTokens": 20000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 1,
+        "tokens": 4000,
+        "sourceKinds": [
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          2,
+          3
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 17802,
+        "outputChars": 1112,
+        "inputTokens": 4451,
+        "outputTokens": 278,
+        "outputTextChars": 1111,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 363,
+      "afterTotalTokens": 78000,
+      "afterSurfaceTokens": 78000,
+      "netReleasedTokens": 4000,
+      "netReleaseRatio": 0.04878048780487805,
+      "headroomTokens": 2000,
+      "derivedHeadroomWithFramedCheckpointTokens": 1637,
+      "stopReasons": [],
+      "shadowedNodes": 2,
+      "surfaceGenerationBefore": 0,
+      "surfaceGenerationAfter": 1,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 30000,
+        "recentTokens": 20000,
+        "retainedTailTokens": 20000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 29,
+        "tool-call": 4,
+        "tool-result": 4
+      },
+      "totalBeforeAppendTokens": null,
+      "totalAfterAppendTokens": null
+    },
+    {
+      "cycle": 1,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 2,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 83000,
+      "beforeSurfaceTokens": 83000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 32000,
+        "toolTokens": 26000,
+        "recentTokens": 25000,
+        "retainedTailTokens": 25000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 2,
+        "tokens": 4000,
+        "sourceKinds": [
+          "user/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          47,
+          4,
+          5
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 19254,
+        "outputChars": 1203,
+        "inputTokens": 4814,
+        "outputTokens": 301,
+        "outputTextChars": 1202,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 386,
+      "afterTotalTokens": 79000,
+      "afterSurfaceTokens": 79000,
+      "netReleasedTokens": 4000,
+      "netReleaseRatio": 0.04819277108433735,
+      "headroomTokens": 1000,
+      "derivedHeadroomWithFramedCheckpointTokens": 614,
+      "stopReasons": [],
+      "shadowedNodes": 3,
+      "surfaceGenerationBefore": 1,
+      "surfaceGenerationAfter": 2,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 26000,
+        "recentTokens": 25000,
+        "retainedTailTokens": 25000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 27,
+        "tool-call": 5,
+        "tool-result": 5
+      },
+      "totalBeforeAppendTokens": 78000,
+      "totalAfterAppendTokens": 83000
+    },
+    {
+      "cycle": 2,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 3,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 84000,
+      "beforeSurfaceTokens": 84000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 34000,
+        "toolTokens": 20000,
+        "recentTokens": 30000,
+        "retainedTailTokens": 30000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 3,
+        "tokens": 6000,
+        "sourceKinds": [
+          "user/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          53,
+          6,
+          7,
+          8
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 27345,
+        "outputChars": 1709,
+        "inputTokens": 6837,
+        "outputTokens": 428,
+        "outputTextChars": 1708,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 513,
+      "afterTotalTokens": 78000,
+      "afterSurfaceTokens": 78000,
+      "netReleasedTokens": 6000,
+      "netReleaseRatio": 0.07142857142857142,
+      "headroomTokens": 2000,
+      "derivedHeadroomWithFramedCheckpointTokens": 1487,
+      "stopReasons": [],
+      "shadowedNodes": 4,
+      "surfaceGenerationBefore": 2,
+      "surfaceGenerationAfter": 3,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 20000,
+        "recentTokens": 30000,
+        "retainedTailTokens": 30000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 24,
+        "tool-call": 6,
+        "tool-result": 6
+      },
+      "totalBeforeAppendTokens": 79000,
+      "totalAfterAppendTokens": 84000
+    },
+    {
+      "cycle": 3,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 4,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 83000,
+      "beforeSurfaceTokens": 83000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 32000,
+        "toolTokens": 16000,
+        "recentTokens": 35000,
+        "retainedTailTokens": 35000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 2,
+        "tokens": 4000,
+        "sourceKinds": [
+          "user/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          59,
+          9,
+          10
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 19851,
+        "outputChars": 1240,
+        "inputTokens": 4963,
+        "outputTokens": 310,
+        "outputTextChars": 1239,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 395,
+      "afterTotalTokens": 79000,
+      "afterSurfaceTokens": 79000,
+      "netReleasedTokens": 4000,
+      "netReleaseRatio": 0.04819277108433735,
+      "headroomTokens": 1000,
+      "derivedHeadroomWithFramedCheckpointTokens": 605,
+      "stopReasons": [],
+      "shadowedNodes": 3,
+      "surfaceGenerationBefore": 3,
+      "surfaceGenerationAfter": 4,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 16000,
+        "recentTokens": 35000,
+        "retainedTailTokens": 35000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 22,
+        "tool-call": 7,
+        "tool-result": 7
+      },
+      "totalBeforeAppendTokens": 78000,
+      "totalAfterAppendTokens": 83000
+    },
+    {
+      "cycle": 4,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 5,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 84000,
+      "beforeSurfaceTokens": 84000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 34000,
+        "toolTokens": 10000,
+        "recentTokens": 40000,
+        "retainedTailTokens": 40000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 3,
+        "tokens": 6000,
+        "sourceKinds": [
+          "user/message",
+          "assistant/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          65,
+          11,
+          12,
+          13
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 27382,
+        "outputChars": 1711,
+        "inputTokens": 6846,
+        "outputTokens": 428,
+        "outputTextChars": 1710,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 513,
+      "afterTotalTokens": 78000,
+      "afterSurfaceTokens": 78000,
+      "netReleasedTokens": 6000,
+      "netReleaseRatio": 0.07142857142857142,
+      "headroomTokens": 2000,
+      "derivedHeadroomWithFramedCheckpointTokens": 1487,
+      "stopReasons": [],
+      "shadowedNodes": 4,
+      "surfaceGenerationBefore": 4,
+      "surfaceGenerationAfter": 5,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 10000,
+        "recentTokens": 40000,
+        "retainedTailTokens": 40000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 19,
+        "tool-call": 8,
+        "tool-result": 8
+      },
+      "totalBeforeAppendTokens": 79000,
+      "totalAfterAppendTokens": 84000
+    },
+    {
+      "cycle": 5,
+      "addedSincePreviousMaintenance": {
+        "toolResults": 1,
+        "toolCalls": 1,
+        "toolResultFixtureTokens": 4000,
+        "toolCallFixtureTokens": 1000
+      },
+      "maintenanceInvocations": 6,
+      "trigger": "pressure",
+      "tier": "pressure",
+      "beforeTotalTokens": 83000,
+      "beforeSurfaceTokens": 83000,
+      "beforeEnvelopeTokens": 0,
+      "zonesBefore": {
+        "forgetTokens": 32000,
+        "toolTokens": 6000,
+        "recentTokens": 45000,
+        "retainedTailTokens": 45000
+      },
+      "selected": {
+        "startIndex": 0,
+        "endIndex": 2,
+        "tokens": 4000,
+        "sourceKinds": [
+          "user/message",
+          "assistant/message",
+          "assistant/message"
+        ],
+        "sourceSeqs": [
+          71,
+          14,
+          15
+        ]
+      },
+      "summary": {
+        "requests": 1,
+        "inputChars": 19853,
+        "outputChars": 1240,
+        "inputTokens": 4964,
+        "outputTokens": 310,
+        "outputTextChars": 1239,
+        "outputTextPrefix": "## Primary Request and Intent\n- xxxxxxxxxxxxxxxx"
+      },
+      "framedCheckpointTokens": 395,
+      "afterTotalTokens": 79000,
+      "afterSurfaceTokens": 79000,
+      "netReleasedTokens": 4000,
+      "netReleaseRatio": 0.04819277108433735,
+      "headroomTokens": 1000,
+      "derivedHeadroomWithFramedCheckpointTokens": 605,
+      "stopReasons": [],
+      "shadowedNodes": 3,
+      "surfaceGenerationBefore": 5,
+      "surfaceGenerationAfter": 6,
+      "replacementCommitted": true,
+      "belowThresholdAfter": true,
+      "zonesAfterCall": {
+        "forgetTokens": 28000,
+        "toolTokens": 6000,
+        "recentTokens": 45000,
+        "retainedTailTokens": 45000
+      },
+      "surfaceKindsAfter": {
+        "checkpoint": 1,
+        "assistant": 17,
+        "tool-call": 9,
+        "tool-result": 9
+      },
+      "totalBeforeAppendTokens": 78000,
+      "totalAfterAppendTokens": 83000
+    }
+  ],
+  "gaps": [
+    {
+      "fromMaintenance": 0,
+      "toMaintenance": 1,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": true,
+      "laterMaintenanceTier": "pressure",
+      "headroomAfterEarlierMaintenance": 2000,
+      "headroomBelowTypicalToolResult": true,
+      "thrashGap": true
+    },
+    {
+      "fromMaintenance": 1,
+      "toMaintenance": 2,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": true,
+      "laterMaintenanceTier": "pressure",
+      "headroomAfterEarlierMaintenance": 1000,
+      "headroomBelowTypicalToolResult": true,
+      "thrashGap": true
+    },
+    {
+      "fromMaintenance": 2,
+      "toMaintenance": 3,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": true,
+      "laterMaintenanceTier": "pressure",
+      "headroomAfterEarlierMaintenance": 2000,
+      "headroomBelowTypicalToolResult": true,
+      "thrashGap": true
+    },
+    {
+      "fromMaintenance": 3,
+      "toMaintenance": 4,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": true,
+      "laterMaintenanceTier": "pressure",
+      "headroomAfterEarlierMaintenance": 1000,
+      "headroomBelowTypicalToolResult": true,
+      "thrashGap": true
+    },
+    {
+      "fromMaintenance": 4,
+      "toMaintenance": 5,
+      "addedToolResults": 1,
+      "addedToolCalls": 1,
+      "laterMaintenanceCommittedReplacement": true,
+      "laterMaintenanceTier": "pressure",
+      "headroomAfterEarlierMaintenance": 2000,
+      "headroomBelowTypicalToolResult": true,
+      "thrashGap": true
+    }
+  ],
+  "criteria": {
+    "requiredConsecutiveThrashGaps": 3,
+    "thrashStreak": 5,
+    "headroomGapStreak": 5,
+    "completeLedger": true
+  },
+  "verdictFromCriteria": "reproduced"
+}

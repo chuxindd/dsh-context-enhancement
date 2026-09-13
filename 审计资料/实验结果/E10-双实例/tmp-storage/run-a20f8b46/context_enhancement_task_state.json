@@ -1,0 +1,70 @@
+{
+  "unit": {
+    "name": "context_enhancement_task_state",
+    "version": 1
+  },
+  "global": null,
+  "tables": {
+    "sessions": {
+      "e10-session-fork": {
+        "session": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+        },
+        "stable": {
+          "facts": [
+            {
+              "id": "fact-e10-B-r4-fork-1",
+              "content": "E10 B-r4-fork durable fact one."
+            },
+            {
+              "id": "fact-e10-B-r4-fork-2",
+              "content": "E10 B-r4-fork durable fact two."
+            }
+          ],
+          "decisions": [
+            {
+              "id": "decision-e10-B-r4-fork-1",
+              "content": "E10 B-r4-fork durable decision one."
+            }
+          ],
+          "constraints": [
+            {
+              "id": "constraint-e10-B-r4-fork-1",
+              "content": "E10 B-r4-fork durable constraint one."
+            }
+          ],
+          "risks": [
+            {
+              "id": "risk-e10-B-r4-fork-1",
+              "content": "E10 B-r4-fork durable risk one."
+            }
+          ],
+          "evidence": [
+            {
+              "seq": 22,
+              "note": "E10 B-r4-fork evidence note."
+            }
+          ],
+          "todoReferences": [],
+          "continuation": {
+            "currentObjective": "E10 objective B-r4-fork",
+            "currentFocus": "E10 focus B-r4-fork",
+            "openWork": [
+              "E10 B-r4-fork open work one."
+            ],
+            "nextActions": [
+              "E10 B-r4-fork next action one."
+            ]
+          },
+          "schemaVersion": 1,
+          "revision": 4,
+          "filterVersion": "e10-filter-v1",
+          "sourceCursor": 22,
+          "digest": "E10-DIGEST-B-r4-fork"
+        }
+      }
+    },
+    "audit": {}
+  }
+}

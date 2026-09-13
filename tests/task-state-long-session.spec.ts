@@ -178,7 +178,7 @@ async function readDomain(): Promise<{
   unit: { name: string; version: number }
   tables: { sessions: Record<string, unknown>; audit: Record<string, unknown> }
 }> {
-  const text = await readFile(join(root as string, 'storage', 'context_enhancement_task_state.json'), 'utf8')
+  const text = await readFile(join(root as string, 'storage', 'context_enhancement_task_state_v2.json'), 'utf8')
   return JSON.parse(text) as {
     unit: { name: string; version: number }
     tables: { sessions: Record<string, unknown>; audit: Record<string, unknown> }

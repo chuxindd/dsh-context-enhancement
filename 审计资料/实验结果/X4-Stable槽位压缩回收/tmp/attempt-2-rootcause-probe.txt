@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+stdout | 审计资料/实验结果/X4-Stable槽位压缩回收/tmp/probe.spec.ts > X4 probe > diagnose compaction engine availability
+
+=== X4 PROBE ===
+[after StorageDomain] llm=OK sessions=OK sessionProjections=OK systemPrompt=OK tools=OK tokenMeter=OK agents=OK storage=OK storage.backend.json=OK storageDomain=OK taskState=- compaction=- agentLoop=- commands=- invariants=-
+[after StorageDomain] fibers: LlmRuntime#2 | SessionStore#2 | #0 | SessionProjectionRegistry#2 | SystemPrompt#2 | ToolRuntime#2 | TokenMeter#2 | AgentRegistry#2 | #0 | Storage#2 | storage-json#2 | storage-domain#2 | #2
+[after TaskState*] llm=OK sessions=OK sessionProjections=OK systemPrompt=OK tools=OK tokenMeter=OK agents=OK storage=OK storage.backend.json=OK storageDomain=OK taskState=OK compaction=- agentLoop=- commands=- invariants=-
+[after TaskState*] fibers: LlmRuntime#2 | SessionStore#2 | #0 | SessionProjectionRegistry#2 | SystemPrompt#2 | ToolRuntime#2 | TokenMeter#2 | AgentRegistry#2 | #0 | Storage#2 | storage-json#2 | storage-domain#2 | #2 | TaskStateBasicService#2 | task-state-prompt#2
+[mount-BasicCompactionEngine] error=Error: BasicCompactionConfig: unknown key "contextWindowOverride" fiberState=null
+[after BasicCompactionEngine] llm=OK sessions=OK sessionProjections=OK systemPrompt=OK tools=OK tokenMeter=OK agents=OK storage=OK storage.backend.json=OK storageDomain=OK taskState=OK compaction=- agentLoop=- commands=- invariants=-
+[after BasicCompactionEngine] fibers: LlmRuntime#2 | SessionStore#2 | #0 | SessionProjectionRegistry#2 | SystemPrompt#2 | ToolRuntime#2 | TokenMeter#2 | AgentRegistry#2 | #0 | Storage#2 | storage-json#2 | storage-domain#2 | #2 | TaskStateBasicService#2 | task-state-prompt#2 | BasicCompactionEngine#3!Error: BasicCompactionConfig: unknown key "contextWindowOverride"
+[agent-loop] default=function keys=AGENT_LOOP_SETTINGS_NAMESPACE,AGENT_LOOP_SETTINGS_SCHEMA,AgentLoop,default,CONFIGURED_AGENT_IDENTITIES_KEY,DEFAULT_MAX_PARALLEL_TOOL_CALLS,turnBoundaryProjectionDefinition
+[agent-loop] inject=["agents","sessions","llm","tools","systemPrompt","sessionProjections"] name=AgentLoop
+[agent-loop] error=null
+[after AgentLoop] llm=OK sessions=OK sessionProjections=OK systemPrompt=OK tools=OK tokenMeter=OK agents=OK storage=OK storage.backend.json=OK storageDomain=OK taskState=OK compaction=- agentLoop=OK commands=- invariants=-
+[after AgentLoop] fibers: LlmRuntime#2 | SessionStore#2 | #0 | SessionProjectionRegistry#2 | SystemPrompt#2 | ToolRuntime#2 | TokenMeter#2 | AgentRegistry#2 | #0 | Storage#2 | storage-json#2 | storage-domain#2 | #2 | TaskStateBasicService#2 | task-state-prompt#2 | BasicCompactionEngine#3!Error: BasicCompactionConfig: unknown key "contextWindowOverride" | AgentLoop#2 | #0
+=== END ===
+
+
+ ✓ 审计资料/实验结果/X4-Stable槽位压缩回收/tmp/probe.spec.ts > X4 probe > diagnose compaction engine availability 397ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:24:18
+   Duration  1.29s (transform 457ms, setup 0ms, import 724ms, tests 398ms, environment 0ms)
+

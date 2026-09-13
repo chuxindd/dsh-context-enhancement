@@ -1,0 +1,109 @@
+{
+  "id": "cmd-021",
+  "worker": "B",
+  "op": "open",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 41956,
+  "ppid": 51736,
+  "workerStartedAt": 1789226298383,
+  "respondedAt": 1789226298461,
+  "result": {
+    "openedAt": 1789226298451,
+    "specIdentity": {
+      "name": "context_enhancement_task_state",
+      "version": 1,
+      "layout": "single",
+      "tables": [
+        "sessions",
+        "audit"
+      ],
+      "importedFrom": "src\\internal\\task-state\\basic\\domain.ts",
+      "domainSourceSha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7",
+      "contractSourceSha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca",
+      "workerFile": "审计资料\\实验结果\\E10-双实例\\e10-storage-worker.mts"
+    },
+    "inProcess": {
+      "sessionKeys": [
+        "e10-session-fork"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-fork": {
+          "key": "e10-session-fork",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0"
+          },
+          "stable": {
+            "revision": 3,
+            "sourceCursor": 20,
+            "digest": "E10-DIGEST-SEED-r3",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective SEED-r3",
+            "facts": [
+              "E10 SEED-r3 durable fact one.",
+              "E10 SEED-r3 durable fact two."
+            ]
+          },
+          "recordSha256": "3f3bcafb9979438ad1f2574b379539b399d9ae20f1ce7309e6a776748897790b"
+        }
+      },
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "fe8e6845bf81a023cf1ac28621b50d83c06359766aa1877ee3cb62af19a8054e"
+    },
+    "disk": {
+      "present": true,
+      "sha256": "0e3fa7871e62e2cd744539822efc695f80e53f7c814afeeb670393210e8fa020",
+      "size": 1924,
+      "mtimeMs": 1789226297912.772
+    },
+    "diskView": {
+      "present": true,
+      "unit": {
+        "name": "context_enhancement_task_state",
+        "version": 1
+      },
+      "sessionKeys": [
+        "e10-session-fork"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-fork": {
+          "key": "e10-session-fork",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0"
+          },
+          "stable": {
+            "revision": 3,
+            "sourceCursor": 20,
+            "digest": "E10-DIGEST-SEED-r3",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective SEED-r3",
+            "facts": [
+              "E10 SEED-r3 durable fact one.",
+              "E10 SEED-r3 durable fact two."
+            ]
+          },
+          "recordSha256": "3f3bcafb9979438ad1f2574b379539b399d9ae20f1ce7309e6a776748897790b"
+        }
+      },
+      "audit": {},
+      "viewSha256": "fe8e6845bf81a023cf1ac28621b50d83c06359766aa1877ee3cb62af19a8054e"
+    },
+    "domainFile": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0\\context_enhancement_task_state.json"
+  }
+}

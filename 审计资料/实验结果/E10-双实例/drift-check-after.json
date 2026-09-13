@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-09-12T23:19:40.4255972+08:00",
+  "method": "git head/status 前后逐行比对 + 342 项基线哈希前后比对 + 仓库内（排除 node_modules/.git/审计资料）最近 3 小时 mtime 扫描",
+  "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+  "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+  "gitHeadUnchanged": true,
+  "gitStatusBeforeLines": 134,
+  "gitStatusAfterLines": 134,
+  "gitStatusAddedLines": 0,
+  "gitStatusRemovedLines": 0,
+  "gitStatusUnchanged": true,
+  "gitStatusNote": "改动清单是运行前就存在的（lib/**、src/**、tests/**、CHANGELOG.md、tgz 等，共 134 行）；运行前后逐行完全相同。审计资料/ 整个目录在 git 里是未跟踪目录（?? 审计资料/），因此本次新增的实验产物不会出现在改动清单里。",
+  "baselineDeclared": 342,
+  "baselineHashMismatches": 0,
+  "baselineMissing": 0,
+  "baselineTouchedWithinLast3h": [],
+  "filesOutsideAuditDirModifiedWithinLast3h": null,
+  "driftOutsideAuditDir": false,
+  "verdict": "no-drift-outside-audit-dir"
+}

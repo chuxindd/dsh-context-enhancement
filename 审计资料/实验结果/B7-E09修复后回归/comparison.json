@@ -1,0 +1,86 @@
+{
+  "experiment": "B7 · E09 修复后对照（verbatim spec copy + B7-neutralized control）",
+  "spec": {
+    "historical": "审计资料/实验结果/E09-ForkResume/e09-fork-resume.spec.ts",
+    "copy": "审计资料/实验结果/B7-E09修复后回归/b7-e09-regression.spec.ts",
+    "copySha256": "D8D5B940F94D5D9D5BCE7040663A40484B9FD9055C84E56EC03A28A52C820538",
+    "historicalSha256": "D8D5B940F94D5D9D5BCE7040663A40484B9FD9055C84E56EC03A28A52C820538",
+    "verdict": "byte-identical copy; historical directory untouched (16/16 artifacts still match 审计资料/实验结果/E09-ForkResume/artifact-hashes.json)"
+  },
+  "runs": {
+    "historicalE09": "2026-09-12, plugin dirty tree of that day (no B5 fixed slot, v1 domain)",
+    "postFix": "ledger-postfix.json (b7-e09-regression copy) + ledger-postfix-run2.json",
+    "controlPreB7": "ledger-control-preb7.json — same copy, sessionInheritedPrefix neutralized to null"
+  },
+  "comparison": [
+    {
+      "field": "criteria R1/R2/R3/R4",
+      "historical": "true/true/true/true",
+      "postFix": "True/True/False/True",
+      "controlPreB7": "True/True/False/True",
+      "attribution": "post-fix == control ⇒ the change is NOT B7; it is the v1→v2 durable-domain clean break (stage E reads the retired v1 file and finds nothing, which also flips R3)"
+    },
+    {
+      "field": "criteria verdict / anyReproduced",
+      "historical": "not-reproduced / False",
+      "postFix": "inconclusive / True",
+      "controlPreB7": "inconclusive / True",
+      "attribution": "identical post-fix and control ⇒ not B7; E09 reproduced-criteria R1/R2/R4 all stay false, only R3 flips (domain-file read)"
+    },
+    {
+      "field": "childInheritedCount",
+      "historical": 29,
+      "postFix": 30,
+      "controlPreB7": 30,
+      "attribution": "+1 shift identical in control ⇒ B5 fixed-slot node adds one surface event before the fork, not B7"
+    },
+    {
+      "field": "parentCursorA / parentCursorAfterAppend",
+      "historical": "5 / 28",
+      "postFix": "5 / 29",
+      "controlPreB7": "5 / 29",
+      "attribution": "same +1 shift; parent cursor values are B7-invariant by construction (unseeded Session ⇒ boundary 0)"
+    },
+    {
+      "field": "childOwnCursor",
+      "historical": 33,
+      "postFix": 34,
+      "controlPreB7": 34,
+      "attribution": "same +1 shift; identical post-fix vs control"
+    },
+    {
+      "field": "childResume firstLiveSeq / inheritedEventCount",
+      "historical": "34 / 29",
+      "postFix": "35 / 30",
+      "controlPreB7": "35 / 30",
+      "attribution": "cover item 1 (the two fields are different facts) still measured after B7; equal in post-fix and control"
+    },
+    {
+      "field": "stageE.domainFileBytes / auditRowCount",
+      "historical": "20059 / 4",
+      "postFix": " / 0",
+      "controlPreB7": " / 0",
+      "attribution": "spec reads context_enhancement_task_state.json (v1); the current provider writes _v2.json ⇒ nothing read in both post-fix and control runs"
+    },
+    {
+      "field": "stageE.childFirstCommitIncludedSeqs",
+      "historical": "1,2,3,5,11,13,19,21,24,25,26,28,31,32,33",
+      "postFix": "(unavailable, v1 reader)",
+      "controlPreB7": "(unavailable, v1 reader)",
+      "attribution": "the historical observation cannot be reproduced by this spec any more ⇒ replaced by b7-e09-counterpart.spec.ts, which reads the live audit table + the v2 domain"
+    },
+    {
+      "field": "stageB2 renderedChars (task_state_snapshot contribution)",
+      "historical": 411,
+      "postFix": 0,
+      "controlPreB7": 0,
+      "attribution": "B5 fixed-slot: the snapshot text no longer rides variable substitution (reserved contribution renders empty) ⇒ assertion at line 1586 of the copied spec fails in BOTH runs"
+    }
+  ],
+  "assertions": {
+    "historicalRun": "Test Files 1 passed / Tests 1 passed (exit 0), 3 passing runs",
+    "postFixRun": "b7-e09-regression.spec.ts: 1 failed (line 1586, the B5 injection-node assertion); the ledger is written before any assertion, so every stage observation above is complete",
+    "controlRun": "identical single failure at the same line ⇒ the copied E09 spec observes nothing about B7",
+    "structuralDiff": "post-fix vs control ledger: 74 differing leaf paths, 100% of them volatile (timestamps + digests/hashes that cover Host-minted per-run entry ids + artifact byte sizes); 0 non-volatile differences"
+  }
+}

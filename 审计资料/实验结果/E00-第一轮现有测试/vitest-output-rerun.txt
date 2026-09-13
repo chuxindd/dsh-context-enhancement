@@ -1,0 +1,238 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > serializes an external mutation behind the admitted batch 95ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > commits a batch when the eligible watermark passes the threshold 14ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > runs one trailing batch for events arriving after a commit 30ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > runs one trailing batch for events arriving during a request, then stops 292ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > stops scheduling after disposal and never commits late 94ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > never auto-runs a second attempt of the same window after a failure 187ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > converges to the live eligible tail under sustained arrival 170ms
+ ✓ tests/task-state-worker.spec.ts > task-state-basic worker > arranges an audit repair when a successful put leaves an audit gap 15ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > serves a persisted lifecycle-matching stable in the first control baseline after restart 91ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > hydrates an already-open control stream when the persisted stable is seeded after its baseline 29ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > never serves a stored stable to a different lifecycle or session 89ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > does not publish or create runtime for a session disposed before domain open completes 108ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > same-id replacement while old runtime disposal is pending: new lifecycle does not receive old stable/runtime and old cleanup does not delete new runtime 82ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > manual edit disposed during awaited put: no ghost publication/update 134ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > manual edit replaced during awaited put: returns conflict without ghost publication 48ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > throwing manual audit diagnostic returns correct committed result, retains repair, and invokes logger 36ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > throwing disposal logger cannot break cleanup and increments count 84ms
+ ✓ tests/task-state-restart-recovery.spec.ts > task-state restart recovery (baseline/hydration contract) > throwing missing-repair-row and repair failure loggers do not break startup or cleanup 62ms
+ ✓ tests/task-state-long-session.spec.ts > task-state-basic keyless long-session + replay > converges across multiple waves to the live tail of a 30+ event tool-heavy session 159ms
+ ✓ tests/task-state-long-session.spec.ts > task-state-basic keyless long-session + replay > restarts into a fresh process with zero model calls and re-reads the durable audit 135ms
+ ✓ tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies generated lib/ files and tarball exist on disk 2ms
+ ✓ tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies ToolResultPruner runtime behavior in lib/tool-result-pruner.js 104ms
+ ✓ tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies BasicCompactionEngine runtime exports and schema in lib/compaction-basic.js 263ms
+ × tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies lib/client.js contains patched module id 6ms
+   → unpatched package id must not remain
+ ✓ tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > extracts and inspects dsh-context-enhancement-0.1.10.tgz for full parity 22ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > quarantines stale references with a diagnostic instead of failing the whole candidate 12ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > commits a stable and opens + finishes the paired audit row 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > passes the task-state purpose and exact options to the real llm stream 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > never dispatches the adapter when the open-phase audit cannot become durable 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > keeps a committed put authoritative when the finished audit put fails 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > rejects empty model output without committing 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > rejects invalid JSON without committing 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > classifies a thrown transient infrastructure error as retryable 3ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > classifies an aborted session as ABORTED and never retries 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > classifies a finish error with a transient code as retryable 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > rejects an aborted, max-tokens, or tool-calls finish 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > rejects schema-invalid candidate content 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > rejects a semantically invalid candidate (echoed id not in base) 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > classifies an authority put failure as storage 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > commits the first revision with a null base and empty-included cursor 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > reports usage on the success finished audit when the adapter emits it 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > never emits an error audit when the failure audit put itself throws 1ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > classifies a non-Error request-audit failure and a timeout aborted attempt 90ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > builds a semantic context from a base carrying every kinded list 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > quarantine warning with a throwing logger does not abort authority commit 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > finished audit failure with a throwing logger still returns committed result with auditGap 2ms
+ ✓ tests/task-state-update.spec.ts > task-state-basic update attempt > committed listener exception followed by a throwing logger cannot stop later listeners 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope budget arithmetic > derives E and grants the surface that keeps the reserve and margin free 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope budget arithmetic > floors the retained tail at the guaranteed turn tail and vetoes a dominating envelope 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope budget arithmetic > never reports a negative envelope when the surface is priced above total pressure 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope budget arithmetic > prices the guaranteed tail from the two newest surface turns 2ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget span planning > keeps the whole forget zone when it releases the retained tail and fits the cap 2ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget span planning > falls back to the maximal safe prefix when the head exceeds the auxiliary input cap 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget span planning > vetoes the pass locally when no span can be sent 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget span planning > refuses a span that could never shrink below the checkpoint frame 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > vetoes an envelope-dominated pass once per pressure/surface state 3ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > compacts the maximal safe prefix and leaves the retained tail verbatim 3ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > terminates a repeated no-progress pass within one surface generation 2ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > does not clear the deficit in one pass when the replacement is barely smaller 2ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > bounds repeated barely-smaller steps to strictly decreasing paid passes 9ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > caps a bounded maintenance batch by the auxiliary input budget 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > pays for the widest safe prefix when nothing defers it 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > compacts the safe prefix before a reentry blocker instead of deadlocking 2ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > stops with reentry-deferred when no safe prefix exists before the reentry blocker 3ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > stops with tool-stage-deferred when the selected span still owes tool work 2ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > proceeds past inert tool-stage debt with a non-blocking reason 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > logs the first veto when several vetoes apply to the span 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > pays for the deficit-sized span before the widest one 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > compacts the affordable head a window-fraction partition cannot reach 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > stops with the typed reason when only the live tail plus the envelope can remain 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > spans the whole head when the envelope is negligible 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > reopens the envelope-dominated veto when new surface state arrives 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget engine pass > reopens the no-progress memo when new surface state arrives 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget configuration > resolves the default reserve and margin into the policy and spec 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget configuration > refuses a reserve plus margin that alone fills the window 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget configuration > rejects malformed envelope-budget values 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget configuration > inherits the budgets through an exact model override 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope zone boundaries > derives the waterline grant and clamps the forget boundary to it 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope zone boundaries > floors the retained tail at the live working tail and never widens the legacy boundary 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope zone boundaries > reports domination only when even the floored tail cannot end pressure 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope zone boundaries > agrees with the auxiliary-call budget on the affordable retained tail 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > absolute zone boundaries > applies an absolute boundary exactly instead of round-tripping it through a ratio 1ms
+ ✓ tests/compaction-envelope-budget.spec.ts > absolute zone boundaries > keeps the ratio arithmetic exactly when no absolute boundary is supplied 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget partition dead zone > partitions a forget zone the legacy fraction cannot reach 0ms
+ ✓ tests/compaction-envelope-budget.spec.ts > envelope-budget partition dead zone > clamps a mid-range envelope boundary without disturbing a healthy one 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone positional planning > uses current surface position rather than numeric sequence order and keeps tool pairs whole 4ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone positional planning > reports an oversized oldest complete unit instead of silently returning no range 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone positional planning > selects one oldest bounded safe forget batch 1ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > selects the deficit-sized prefix: the smallest span that can end pressure 1ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > promises progress potential, not one-pass deficit clearance 1ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > falls back to the widest safe prefix under the cap when the deficit is unreachable 1ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > keeps a tool pair whole even when the deficit ends inside it 0ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > blocks with envelope-dominated when no auxiliary call fits the window 0ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > blocks with span-below-minimum when every safe prefix cannot satisfy the shrink assertion 0ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > blocks with no-safe-prefix when no node sits outside the retained tail 0ms
+ ✓ tests/compaction-three-zone.spec.ts > pressure span planning > blocks with no-safe-prefix when every prefix over-caps before a safe end 0ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > runs no semantic batch at the 40% tool-maintenance waterline 3ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > runs one maintenance forget batch at the 70% waterline 2ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > keeps the 70% maintenance tier bounded by the batch planner when the forget zone exceeds the budget 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > stops overflow at the forget guard instead of entering younger zones 2ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > compacts the deficit-sized span in ONE call when pressure is reached, ignoring the batch cap 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > pressure span folds a tool summary produced by an EARLIER invocation once new dialogue grew past it 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > blocks the pressure span when THIS same invocation just produced the tool summary 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > extends the pressure span over the older head the envelope-clamped partition carves out 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > still defers the pressure span when THIS invocation replaced content inside it 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > folds an earlier-invocation replacement the pressure span contains 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > extends the pressure span past a sliver forget zone the bounded batch cannot release 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > stops when THIS invocation replaced content inside the span even though the sliver forget zone excludes it 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > stops when THIS invocation replaced content inside the sliver forget zone 1ms
+ ✓ tests/compaction-three-zone.spec.ts > three-zone engine scheduling > folds an earlier-invocation replacement the sliver-crossing span contains 1ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > classifies only audit-confirmed replacements as tool summaries 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > does not re-enter after non-completed aborted turn 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > does not re-enter after non-completed error turn 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > does not re-enter after non-completed blocked turn 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > does not re-enter after non-completed max-tokens turn 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > does not re-enter after non-completed interrupted turn 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > holds tool-summary replacements until a later completed turn 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > relaxes a known tool summary for the whole-zone pressure pass even with zero completed turns 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > relaxes a pruned tool result for the whole-zone pressure pass 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > keeps an audit-confirmed tool summary classified when it logs a shadow price 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > relaxes a prior history-summary checkpoint for the whole-zone pressure pass 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > never relaxes an unknown third-party replacement even for the whole-zone pressure pass 0ms
+ ✓ tests/compaction-three-zone.spec.ts > durable source classification and compatibility > maps legacy thresholds to pressure and rejects ambiguous legacy/new pairs 1ms
+ ✓ tests/compaction-tool-group-audit-failure.spec.ts > tool group summary evidence survives a failed audit commit > keeps the landed reduction recorded, priced, and identified from session provenance 14ms
+ ✓ tests/compaction-tool-group-audit-failure.spec.ts > tool group summary evidence survives a failed audit commit > never records a landed reduction as a terminal failure when only the success commit fails 3ms
+ ✓ tests/compaction-tool-group-audit-failure.spec.ts > tool group summary evidence survives a failed audit commit > handles mid-group append failure without terminal failure/fallback, preserving landed replacement seqs and tool-summary provenance 3ms
+ ✓ tests/compaction-tool-group-audit-failure.spec.ts > tool group summary evidence survives a failed audit commit > preserves semantic provenance and avoids duplicate summary when success audit persistence fails continuously 3ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > rejects a non-positive or non-integer byte budget 6ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > registers the fixed double-brace template as a dynamic context 2ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > renders no context when no agent is present 1ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > renders no context when the session has no committed stable 1ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > renders the stable for the session and preserves literal double braces 2ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > renders nothing for another session without a committed stable 1ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > bounds the rendered variable value to the deployment byte budget 2ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > reads only the task-state pointer during assembly — one synchronous getStable call 1ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > renders an empty snapshot when a provider never mounts under ctx.taskState 1ms
+ ✓ tests/task-state-prompt.spec.ts > task-state prompt consumer > disposes the variable and context registrations when its fiber unloads (HMR safety) 2ms
+ ✓ tests/compaction-reentry-liveness.spec.ts > compaction reentry liveness contract > selects the largest admissible prefix before a permanent unknown replacement and makes progress across repeated steps 12ms
+ ✓ tests/compaction-reentry-liveness.spec.ts > compaction reentry liveness contract > makes 0 model calls and returns a stable stop when no safe prefix exists before the blocker 2ms
+ ✓ tests/compaction-reentry-liveness.spec.ts > compaction reentry liveness contract > does not carry over actionable tool debt veto to a clean narrowed prefix 3ms
+ ✓ tests/compaction-reentry-liveness.spec.ts > compaction reentry liveness contract > respects tool-pairing and step boundaries when selecting safe prefix before blocker 1ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic event-type eligibility > accepts the durable event types the filter folds 2ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic event-type eligibility > rejects the reserved audit names, chunks, compaction/summary, and unknown types 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects a direct human user/message with bounded text 2ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > drops a synthetic plugin user/message that is not direct human input 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > drops an interrupted assistant/message prefix 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects final assistant text without reasoning blocks 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects tool-call arguments as bounded JSON leaves 2ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > degrades malformed tool-call arguments to the raw bounded string 1ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects the durable text and error facts of a tool-result 1ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects a turn-end reason 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects durable goal state on a goal/change snapshot 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects a whole todo list with bounded content 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > selects lifecycle-relevant command/run events and drops others 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > drops an empty todo/write and plan-off 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects the durable goal-round progress on a goal/change snapshot 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects a selected-model request/header but skips identical series headers 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects the durable agent-preset selection 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > projects compaction bracket markers but never the summary 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > whole-bounds the legal JSON tool-argument branch 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter projections > records deterministic array-cut and depth-cut metadata leaves 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops non-record or non-human user messages 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops assistant messages that are non-record or carry no message text 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops a tool/call with no meaningful name or arguments 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops tool results with no text, meta, or error and hostile shapes 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > handles an interrupted-or-foreign turn-end reason and non-record turn/end 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops malformed goal/change snapshots and foreign todo lists 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops foreign request/header, preset, compaction, plan, and command payloads 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > keeps a compaction/start with an absent owner turn and a preset without effort 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > reports the jsonBytes helper 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > handles goal-kind user messages and empty-user-message text 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops an error record with neither name nor code and a code-only error 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops a meta object whose only leaves are binary or empty 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > handles a turn/end reason with a non-record inner body 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops tool-result text with a non-array content list and non-tool-result first block 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > skips blank and non-string text blocks and binary JSON leaves 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > treats a tool/call with non-string arguments as empty 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops non-record plan/todo and command payloads 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops a user message whose source is not a record and a scalar JSON-null leaf 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > projects a command/run carrying a record source and drops an absent one 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops tool-result content whose inner text block list is not an array 0ms
+ ✓ tests/task-state-filter.spec.ts > task-state-basic filter hostile payloads > drops empty-string and whitespace JSON leaves in tool arguments 0ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts > tool group replacement > validates every target before appending replacements 6ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts > tool group replacement > replaces each result while preserving pairing and source events 2ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts > tool group replacement > logs one priced shadow-price event immediately before each replacement 2ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts > tool group replacement > does not land equal-price replacements and never writes events or calls onLanded 1ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts > tool group replacement > does not land greater-than priced replacements and never writes events or calls onLanded 1ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts > tool group replacement > lands strictly smaller replacements with shadow-price and calls onLanded 1ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > folds eligible events above the cursor up to the watermark 2ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > respects the maximum eligible-event count 0ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > respects the maximum framed-input byte budget 2ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > returns infeasible when even the first meaningful event exceeds the complete framed budget 1ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > returns infeasible when the base stable alone already exceeds the budget 1ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > counts CJK and wrapper bytes in the framed-input budget 0ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > returns empty when no eligible event projects meaningful content 0ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > ignores events at or below the committed cursor 0ms
+ ✓ tests/task-state-batch.spec.ts > task-state-basic batch window folding > stops folding at the pending watermark even when later events exist 0ms
+ ✓ tests/compaction-retained-tail-turn-semantics.spec.ts > retained-tail floor real turn semantics > reaches back past interrupted and errored turns to retain the true last completed turn and open turn 5ms
+ ✓ tests/compaction-retained-tail-turn-semantics.spec.ts > retained-tail floor real turn semantics > retains the open turn and the last completed turn when preceded by older completed turns 0ms
+ ✓ tests/compaction-retained-tail-turn-semantics.spec.ts > retained-tail floor real turn semantics > conservatively falls back to guaranteeing at least 2 distinct surface turns when turn metadata is absent 0ms
+ ✓ tests/compaction-retained-tail-turn-semantics.spec.ts > retained-tail floor real turn semantics > protects open turn and meets guaranteed turn count even when no completed turn exists 0ms
+ ✓ tests/compaction-lifecycle-scheduling.spec.ts > automatic compaction lifecycle scheduling > registers only the step-boundary and overflow hooks the host provides 3ms
+ ✓ tests/compaction-lifecycle-scheduling.spec.ts > automatic compaction lifecycle scheduling > awaits the pressure pass before the step is admitted 0ms
+ ✓ tests/compaction-lifecycle-scheduling.spec.ts > automatic compaction lifecycle scheduling > skips the pass for an already-cancelled step but still admits the turn 0ms
+ ✓ tests/compaction-lifecycle-scheduling.spec.ts > automatic compaction lifecycle scheduling > never lets a failed pass block the turn 1ms
+ ✓ tests/compaction-lifecycle-scheduling.spec.ts > automatic compaction lifecycle scheduling > does not compact from completion-shaped session events 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies lib/client.js contains patched module id
+AssertionError: unpatched package id must not remain
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/artifact-parity.spec.ts:128:12
+    126|     const clientSource = readFileSync(resolve(rootDir, 'lib/client.js'…
+    127|     assert.ok(clientSource.includes('dsh-context-enhancement'), 'clien…
+    128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+       |            ^
+    129|   })
+    130|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 14 passed (15)
+      Tests  1 failed | 205 passed (206)
+   Start at  17:27:41
+   Duration  7.79s (transform 796ms, setup 0ms, import 2.50s, tests 2.69s, environment 1ms)
+

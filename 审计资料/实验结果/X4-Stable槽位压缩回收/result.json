@@ -1,0 +1,37 @@
+{
+  "experiment": "X4-stable-slot-compaction-recovery",
+  "attempt": 2,
+  "verdict": "fixed",
+  "surfaceRoute": {
+    "available": true,
+    "reason": "AgentLoop + BasicCompactionEngine mounted (BasicCompactionEngine, auto=false)",
+    "agentId": "x4-compaction-slot-rebuild"
+  },
+  "criteria": {
+    "fixedBeforeRun": true,
+    "engineAvailable": true,
+    "routeWorked": true,
+    "compactionAttempts": 4,
+    "observedCompactions": 4,
+    "completeCycles": 4,
+    "allOneVisibleSlot": true,
+    "generationsStrictlyIncreasing": true,
+    "allTaskStateSlotKind": true,
+    "injectionFlat": true,
+    "dshChannelEmpty": true,
+    "noSlotSelfFeedback": true,
+    "requestCarriesRebuiltSlot": true,
+    "retainedTailOk": true,
+    "evidenceComplete": true,
+    "verdict": "fixed"
+  },
+  "errors": [],
+  "sourceDrift": {
+    "agentLoopLibSha256": "a9142d46163d961ed5774ad544cb997da2197fefca5684ec820060dd50c1c935",
+    "agentLoopSrcHashes": {
+      "agent.ts": "cc14a38d5cf32003699a9342286b597eccf35cec79740c28552e229ead43b4f8",
+      "runtime-context.ts": "ba960f755d136e7da6d430ede85948c4c5282b02a8fc5a4a97375ab95e297168"
+    },
+    "dshHead": "a66e4702047846cdaa10c66c9d3df3951f5ea70d"
+  }
+}

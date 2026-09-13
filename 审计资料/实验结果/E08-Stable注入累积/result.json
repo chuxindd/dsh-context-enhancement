@@ -1,0 +1,298 @@
+{
+  "experiment": "E08-stable-injection-accumulation",
+  "title": "E08 · Stable 注入累积（连续 revision 后旧快照是 append 累积，还是被固定槽位/replacement 替换？）",
+  "question": "连续生成多个内容不同的 Stable Task State revision，并在每次 revision 后执行一次 prompt assembly/step，旧 Stable 快照是否通过 runtime context 追加持续累积，还是被固定槽位/replacement 替换？",
+  "layer": "L2",
+  "verdict": "reproduced",
+  "verdictMeaning": "连续 12 个内容不同的 stable revision，每个 revision 后执行一次真实 assembly/step：旧快照既留在 Session surface 上，也留在之后每一次模型可见请求里（revision header 1..k、与可见节点文本 hash 1:1 对应），注入节点数/字节/token-meter 归因单调线性增长（约 680 B / 约 178 token 每条），且没有任何 replacement 覆盖旧节点，同时持久 store 里始终只有最新一份 stable。",
+  "verdictRule": "reproduced = 至少 10 个内容不同的 revision（每个后接恰好一次真实 step）后，旧快照仍可见于 Session surface、仍出现在之后每次模型可见请求中，注入节点数/字节/token 归因随 revision 增长，且无任何 replacement 操作覆盖旧快照，同时持久 store 只有一份最新记录。not-reproduced = 每步只见最新快照（注入成本持平）。inconclusive = 路径无法产出证据（此时不声称旧快照可见）。design-confirmed = 仅静态设计证据。",
+  "baseline": {
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "pluginCommitAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "a66e4702",
+    "dshCommitFull": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "dshCommitSource": "read-only from DSH checkout .git (HEAD + refs) inside the spec; recorded in ledger.components.agentLoop.dshHead",
+    "workspace": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+    "dshWorkspace": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\deepseek-harness",
+    "source": "workspace-src",
+    "coreFileHashCheck": {
+      "declared": 342,
+      "before": { "mismatch": 0, "missing": 0, "file": "hash-check-before.json" },
+      "after": { "mismatch": 0, "missing": 0, "file": "hash-check-after.json" },
+      "coverage": "src (56) + lib (239) + tests (44) + package.json + vitest.config.ts + dsh-context-enhancement-0.1.10.tgz"
+    },
+    "gitStatusLines": { "before": 134, "after": 134, "identical": true }
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/E08-Stable注入累积/e08-stable-injection.spec.ts --reporter=verbose",
+  "spec": "审计资料/实验结果/E08-Stable注入累积/e08-stable-injection.spec.ts",
+  "testSummary": {
+    "testFiles": 1,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "exitCode": 0,
+    "runnerDurationMs": 1410,
+    "testDurationMs": 801,
+    "determinismRerun": { "passed": 1, "failed": 0, "exitCode": 0, "testDurationMs": 659, "identicalPerRevisionNumbers": true, "rawOutput": "vitest-output-run1.txt" },
+    "rawOutput": "vitest-output.txt",
+    "runnerFailed": false,
+    "errorsInLedger": 0
+  },
+  "config": {
+    "provider": "deepseek-official",
+    "model": "deepseek-v4-flash",
+    "minEvents": 20,
+    "maxEvents": 200,
+    "maxInputBytes": 60000,
+    "maxOutputTokens": 4000,
+    "timeoutMs": 120000,
+    "maxInfraRetries": 2,
+    "maxEntriesPerKind": 50,
+    "maxEntryBytes": 4000,
+    "maxListItems": 40,
+    "promptMaxBytes": 8000,
+    "revisionCount": 12,
+    "seedsPerRevision": 20,
+    "sessionId": "e08-stable-injection",
+    "configSource": "cordis.patch.yml (host task-state-basic) + presets/contextual/agent.cordis.yml (task-state-prompt maxBytes 8000)",
+    "routeAdapter": "scripted fake LlmAdapter (no provider usage emitted)"
+  },
+  "composition": {
+    "real": [
+      "TaskStateBasicService (src/task-state-basic.ts, ctx.plugin): scheduler, single-flight wave, filter, batch fold, prompt frame, candidate validation, authority put, audit rows, committed pointer",
+      "dsh-context-enhancement/task-state-prompt (src/task-state-prompt.ts, ctx.plugin): contribution task-state:snapshot order 125 template {{task_state_snapshot}} + variable provider",
+      "renderTaskStateSnapshot / renderContextSnapshot / ctx.systemPrompt.assemble",
+      "durable storage domain context_enhancement_task_state (Storage + StorageJson{root:<E08>/tmp-storage} + StorageDomain{backend:'json'})",
+      "SessionStore, SystemPrompt, ToolRuntime, AgentRegistry, SessionProjectionRegistry, LlmRuntime, TokenMeter",
+      "DSH AgentLoop @0.1.2-rc.1 from the audited DSH checkout (HEAD a66e4702) built lib"
+    ],
+    "fake": [
+      "the only LLM: scripted LlmAdapter registered for the deployment route; task-state requests (purpose:'task-state') get a structurally valid candidate JSON with a unique per-call marker, agent requests get one text block (no tool call → one step per turn)",
+      "no usage chunk is emitted, so no provider token number enters the meter baseline (baselineKind = 'estimated')"
+    ],
+    "agentLoop": {
+      "package": "@deepseek-ai/dsh-agent-loop@0.1.2-rc.1",
+      "path": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\deepseek-harness\\packages\\core\\agent-loop\\lib\\index.js",
+      "sha256": "a9142d46163d961ed5774ad544cb997da2197fefca5684ec820060dd50c1c935",
+      "srcHashes": {
+        "agent.ts": "cc14a38d5cf32003699a9342286b597eccf35cec79740c28552e229ead43b4f8",
+        "runtime-context.ts": "ba960f755d136e7da6d430ede85948c4c5282b02a8fc5a4a97375ab95e297168"
+      },
+      "dshHead": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+      "imported": true,
+      "loadMethod": "native ESM import() of an absolute file URL with @vite-ignore; no file of that package was copied, rewritten, or added to package.json",
+      "notInstalledInWorkspace": true
+    }
+  },
+  "observations": {
+    "revisionsCommitted": 12,
+    "distinctRevisions": 12,
+    "revisionSequence": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "stepsExecuted": 12,
+    "agentRequestsPerStep": 1,
+    "taskStateModelCallsPerRevision": 1,
+    "injectionNodesVisibleOnSurface": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "snapshotNodesInLog": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "snapshotNodeSeqs": [25, 61, 95, 129, 163, 197, 231, 265, 299, 333, 367, 390],
+    "snapshotNodeSurfaceOps": "append for all 12 nodes",
+    "snapshotNodeSource": "kind='plugin', plugin='@deepseek-ai/dsh-system-prompt', form='snapshot', sections=['task-state:snapshot'] for all 12 nodes",
+    "modelVisibleSnapshotMessages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "cumulativeModelVisibleSnapshotBytes": [673, 1346, 2019, 2699, 3379, 4059, 4739, 5419, 6099, 6785, 7471, 8157],
+    "modelRequestRevisionHeaders": [[1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+    "oldSnapshotStillVisible": "true for every revision after the first (previous snapshot seq still on the surface; earlier revision headers still in the request)",
+    "modelRequestSnapshotsMatchSurfaceNodesByTextHash": true,
+    "meterInjectionTokens": [177, 354, 531, 709, 887, 1065, 1243, 1421, 1599, 1779, 1959, 2139],
+    "meterSurfaceTokens": [775, 1550, 2325, 3101, 3877, 4653, 5429, 6205, 6981, 7780, 8579, 9378],
+    "meterAtRevision12": {
+      "nodeCount": 276,
+      "surfaceTokens": 9378,
+      "totalTokens": 9394,
+      "injectionNodeCount": 12,
+      "injectionTokens": 2139,
+      "injectionHeuristicTokens": 2139,
+      "baselineKind": "estimated",
+      "injectionShareOfSurfaceTokens": 0.2281
+    },
+    "assemblyLayer": {
+      "contributionEntriesNamedTaskStateSnapshot": "exactly 1 in every assembly (12/12)",
+      "renderedRevisionHeaders": "only the CURRENT revision in every assembly (12/12)",
+      "renderedBytesPerAssembly": [673, 673, 673, 680, 680, 680, 680, 680, 680, 686, 686, 686],
+      "budgetBytes": 8000,
+      "truncation": "never triggered (each render far below maxBytes)",
+      "contributionFieldsExposedByAssembly": ["name", "text"],
+      "orderNotExposedByAssembly": true,
+      "conclusion": "the assembly layer is a FIXED SLOT carrying only the newest stable; the growth is NOT produced by one assembly rendering several snapshots"
+    },
+    "surfaceLayer": {
+      "surfaceNodes": [23, 46, 69, 92, 115, 138, 161, 184, 207, 230, 253, 276],
+      "logEvents": [35, 68, 101, 134, 167, 200, 233, 266, 299, 332, 365, 398],
+      "modelRequestMessageCount": [22, 45, 68, 91, 114, 137, 160, 183, 206, 229, 252, 275],
+      "replacementEvents": "0 in every iteration",
+      "surfaceReplaceGeneration": "0 in every iteration",
+      "surfaceSourceKinds": "only user/message:original and assistant/message:original (no replacement:* kind ever appears)",
+      "conclusion": "each changed snapshot text is APPENDED as a new user/message surface node and no prior node is ever replaced; old snapshots therefore accumulate in the model-visible transcript"
+    },
+    "storeVersusSurface": {
+      "storeStableRecordCountForSession": 1,
+      "storeStableRevision": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "storeStableSourceCursor": [19, 54, 87, 120, 153, 186, 219, 252, 285, 318, 351, 384],
+      "finalStoreRevision": 12,
+      "finalStoreSourceCursor": 384,
+      "auditRows": 12,
+      "domainFileBytes": 72021,
+      "visibleSnapshotNodesAtRevision12": 12,
+      "conclusion": "the durable store keeps ONLY the latest stable (one record, overwritten each commit) while the model-visible surface simultaneously carries 12 snapshots — store shape and surface accumulation are two different facts and must not be conflated"
+    },
+    "injectionCostPerRevision": {
+      "bytesPerNode": "673-686 B (about 680 B average)",
+      "meterTokensPerNode": "about 178 tokens (177 at revision 1, 2139/12 at revision 12)",
+      "growth": "strictly monotone in node count, bytes and meter tokens across all 12 revisions"
+    },
+    "staticPredictionVsDynamic": "the dynamic curve matches the static prediction (one appended full snapshot per changed stable, no replacement, no in-window reclamation) and answers the open item X3 of 审计资料/23 for the no-compaction steady state"
+  },
+  "criteria": {
+    "fixedBeforeRun": true,
+    "routeWorked": true,
+    "surfaceIterations": 12,
+    "distinctStableRevisions": 12,
+    "allPreviousSnapshotsRemainVisible": true,
+    "modelRequestHashesMatchVisibleNodes": true,
+    "growthIsMonotone": true,
+    "noReplacementAnywhere": true,
+    "storeHoldsOneLatest": true,
+    "evidenceComplete": true,
+    "verdict": "reproduced"
+  },
+  "matchedStaticFindings": [
+    {
+      "id": "D1",
+      "source": "审计资料/23-长期状态Worker与注入差异.md §2 D1（表行 D1 与 §'D1 / D2 注入节点既无 replacement…'）",
+      "staticClaim": "注入走 runtime context 追加，没有任何 replacement 节点；§3.13 要求的'用 Session replacement 替换上一个注入节点'在当前实现里没有落点",
+      "dynamicEvidence": "12 轮全部 surfaceOp='append'；replacementEvents=0；surfaceReplaceGeneration=0；surface 来源种类只有 original",
+      "agreement": "confirmed"
+    },
+    {
+      "id": "D2",
+      "source": "审计资料/23 §'D1 / D2 注入节点既无 replacement，也无\"仅最新\"回收'",
+      "staticClaim": "stable 每变一次 = transcript 多一条 full snapshot；注入体积随 stable 更新次数单调增长",
+      "dynamicEvidence": "12 revision → 12 条可见 full snapshot 节点；注入字节 673→8157，token 归因 177→2139，单调增长；window 内零回收（未挂压缩）",
+      "agreement": "confirmed"
+    },
+    {
+      "id": "X3",
+      "source": "审计资料/23 §5 X3 行 / §表行 X3（【需实验确认】同源注入节点累积曲线与回收情况）",
+      "staticClaim": "需真实会话回放统计 source.kind==='plugin' && form==='snapshot' 的 surface 节点数与 stable 更新次数",
+      "dynamicEvidence": "本轮直接回答：节点数 = revision 数（1..12），逐节点记录 source.form='snapshot'，无回收；累积曲线与每节点体积（约 680 B / 178 token）已量化",
+      "agreement": "answered-for-no-compaction-window"
+    },
+    {
+      "id": "D3/P1",
+      "source": "审计资料/23 §'D3 / P1 注入预算 I 不存在'；调查资料/20-DSH上下文注入与请求预算.md:287",
+      "staticClaim": "部署只有单次渲染 maxBytes=8000，预算体系里没有注入项 I；token-meter 无按来源分类字段，对账时无法单独读出'注入了多少'",
+      "dynamicEvidence": "单次渲染 673–686 B < 8000，但 12 节点累计 8157 B / 2139 token 越过单次预算；token-meter 只给 nodes[].{seq,tokens,heuristicTokens}，本实验必须自行按节点 seq 求交才得到 injectionTokens",
+      "agreement": "confirmed"
+    },
+    {
+      "id": "P20-10.2",
+      "source": "调查资料/20-DSH上下文注入与请求预算.md:280（§10 落地决策事实 2）",
+      "staticClaim": "runtime context 是'文本级 supersede'，不是'行级遮蔽'：旧快照永远留在 transcript 里累积计费，只有文本完全相同时才不新增",
+      "dynamicEvidence": "12 轮文本各不相同 → 12 次追加；旧节点全部保留在 surface 与之后每次模型请求中（revision header 1..k）",
+      "agreement": "confirmed"
+    },
+    {
+      "id": "P20-10.1",
+      "source": "调查资料/20-…:279（§10 落地决策事实 1）",
+      "staticClaim": "唯一'每步一次'的注入窗口是 step 开头的 system-prompt/assemble",
+      "dynamicEvidence": "每轮恰好一次 assembly 生效，且新快照在同一次 step 的请求中立即出现",
+      "agreement": "confirmed"
+    },
+    {
+      "id": "D4",
+      "source": "审计资料/23 §'D4 注入节点在来源索引里没有身份'",
+      "staticClaim": "注入节点在来源索引里被归类为 original，没有 stable-state-injection 身份，因此可被历史摘要折叠；§5.6 要求的'只允许最新节点存在'不成立",
+      "dynamicEvidence": "注入节点在本实验的 surface 来源分类中同样是 user/message:original（无特殊 op、无保护标记）；'只允许最新节点存在'被动态反证（12 份同时存在）。但'被 history-summary 折叠'的半条未测（未挂压缩插件）",
+      "agreement": "partially-confirmed"
+    },
+    {
+      "id": "E-11/E-13",
+      "source": "审计资料/23 §4 表 E-11、E-13",
+      "staticClaim": "注入节点不自反馈（filter 只接受 source.kind==='user'/'goal'）；工具操作不处理该节点",
+      "dynamicEvidence": "间接一致但非定向测试：每轮需要 20 个 seed 才跨 minEvents=20，12 轮 taskStateModelCalls 均为 1，注入快照从未把阈值推高（与投影层丢弃 plugin 来源相符）",
+      "agreement": "consistent-not-targeted"
+    },
+    {
+      "id": "E-15",
+      "source": "审计资料/23 §4 表 E-15",
+      "staticClaim": "注入每次 assembly 同步读最新 stable，无插件侧缓存",
+      "dynamicEvidence": "每次 step 的 assembly 渲染值只含当前 revision，且该 revision 的快照在同一次 step 的请求里已出现",
+      "agreement": "confirmed"
+    },
+    {
+      "id": "D5",
+      "source": "审计资料/23 §'D5 无 staleness marker'",
+      "staticClaim": "渲染文本只有 revision/sourceCursor/digest，没有 staleness marker",
+      "dynamicEvidence": "12 次渲染文本均只含 revision/source event/digest 三字段，未出现任何落后/陈旧标记；本实验未构造落后场景，仅作一致性观察",
+      "agreement": "consistent-not-targeted"
+    },
+    {
+      "id": "X4",
+      "source": "审计资料/23 §5 X4 行",
+      "staticClaim": "注入体积对三区边界/压力口径的实际影响未量化",
+      "dynamicEvidence": "本轮只给出注入侧绝对量级（rev 12：2139 / 9378 surfaceTokens ≈ 22.8%），边界漂移本身未测（未挂压缩）",
+      "agreement": "not-tested"
+    }
+  ],
+  "limitations": [
+    "fake LLM：唯一模型是脚本化 adapter（task-state 请求返回固定结构候选 JSON，agent 请求返回一段文本）。adapter 刻意不产出 usage 块，因此没有任何 provider token 数字进入 token-meter 的 baseline 锚点（ledger baselineKind='estimated'）；provider token、真实计费量、真实摘要语义、真实上下文包络均未测量，token 数字全部来自真实 dsh-token-meter 的固定启发式定价。",
+    "route 被替换：部署 route（deepseek-official/deepseek-v4-flash）下注册的是 fake adapter，不是真实 provider。",
+    "AgentLoop 的载入方式：@deepseek-ai/dsh-agent-loop@0.1.2-rc.1 不在本工作区依赖里，本实验以原生 import() 读入被审计 DSH checkout（HEAD a66e4702）的 packages/core/agent-loop/lib/index.js（sha256 记入 ledger）。它由该 checkout 自身解析依赖；本工作区未新增/复制该包的任何文件。若该 sha256 与审计基线不符，本实验的 surface 层证据不成立。",
+    "12 轮 / 单 Session / 单 route：未测真实会话的 revision 频率与节奏；fixture 的 20 个人类 seed 事件是 fixture 造出来的，同时抬高了 surfaceTokens 基线，故 注入/surfaceTokens ≈ 22.8% 不可迁移到真实会话占比；可迁移的是注入侧绝对量级（每条约 680 B / 约 178 token，随 revision 线性累加）。",
+    "window 内零回收：本实验没有挂载任何压缩插件（DSH 官方 compaction / 本 bundle 的 compaction-basic），所以测到的是'无压缩介入时的注入累积稳态'，不是'压缩之后还残留多少'；D4 的第二半与 X4 仍未测。",
+    "每轮恰好一次 commit 依赖 minEvents=20（部署值）：20 个 seed 恰好跨阈值一次；若真实部署阈值不同，到达 commit 的节奏不同，但'文本变化即 append 注入'的机制不受影响。",
+    "12 是观测下限而非外推担保：约 680 B / 178 token 每轮是观测区间内的拟合，未测 100 轮量级。",
+    "本地 fixture 时延不代表生产：storage/LLM 都是即时返回，本实验不测量时延、调度抖动或真实存储竞争。",
+    "未挂载 tool-result-pruner / compaction-basic，故'注入节点被历史摘要折叠'与'注入节点影响三区边界'这两条消费端结论不在本轮证据内。",
+    "'通过'只表示 fixture 断言通过，不代表理想方案通过，也不代表用户现象存在或不存在；本实验只回答第 1 节那一个问题，且只覆盖 runtime-context 注入链路的单一分支（form='snapshot' 的 user/message）。"
+  ],
+  "unobservedFields": [
+    "provider token / 计费量 / 真实 usage 锚点（adapter 不产出 usage；baselineKind='estimated'）",
+    "真实模型的摘要语义（candidate JSON 为 fixture 固定结构）",
+    "assembly.contexts[] 的 order 字段（assembly 输出条目只暴露 {name,text}，order=125 只能引注册源码 src/task-state-prompt.ts:61）",
+    "压缩介入后的回收比例（D4 第二半 / X4）",
+    "三区边界与压力口径的漂移量",
+    "真实会话 revision 频率、fork/resume、多实例、多 Session（E09/E10 范围）",
+    "真实 GUI 轨迹/账本中的注入呈现（未启动 Web/GUI，未读取任何真实会话）"
+  ],
+  "sourceDrift": false,
+  "sourceDriftDetail": {
+    "coreFileHashes": "342/342 一致（before mismatch 0 / after mismatch 0，missing 0）",
+    "gitStatus": "审计前后逐行完全一致（134 行）",
+    "gitHead": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2（前后一致）",
+    "dshHead": "a66e4702047846cdaa10c66c9d3df3951f5ea70d（只读读出，未修改 DSH checkout）",
+    "writes": "全部新增文件位于 审计资料/实验结果/E08-Stable注入累积/（该目录不在 342 文件基线内，且 审计资料 整体为未跟踪目录，故 git status 行未变化）",
+    "productionSourceModified": false,
+    "existingTestsModified": false,
+    "harnessModified": false,
+    "packageJsonOrVitestConfigModified": false,
+    "libTgzOrOtherExperimentDirsModified": false,
+    "realDshHomeTouched": false,
+    "port8080OrWebOrMultiInstance": false,
+    "dshCheckoutReadOnly": true
+  },
+  "artifacts": [
+    "e08-stable-injection.spec.ts",
+    "e08-ledger.json",
+    "vitest-output.txt",
+    "vitest-output-run1.txt",
+    "tmp-storage/context_enhancement_task_state.json",
+    "hash-check-before.json",
+    "hash-check-after.json",
+    "git-head-before.txt",
+    "git-head-after.txt",
+    "git-status-before.txt",
+    "git-status-after.txt",
+    "README.md",
+    "result.json",
+    "artifact-hashes.json"
+  ]
+}

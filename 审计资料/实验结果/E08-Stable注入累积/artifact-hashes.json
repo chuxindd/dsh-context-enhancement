@@ -1,0 +1,75 @@
+{
+  "generatedAt": "2026-09-12T22:26:26.0049615+08:00",
+  "scope": "审计资料/实验结果/E08-Stable注入累积/",
+  "excludes": [
+    "artifact-hashes.json"
+  ],
+  "fileCount": 13,
+  "files": [
+    {
+      "path": "e08-ledger.json",
+      "bytes": 1085546,
+      "sha256": "B7A7B73B85F289FC07BB0F0D465A5D91DDD2270B03028D0DC080994A6290D13C"
+    },
+    {
+      "path": "e08-stable-injection.spec.ts",
+      "bytes": 53662,
+      "sha256": "1C5CBDCAC90ED0A63E9BC6B56EFED7C2B287594D5C4527404177ABF66AF54D95"
+    },
+    {
+      "path": "git-head-after.txt",
+      "bytes": 42,
+      "sha256": "1958CA6B13C39B93D19C148E3D4736235E059CDA90BF57DFEA1D0E8771A04F46"
+    },
+    {
+      "path": "git-head-before.txt",
+      "bytes": 42,
+      "sha256": "1958CA6B13C39B93D19C148E3D4736235E059CDA90BF57DFEA1D0E8771A04F46"
+    },
+    {
+      "path": "git-status-after.txt",
+      "bytes": 5902,
+      "sha256": "EAD922468F17D1A2CA12059589724B07A205F2EA1559F024F933B4EC7A18CEEF"
+    },
+    {
+      "path": "git-status-before.txt",
+      "bytes": 5902,
+      "sha256": "EAD922468F17D1A2CA12059589724B07A205F2EA1559F024F933B4EC7A18CEEF"
+    },
+    {
+      "path": "hash-check-after.json",
+      "bytes": 259,
+      "sha256": "F57F59124DEF881090E69E0120458BB733BB70089874EA4CE8CA78984358FCD6"
+    },
+    {
+      "path": "hash-check-before.json",
+      "bytes": 260,
+      "sha256": "0FB3E5F13C9A381F0FCB863EE6453A308CF2298E57088BDAE979FDA989ED1A92"
+    },
+    {
+      "path": "README.md",
+      "bytes": 23959,
+      "sha256": "0536928409A49F849B938E9F9EA65AD78AE5E93287FAB29E679E868D8D890E0E"
+    },
+    {
+      "path": "result.json",
+      "bytes": 20925,
+      "sha256": "687AFB9D64612778CF5C2C8E0509061CCF054F2B18C907CDE8C3C469369BFC40"
+    },
+    {
+      "path": "tmp-storage/context_enhancement_task_state.json",
+      "bytes": 72021,
+      "sha256": "C64B5C99F159D7E2B665F8F9AA0B074D996012E13C95B5EA89920A0CF4F86E78"
+    },
+    {
+      "path": "vitest-output-run1.txt",
+      "bytes": 531,
+      "sha256": "3F08E50E0364A5C0ED581063998879F3EBF0D606B1F76F981900CF19CB06D87C"
+    },
+    {
+      "path": "vitest-output.txt",
+      "bytes": 531,
+      "sha256": "15ADF3D7A5D58D6A50FADDEF161F016A15681306B203442FFBB04DFAF1776CCE"
+    }
+  ]
+}

@@ -32,8 +32,8 @@
 import type { Context } from '@deepseek-ai/cordis';
 import { type GenerateOptions, type TokenUsage } from '@deepseek-ai/dsh-llm';
 import type { SessionId } from '@deepseek-ai/dsh-session/types';
-import { TaskStateRequestId, type TaskStateStable, type TaskStateTruncationRecord, type TaskStateUpdateFinishedData, type TaskStateUpdateRequestData } from '../contract/index.ts';
-import type { TaskStateBatchFailure } from './types.ts';
+import { TaskStateRequestId, type TaskStateInheritedPrefix, type TaskStateStable, type TaskStateTruncationRecord, type TaskStateUpdateFinishedData, type TaskStateUpdateRequestData, type TaskStateUpdateTrigger } from '../contract/index.ts';
+import type { TaskStateBatchFailure, TaskStateFilteredEvent } from './types.ts';
 /** Stable Host-owned timeout code stamped on the deadline reason. */
 export declare const TASK_STATE_UPDATE_TIMEOUT_CODE = "task-state-basic/update-timeout";
 /** One update attempt's full execution context. */
@@ -51,6 +51,18 @@ export interface TaskStateUpdateAttempt {
     readonly projection: string;
     /** Exact included eligible sequences folded into the window. */
     readonly includedSeqs: readonly number[];
+    /**
+     * Exact projected events of the folded window, in sequence order. The Host
+     * resolves the authoritative Goal/TODO views from THESE facts, so the views a
+     * commit carries are exactly the ones the model was shown in the frame.
+     */
+    readonly windowEvents: readonly TaskStateFilteredEvent[];
+    /**
+     * Why this wave was admitted (`startup`, `threshold`, `trailing`, or
+     * `manual`), recorded verbatim on the durable open audit row. Omitted means
+     * the caller supplied no schedule provenance and the row records none.
+     */
+    readonly trigger?: TaskStateUpdateTrigger;
     /** Deterministic truncation records produced by the projection. */
     readonly truncation: readonly TaskStateTruncationRecord[];
     /** Exact model-visible system instruction (pinned). */
@@ -69,6 +81,13 @@ export interface TaskStateUpdateAttempt {
         readonly maxEntryBytes: number;
         readonly maxListItems: number;
     };
+    /**
+     * The inherited fork boundary of THIS Session lifecycle, or `null` when it
+     * began on its own events. It is recorded on the committed stable and on the
+     * open-phase audit row so both durable descriptions of one window state the
+     * same covered range.
+     */
+    readonly inherited?: TaskStateInheritedPrefix | null;
 }
 /**
  * The locally typed auxiliary request. rc.1's `GenerateOptions` type only

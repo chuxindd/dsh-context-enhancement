@@ -1,0 +1,87 @@
+{
+  "computedAt": "2026-09-12T22:47:41.9165900+08:00",
+  "fileCount": 16,
+  "excludes": "artifact-hashes.json (self, written last)",
+  "files": [
+    {
+      "path": "drift-check-after.json",
+      "bytes": 482,
+      "sha256": "337B71C4F477638F7E313692E0F6FAAE2157FD4A97ABA69AEEE9E7904ED2CE3A"
+    },
+    {
+      "path": "e09-fork-resume.spec.ts",
+      "bytes": 88126,
+      "sha256": "D8D5B940F94D5D9D5BCE7040663A40484B9FD9055C84E56EC03A28A52C820538"
+    },
+    {
+      "path": "e09-ledger.json",
+      "bytes": 73134,
+      "sha256": "9052398B788FBD6DFABD71AD3162AD5210A360CF46A65DBE2102556802D61BE4"
+    },
+    {
+      "path": "git-head-after.txt",
+      "bytes": 42,
+      "sha256": "1958CA6B13C39B93D19C148E3D4736235E059CDA90BF57DFEA1D0E8771A04F46"
+    },
+    {
+      "path": "git-head-before.txt",
+      "bytes": 42,
+      "sha256": "1958CA6B13C39B93D19C148E3D4736235E059CDA90BF57DFEA1D0E8771A04F46"
+    },
+    {
+      "path": "git-status-after.txt",
+      "bytes": 5902,
+      "sha256": "EAD922468F17D1A2CA12059589724B07A205F2EA1559F024F933B4EC7A18CEEF"
+    },
+    {
+      "path": "git-status-before.txt",
+      "bytes": 5902,
+      "sha256": "EAD922468F17D1A2CA12059589724B07A205F2EA1559F024F933B4EC7A18CEEF"
+    },
+    {
+      "path": "hash-check-after.json",
+      "bytes": 151,
+      "sha256": "14DB22878E48FE547CD1FA66D76547B3AD0F6230449C39C5CAB6359A89AFB528"
+    },
+    {
+      "path": "hash-check-before.json",
+      "bytes": 151,
+      "sha256": "4F4B5327C22013A611AC986702AA9CFF1822EB0461255C1AD5FFF8DD1954F0B7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 17425,
+      "sha256": "98C6E69F9C7231E7CB1F5554B7EBF769308CF575CE13613D28D3E2B3EED78211"
+    },
+    {
+      "path": "result.json",
+      "bytes": 20961,
+      "sha256": "9CFE4C7D314DD066B77980E5208F5E9EFF556909DFD0DAB232D346281F119132"
+    },
+    {
+      "path": "tmp-sessions/--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-E09-ForkResume-tmp-sessions--/e09-parent-fork-child/session.jsonl",
+      "bytes": 7501,
+      "sha256": "7E69D559D414C9CE2BF44D06F5CFF70E66B544828C17CE83F3CF9047637547C1"
+    },
+    {
+      "path": "tmp-sessions/--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-E09-ForkResume-tmp-sessions--/e09-parent/session.jsonl",
+      "bytes": 6586,
+      "sha256": "B407E5BF8105F3CC2F55896F4D6F107AC5AAC85D4690CC29AE6E88583AE76ABC"
+    },
+    {
+      "path": "tmp-storage/context_enhancement_task_state.json",
+      "bytes": 20059,
+      "sha256": "C9532EA7E929DD3E7EDAA5C7C908346FDE051DF63A67C365212AECBC8E69E3EC"
+    },
+    {
+      "path": "vitest-output-run1.txt",
+      "bytes": 520,
+      "sha256": "17302F4A0E9E83C729E91CC7CA22E64B3E20963CD49195F339C8FEFD28245DF2"
+    },
+    {
+      "path": "vitest-output-run2.txt",
+      "bytes": 520,
+      "sha256": "776271A69597F558D5FB9D42632478F413B7113E233EC588DCFEEC009ED968D2"
+    }
+  ]
+}

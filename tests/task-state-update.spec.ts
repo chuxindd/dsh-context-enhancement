@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Context } from '@deepseek-ai/cordis'
 import LlmRuntime, { LlmAdapter } from '@deepseek-ai/dsh-llm'
 import type { GenerateOptions, StreamChunk } from '@deepseek-ai/dsh-llm'
 import SessionStore, { SessionId } from '@deepseek-ai/dsh-session'
 import type { TaskStateStable, TaskStateUpdateFinishedData, TaskStateUpdateRequestData } from '../src/task-state.ts'
+import { TaskStateEntryId } from '../src/task-state.ts'
 import { runUpdateAttempt, type TaskStateUpdateAttempt, type TaskStateUpdateHooks } from '../src/internal/task-state/basic/update.ts'
+import { TaskStateBasicService } from '../src/internal/task-state/basic/service.ts'
 
 /** Adapter replaying one fixed chunk script per request and recording options. */
 class ScriptAdapter extends LlmAdapter {
@@ -58,9 +60,9 @@ const INVALID_JSON_SCRIPT: StreamChunk[] = [
 /** A canonical empty base stable. */
 function base(): TaskStateStable {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     revision: 1,
-    filterVersion: 'task-state-basic/filter-v2',
+    filterVersion: 'task-state-basic/filter-v3',
     sourceCursor: 2,
     digest: 'digest',
     facts: [],
@@ -69,6 +71,8 @@ function base(): TaskStateStable {
     risks: [],
     evidence: [],
     todoReferences: [],
+    goalView: { status: 'none' },
+    todoView: { status: 'none', items: [] },
     continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
   }
 }
@@ -90,6 +94,7 @@ function attempt(ctx: Context): TaskStateUpdateAttempt {
     base: base(),
     projection: JSON.stringify({ events: [{ seq: 3, type: 'user/message' }] }),
     includedSeqs: [3, 4],
+    windowEvents: [{ seq: 3, type: 'user/message', fields: { kind: 'user', text: 'ship the state provider' } }],
     truncation: [],
     system: 'update the task state',
     maxOutputTokens: 4_000,
@@ -119,6 +124,70 @@ function hooks(): TaskStateUpdateHooks & HookState {
 }
 
 describe('task-state-basic update attempt', () => {
+  it('quarantines a stale evidence reference with a diagnostic instead of failing the whole candidate', async () => {
+    // The committed base still references an event seq from an earlier window
+    // (the production "stale reference" freeze): the reference can never
+    // re-enter an eligible set, so a hard failure would pin every future
+    // update at this revision forever.
+    const staleBase: TaskStateStable = {
+      ...base(),
+      revision: 2,
+      sourceCursor: 3864,
+      facts: [{ id: TaskStateEntryId('fact-11111111-1111-4111-8111-111111111111'), content: 'kept durable fact' }],
+      evidence: [{ seq: 3623, note: 'stale evidence from an earlier window' }],
+      todoReferences: [{ seq: 3623, content: 'stale todo list [pending]' }],
+      todoView: { status: 'current', sourceSeq: 3623, items: [{ content: 'stale todo list', status: 'pending' }] },
+    }
+    const candidateJson = JSON.stringify({
+      facts: [
+        { id: 'fact-11111111-1111-4111-8111-111111111111', content: 'kept durable fact' },
+        { content: 'fresh fact from the window' },
+      ],
+      decisions: [],
+      constraints: [],
+      risks: [],
+      evidence: [
+        { seq: 3623, note: 'stale evidence carried forward' },
+        { seq: 3, note: 'fresh evidence inside the window' },
+      ],
+      continuation: {
+        currentObjective: 'unstick the stalled summary',
+        currentFocus: 'quarantine the stale reference',
+        openWork: [],
+        nextActions: [],
+      },
+    })
+    const script: StreamChunk[] = [
+      { type: 'block-start', index: 0, blockType: 'text' },
+      { type: 'text-delta', index: 0, text: candidateJson },
+      { type: 'block-end', index: 0, block: { type: 'text', text: candidateJson } },
+      { type: 'finish', reason: { kind: 'stop' } },
+    ]
+    const { ctx } = await withScript(script)
+    const warnings: string[] = []
+    vi.spyOn(ctx.logger, 'warn').mockImplementation(((...args: unknown[]) => {
+      warnings.push(args.map(item => String(item)).join(' '))
+    }) as typeof ctx.logger.warn)
+    const state = hooks()
+    const result = await runUpdateAttempt({ ...attempt(ctx), base: staleBase, includedSeqs: [3, 4] }, state)
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    // The candidate commits past the frozen revision: only the stale
+    // reference was quarantined, everything else is preserved verbatim and
+    // no sequence was fabricated.
+    expect(result.stable.revision).toBe(3)
+    expect(result.stable.sourceCursor).toBe(4)
+    expect(result.stable.facts.map(fact => fact.content)).toEqual(['kept durable fact', 'fresh fact from the window'])
+    expect(result.stable.evidence).toEqual([{ seq: 3, note: 'fresh evidence inside the window' }])
+    // The window carried no todo/write fact, so the committed TODO view is the
+    // base view carried forward — the model neither authored nor dropped it.
+    expect(result.stable.todoView).toEqual(staleBase.todoView)
+    expect(result.stable.todoReferences).toEqual(staleBase.todoReferences)
+    const diagnostic = warnings.join('\n')
+    expect(diagnostic).toMatch(/quarantined 1 stale reference\(s\)/)
+    expect(diagnostic).toMatch(/evidence 3623/)
+  })
+
   it('commits a stable and opens + finishes the paired audit row', async () => {
     const { ctx } = await withScript(STOP_SCRIPT)
     const state = hooks()
@@ -286,7 +355,7 @@ describe('task-state-basic update attempt', () => {
   it('rejects a semantically invalid candidate (echoed id not in base)', async () => {
     const badSemantics = JSON.stringify({
       facts: [{ id: 'fact-unknown-0000-0000-0000-000000000000', content: 'x' }],
-      decisions: [], constraints: [], risks: [], evidence: [], todoReferences: [],
+      decisions: [], constraints: [], risks: [], evidence: [],
       continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
     })
     const { ctx } = await withScript([{
@@ -319,7 +388,7 @@ describe('task-state-basic update attempt', () => {
   it('commits the first revision with a null base and empty-included cursor', async () => {
     const firstJson = JSON.stringify({
       facts: [{ content: 'first fact' }],
-      decisions: [], constraints: [], risks: [], evidence: [], todoReferences: [],
+      decisions: [], constraints: [], risks: [], evidence: [],
       continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
     })
     const { ctx } = await withScript([{
@@ -392,9 +461,9 @@ describe('task-state-basic update attempt', () => {
 
   it('builds a semantic context from a base carrying every kinded list', async () => {
     const fullBase: TaskStateStable = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       revision: 3,
-      filterVersion: 'task-state-basic/filter-v2',
+      filterVersion: 'task-state-basic/filter-v3',
       sourceCursor: 6,
       digest: 'digest',
       facts: [{ id: 'fact-00000000-0000-4000-8000-000000000001' as TaskStateStable['facts'][number]['id'], content: 'fact one' }],
@@ -403,6 +472,8 @@ describe('task-state-basic update attempt', () => {
       risks: [{ id: 'risk-00000000-0000-4000-8000-000000000004' as TaskStateStable['facts'][number]['id'], content: 'risk one' }],
       evidence: [],
       todoReferences: [],
+      goalView: { status: 'none' },
+      todoView: { status: 'none', items: [] },
       continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
     }
     const echoed = JSON.stringify({
@@ -413,7 +484,6 @@ describe('task-state-basic update attempt', () => {
       constraints: [{ id: 'constraint-00000000-0000-4000-8000-000000000003', content: 'constraint one' }],
       risks: [{ id: 'risk-00000000-0000-4000-8000-000000000004', content: 'risk one' }],
       evidence: [],
-      todoReferences: [],
       continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
     })
     const { ctx } = await withScript([{
@@ -433,5 +503,105 @@ describe('task-state-basic update attempt', () => {
     if (!result.ok) return
     expect(result.stable.revision).toBe(4)
     expect(state.finished[0]?.outcome).toBe('success')
+  })
+
+  it('quarantine warning with a throwing logger does not abort authority commit', async () => {
+    const quarantinedModelJson = JSON.stringify({
+      facts: [{ content: 'committing despite throwing logger' }],
+      decisions: [],
+      constraints: [],
+      risks: [],
+      evidence: [{ seq: 999, note: 'stale reference' }],
+      continuation: {
+        currentObjective: 'objective',
+        currentFocus: 'focus',
+        openWork: [],
+        nextActions: [],
+      },
+    })
+    const { ctx } = await withScript([{
+      type: 'block-start', index: 0, blockType: 'text',
+    }, {
+      type: 'text-delta', index: 0, text: quarantinedModelJson,
+    }, {
+      type: 'block-end', index: 0, block: { type: 'text', text: quarantinedModelJson },
+    }, { type: 'finish', reason: { kind: 'stop' } }])
+
+    // Make ctx.logger.warn throw and count invocations
+    let warnCalls = 0
+    ctx.logger.warn = () => {
+      warnCalls += 1
+      throw new Error('logger.warn exploded during quarantine')
+    }
+
+    const state = hooks()
+    const result = await runUpdateAttempt(attempt(ctx), state)
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(warnCalls).toBe(1)
+    expect(result.stable.revision).toBe(2)
+    // Stale reference was dropped
+    expect(result.stable.evidence).toHaveLength(0)
+    expect(state.put).toHaveLength(1)
+    expect(state.put[0]?.revision).toBe(2)
+    expect(state.committed).toHaveLength(1)
+  })
+
+  it('finished audit failure with a throwing logger still returns committed result with auditGap', async () => {
+    const { ctx } = await withScript(STOP_SCRIPT)
+    let warnCalls = 0
+    ctx.logger.warn = () => {
+      warnCalls += 1
+      throw new Error('logger.warn exploded during audit gap')
+    }
+    const state = hooks()
+    state.putFinishedAudit = async () => {
+      throw new Error('finished audit disk failure')
+    }
+    const result = await runUpdateAttempt(attempt(ctx), state)
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(warnCalls).toBe(1)
+    expect(result.auditGap).toBe(true)
+    expect(result.stable.revision).toBe(2)
+    expect(state.put).toHaveLength(1)
+    expect(state.committed).toHaveLength(1)
+  })
+
+  it('committed listener exception followed by a throwing logger cannot stop later listeners', async () => {
+    const ctx = new Context()
+    let warnCalls = 0
+    ctx.logger.warn = () => {
+      warnCalls += 1
+      throw new Error('logger.warn exploded in notifyCommitted')
+    }
+    const service = new TaskStateBasicService(ctx, {
+      provider: 'test-p',
+      model: 'test-m',
+      minEvents: 1,
+      maxEvents: 10,
+      maxInputBytes: 100_000,
+      maxOutputTokens: 4_000,
+      timeoutMs: 5_000,
+      maxInfraRetries: 0,
+      maxEntriesPerKind: 10,
+      maxEntryBytes: 2_000,
+      maxListItems: 8,
+    })
+    const received: TaskStateStable[] = []
+    service.subscribeCommitted(() => {
+      throw new Error('failing listener 1')
+    })
+    service.subscribeCommitted((_id, stable) => {
+      received.push(stable)
+    })
+
+    const testStable = base()
+    ;(service as unknown as { notifyCommitted: (id: SessionId, s: TaskStateStable) => void })
+      .notifyCommitted(SessionId('test-sess'), testStable)
+
+    expect(warnCalls).toBe(1)
+    expect(received).toEqual([testStable])
   })
 })

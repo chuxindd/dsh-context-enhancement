@@ -1,0 +1,8 @@
+{
+  "baselineFile": "审计资料/实验结果/E-baseline-hashes.json",
+  "filesChecked": 342,
+  "mismatchCount": 0,
+  "mismatches": [],
+  "checkedAt": "2026-09-12T21:43:33.1026661+08:00",
+  "scope": "pre-run"
+}

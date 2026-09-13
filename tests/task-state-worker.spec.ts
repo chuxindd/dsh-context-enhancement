@@ -108,6 +108,15 @@ function fakeEnv(ctx: Context): FakeWorkerEnv {
       state.finished += 1
     },
     putStable: async (_id, stable) => { state.stored.push(stable) },
+    // This fake owns no durable record, so it reports the terminal write as
+    // REFUSED. That is the honest answer a provider without a durable record
+    // must give, and the worker's infeasible path must handle it without
+    // claiming a verdict it does not have.
+    putTerminal: async (_id, _terminal) => false,
+    // A fake without durable records holds no verdict cursor and no block: the
+    // committed cursor is the in-memory stable's, and nothing is ever blocked.
+    cursorFloor: () => state.stored.length === 0 ? -1 : state.stored[state.stored.length - 1]!.sourceCursor,
+    activeBlock: () => undefined,
     onCommitted: () => { /* pointer is the same in-memory row in this fake */ },
     scheduleAuditRepair: async () => { state.repairs += 1 },
   }

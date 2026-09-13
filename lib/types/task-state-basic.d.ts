@@ -17,7 +17,7 @@
 import { TaskStateBasicService } from './internal/task-state/basic/service.ts';
 export { TaskStateBasicService } from './internal/task-state/basic/service.ts';
 export type { TaskStateBasicConfig } from './internal/task-state/basic/types.ts';
-export type { TaskStateFilteredEvent, TaskStateBatchProjection, TaskStateHostNormalization, TaskStateBatchErrorCode, TaskStateBatchFailure, } from './internal/task-state/basic/types.ts';
+export type { TaskStateFilteredEvent, TaskStateBatchProjection, TaskStateHostNormalization, TaskStateReferenceQuarantine, TaskStateBatchErrorCode, TaskStateBatchFailure, } from './internal/task-state/basic/types.ts';
 export { taskStateDomainSpec } from './internal/task-state/basic/domain.ts';
 export default TaskStateBasicService;
 //# sourceMappingURL=task-state-basic.d.ts.map

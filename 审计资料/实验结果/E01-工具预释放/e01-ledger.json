@@ -1,0 +1,623 @@
+{
+  "experiment": "E01-tool-pre-release",
+  "measurement": "fake token meter (fixture tokens: ceil(codePoints/4)), fake LLM, temporary Session, REAL temporary dsh-storage domain + REAL toolGroupAuditStore",
+  "invokedAs": "BasicCompactionEngine.prototype.compactIfNeeded(engineSeam, agent, 'pressure', signal)",
+  "harnessPolicy": {
+    "sharedHarness": "审计资料/实验结果/harness/compaction-harness.ts",
+    "modified": false,
+    "reusedAsIs": false,
+    "reason": "the shared harness hard-codes toolGroupAuditStore: undefined and a no-op summarizeToolGroups, and exposes neither its engine seam nor a store parameter, so op① can never run under it; E01 reuses its seam PATTERN in this E01-local spec instead (see E00 §4.2.5 / §6.5)",
+    "prunerOptionReused": false,
+    "prunerOptionNote": "the harness `pruner` option builds its replacement with createToolResultMessage(...), which mints a FRESH message id (dsh-llm createMessage). The Session guard for a tool/result surface rewrite allows the replacement to change \"only content\", so that construction is rejected with `tool/result surface replacement may change only content` — observed directly in this run's first attempt. E01 therefore builds its pruner replacement the way BOTH production writers do (src/tool-result-pruner.ts and src/internal/compaction/tool-group-replacement.ts): freezeMessage({ ...original, content: reduced })."
+  },
+  "storage": {
+    "mountOrder": [
+      "LlmRuntime",
+      "Storage",
+      "StorageJson(root=审计资料\\实验结果\\E01-工具预释放\\tmp-storage)",
+      "StorageDomain(backend=json)"
+    ],
+    "mounted": true,
+    "mountError": null,
+    "tempRootRelative": "审计资料\\实验结果\\E01-工具预释放\\tmp-storage",
+    "backend": "json",
+    "domain": "context_enhancement_tool_group_summary",
+    "domainVersion": 1,
+    "storeOpened": true,
+    "storeError": null,
+    "auditRecordsReturned": 2,
+    "auditRecords": [
+      {
+        "requestId": "tg-eda2e3b8-cdd4-4412-a50b-ae5899d12d46",
+        "status": "success",
+        "provider": "mock-route",
+        "model": "mock-model",
+        "lifecycleCreatedAt": 1700000000000,
+        "sourceSeqs": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "replacementSeqs": [
+          33,
+          35
+        ],
+        "fingerprint": "adba13bddf1ebc2a920dedfd536e2cca2fb3e3458822c6db209992c689016b73",
+        "error": null,
+        "summaryItems": 4
+      },
+      {
+        "requestId": "tg-a30d3b31-2ba7-4732-8f13-7dbc82345225",
+        "status": "success",
+        "provider": "mock-route",
+        "model": "mock-model",
+        "lifecycleCreatedAt": 1700000000000,
+        "sourceSeqs": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "replacementSeqs": [
+          37,
+          39
+        ],
+        "fingerprint": "0b495f3d24b8c299ae75cf41b715e5327c5b7aed1445304826ee76ee726f7f0a",
+        "error": null,
+        "summaryItems": 4
+      }
+    ],
+    "filesOnDisk": [
+      {
+        "path": "context_enhancement_tool_group_summary.json",
+        "bytes": 6352,
+        "prefix": "{\n  \"unit\": {\n    \"name\": \"context_enhancement_tool_group_summary\",\n    \"version\": 1\n  },\n  \"global\": null,\n  \"tables\": {\n    \"audit\": {\n      \"tg-eda2e3b8-cdd4-4412-a50b-ae5899d12d46\": {\n        \"requestId\": \"tg-eda2e3b8-cdd4-4412-a50b-ae5899d12d46\",\n        \"sessionId\": \"e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8\",\n        \"lifecycle\": {\n          \"createdAt\": 1700000000000\n      "
+      }
+    ]
+  },
+  "policy": {
+    "contextWindow": 100000,
+    "toolMaintenanceWatermarkTokens": 40000,
+    "forgetMaintenanceWatermarkTokens": 70000,
+    "pressureThresholdTokens": 80000,
+    "forgetBoundaryTokens": 50000,
+    "retainTokens": 20000,
+    "responseReserveTokens": 8192,
+    "safetyMarginTokens": 2048,
+    "maxTokens": 8192,
+    "toolGroupSummarizer": {
+      "enabled": true,
+      "minGroupResults": 2,
+      "minGroupChars": 12000,
+      "minGroupTokens": 2000,
+      "maxGroupTokens": 12000,
+      "maxGroupsPerPass": 2,
+      "maxSummaryTokens": 1200
+    },
+    "trigger": "pressure",
+    "note": "the harness passes trigger='pressure'; in production that same entry point carries the 40%/70% and 80% tiers, and the 40%-70% branch is what E01 exercises"
+  },
+  "fixture": {
+    "sessionId": "e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8",
+    "lifecycleCreatedAt": 1700000000000,
+    "totalTokens": 60000,
+    "totalRatio": 0.6,
+    "envelopeTokens": 0,
+    "turnLayout": [
+      "turn 1 (completed): 5 x assistant x 2000 = 10000",
+      "turn 2 (completed): 3 tool groups x 4110 + spacers 2000/1000/1000/13670 = 30000",
+      "turn 3 (completed): 1 x assistant x 12000",
+      "turn 4 (OPEN): 1 x assistant x 8000"
+    ],
+    "groupSeqRecords": [
+      {
+        "label": "A",
+        "sourceSeqs": [
+          11,
+          13
+        ],
+        "toolResultSeqs": [
+          12,
+          14
+        ]
+      },
+      {
+        "label": "B",
+        "sourceSeqs": [
+          16,
+          18
+        ],
+        "toolResultSeqs": [
+          17,
+          19
+        ]
+      },
+      {
+        "label": "C",
+        "sourceSeqs": [
+          21,
+          23
+        ],
+        "toolResultSeqs": [
+          22,
+          24
+        ]
+      }
+    ],
+    "pricingRule": "fixture code points / 4 — fixture tokens, NOT provider tokens; E = 0"
+  },
+  "zonesBefore": {
+    "forgetStartIndex": 0,
+    "forgetEndIndex": 4,
+    "forgetTokens": 10000,
+    "toolStartIndex": 5,
+    "toolEndIndex": 20,
+    "toolTokens": 30000,
+    "recentStartIndex": 21,
+    "toolStartSeq": 10,
+    "toolEndSeq": 25,
+    "recentTokens": 20000,
+    "retainedTailTokens": 20000,
+    "forgetBoundaryTokens": 50000,
+    "summarizerInputCapTokens": 81117
+  },
+  "candidateGroups": [
+    {
+      "index": 0,
+      "startSeq": 11,
+      "endSeq": 14,
+      "startPosition": 6,
+      "endPosition": 9,
+      "sourceSeqs": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "toolResultSeqs": [
+        12,
+        14
+      ],
+      "callIds": [
+        "e01-A1",
+        "e01-A2"
+      ],
+      "estimatedTokens": 4110,
+      "fullyInsideToolZone": true
+    },
+    {
+      "index": 1,
+      "startSeq": 16,
+      "endSeq": 19,
+      "startPosition": 11,
+      "endPosition": 14,
+      "sourceSeqs": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "toolResultSeqs": [
+        17,
+        19
+      ],
+      "callIds": [
+        "e01-B1",
+        "e01-B2"
+      ],
+      "estimatedTokens": 4110,
+      "fullyInsideToolZone": true
+    }
+  ],
+  "toolMaintenance": {
+    "invocationCount": 1,
+    "invocationErrors": [],
+    "returned": "null",
+    "tier": "tool-maintenance-40-70",
+    "semanticCompactionSpansCommitted": 0,
+    "summaryRequests": [
+      {
+        "provider": "mock-route",
+        "model": "mock-model",
+        "maxTokens": 1200,
+        "purpose": "compaction",
+        "sessionId": "e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8",
+        "inputChars": 17733,
+        "inputTokens": 4434,
+        "group": {
+          "sourceSeqs": [
+            11,
+            12,
+            13,
+            14
+          ],
+          "toolResultSeqs": [
+            12,
+            14
+          ],
+          "callIds": [
+            "e01-A1",
+            "e01-A2"
+          ],
+          "startSeq": 11,
+          "endSeq": 14,
+          "estimatedTokens": 4110,
+          "startPosition": 6,
+          "endPosition": 9,
+          "turn": 2
+        },
+        "itemCount": 4,
+        "outputChars": 705,
+        "outputTokens": 177,
+        "outputText": "{\"version\":1,\"groupSummary\":\"tool group of 4 nodes reduced before the history pass\",\"items\":[{\"sourceSeq\":11,\"summary\":\"distilled tool-call at seq 11\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":12,\"callId\":\"e01-A1\",\"summary\":\"distilled tool-result at seq 12\",\"facts\":[\"RESULT-A1\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":13,\"summary\":\"distilled tool-call at seq 13\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":14,\"callId\":\"e01-A2\",\"summary\":\"distilled tool-result at seq 14\",\"facts\":[\"RESULT-A2\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]}],\"groupErrors\":[],\"unresolved\":[]}",
+        "parsedSummaryItems": 4
+      },
+      {
+        "provider": "mock-route",
+        "model": "mock-model",
+        "maxTokens": 1200,
+        "purpose": "compaction",
+        "sessionId": "e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8",
+        "inputChars": 17735,
+        "inputTokens": 4434,
+        "group": {
+          "sourceSeqs": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "toolResultSeqs": [
+            17,
+            19
+          ],
+          "callIds": [
+            "e01-B1",
+            "e01-B2"
+          ],
+          "startSeq": 16,
+          "endSeq": 19,
+          "estimatedTokens": 4110,
+          "startPosition": 11,
+          "endPosition": 14,
+          "turn": 2
+        },
+        "itemCount": 4,
+        "outputChars": 705,
+        "outputTokens": 177,
+        "outputText": "{\"version\":1,\"groupSummary\":\"tool group of 4 nodes reduced before the history pass\",\"items\":[{\"sourceSeq\":16,\"summary\":\"distilled tool-call at seq 16\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":17,\"callId\":\"e01-B1\",\"summary\":\"distilled tool-result at seq 17\",\"facts\":[\"RESULT-B1\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":18,\"summary\":\"distilled tool-call at seq 18\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":19,\"callId\":\"e01-B2\",\"summary\":\"distilled tool-result at seq 19\",\"facts\":[\"RESULT-B2\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]}],\"groupErrors\":[],\"unresolved\":[]}",
+        "parsedSummaryItems": 4
+      }
+    ],
+    "op1ShadowedSourceSeqs": [
+      12,
+      14,
+      17,
+      19
+    ],
+    "op1ShadowedSourceSeqsFromStore": [
+      12,
+      14,
+      17,
+      19
+    ],
+    "op1ShadowedSourceSeqsAtPruneEntry": [
+      12,
+      14,
+      17,
+      19
+    ],
+    "op1ReplacementSeqs": [
+      33,
+      35,
+      37,
+      39
+    ],
+    "allShadowedSeqsAfterRun": [
+      12,
+      14,
+      17,
+      19,
+      22,
+      24
+    ]
+  },
+  "prunePass": {
+    "started": true,
+    "calls": [
+      {
+        "call": 1,
+        "olderRange": {
+          "start": 4,
+          "end": 25
+        },
+        "candidateSeqs": [
+          22,
+          24
+        ],
+        "candidateSourceKinds": [
+          "tool/result:original",
+          "tool/result:original"
+        ],
+        "pruned": [
+          {
+            "originalSeq": 22,
+            "replacementSeq": 41,
+            "charsBefore": 8000,
+            "charsAfter": 800
+          },
+          {
+            "originalSeq": 24,
+            "replacementSeq": 43,
+            "charsBefore": 8000,
+            "charsAfter": 800
+          }
+        ],
+        "charsRemoved": 14400,
+        "op1ShadowedSeqsVisibleAtEntry": [
+          12,
+          14,
+          17,
+          19
+        ],
+        "op1ReplacementSeqsVisibleAtEntry": [
+          33,
+          35,
+          37,
+          39
+        ],
+        "surfaceKindsAtEntry": {
+          "assistant/text": 11,
+          "assistant/tool-call": 6,
+          "tool/result:tool-summary": 4,
+          "tool/result:original": 2
+        },
+        "zonesAtEntry": {
+          "forgetStartIndex": 0,
+          "forgetEndIndex": 0,
+          "forgetTokens": 2000,
+          "toolStartIndex": 1,
+          "toolEndIndex": 20,
+          "toolTokens": 30168,
+          "recentStartIndex": 21,
+          "toolStartSeq": 4,
+          "toolEndSeq": 25,
+          "recentTokens": 20000,
+          "retainedTailTokens": 20000,
+          "forgetBoundaryTokens": 50000,
+          "summarizerInputCapTokens": 81117
+        },
+        "overlapWithOp1Sources": [],
+        "overlapWithOp1Replacements": []
+      }
+    ],
+    "prunerCandidates": [
+      22,
+      24
+    ],
+    "prunerPrunedOriginalSeqs": [
+      22,
+      24
+    ],
+    "prunerCreatedReplacements": [
+      41,
+      43
+    ],
+    "op2OwnShadowedSeqs": [
+      22,
+      24
+    ],
+    "overlapCandidatesWithOp1Sources": [],
+    "overlapCandidatesWithOp1Replacements": [],
+    "op1GroupSeqSets": [
+      {
+        "label": "A",
+        "sourceSeqs": [
+          11,
+          13
+        ],
+        "toolResultSeqs": [
+          12,
+          14
+        ]
+      },
+      {
+        "label": "B",
+        "sourceSeqs": [
+          16,
+          18
+        ],
+        "toolResultSeqs": [
+          17,
+          19
+        ]
+      },
+      {
+        "label": "C",
+        "sourceSeqs": [
+          21,
+          23
+        ],
+        "toolResultSeqs": [
+          22,
+          24
+        ]
+      }
+    ]
+  },
+  "after": {
+    "totalTokens": 48568,
+    "surfaceTokens": 48568,
+    "netReleasedTokens": 11432,
+    "netReleaseRatio": 0.19053333333333333,
+    "zonesAfter": {
+      "forgetStartIndex": -1,
+      "forgetEndIndex": -1,
+      "forgetTokens": 0,
+      "toolStartIndex": 0,
+      "toolEndIndex": 20,
+      "toolTokens": 28568,
+      "recentStartIndex": 21,
+      "toolStartSeq": 3,
+      "toolEndSeq": 25,
+      "recentTokens": 20000,
+      "retainedTailTokens": 20000,
+      "forgetBoundaryTokens": 50000,
+      "summarizerInputCapTokens": 81117
+    },
+    "surface": [
+      {
+        "seq": 3,
+        "label": "assistant/text",
+        "tokens": 2000
+      },
+      {
+        "seq": 4,
+        "label": "assistant/text",
+        "tokens": 2000
+      },
+      {
+        "seq": 5,
+        "label": "assistant/text",
+        "tokens": 2000
+      },
+      {
+        "seq": 6,
+        "label": "assistant/text",
+        "tokens": 2000
+      },
+      {
+        "seq": 7,
+        "label": "assistant/text",
+        "tokens": 2000
+      },
+      {
+        "seq": 10,
+        "label": "assistant/text",
+        "tokens": 2000
+      },
+      {
+        "seq": 11,
+        "label": "assistant/tool-call",
+        "tokens": 55
+      },
+      {
+        "seq": 33,
+        "label": "tool/result:tool-summary",
+        "tokens": 42
+      },
+      {
+        "seq": 13,
+        "label": "assistant/tool-call",
+        "tokens": 55
+      },
+      {
+        "seq": 35,
+        "label": "tool/result:tool-summary",
+        "tokens": 42
+      },
+      {
+        "seq": 15,
+        "label": "assistant/text",
+        "tokens": 1000
+      },
+      {
+        "seq": 16,
+        "label": "assistant/tool-call",
+        "tokens": 55
+      },
+      {
+        "seq": 37,
+        "label": "tool/result:tool-summary",
+        "tokens": 42
+      },
+      {
+        "seq": 18,
+        "label": "assistant/tool-call",
+        "tokens": 55
+      },
+      {
+        "seq": 39,
+        "label": "tool/result:tool-summary",
+        "tokens": 42
+      },
+      {
+        "seq": 20,
+        "label": "assistant/text",
+        "tokens": 1000
+      },
+      {
+        "seq": 21,
+        "label": "assistant/tool-call",
+        "tokens": 55
+      },
+      {
+        "seq": 41,
+        "label": "tool/result:tool-pruned",
+        "tokens": 200
+      },
+      {
+        "seq": 23,
+        "label": "assistant/tool-call",
+        "tokens": 55
+      },
+      {
+        "seq": 43,
+        "label": "tool/result:tool-pruned",
+        "tokens": 200
+      },
+      {
+        "seq": 25,
+        "label": "assistant/text",
+        "tokens": 13670
+      },
+      {
+        "seq": 28,
+        "label": "assistant/text",
+        "tokens": 12000
+      },
+      {
+        "seq": 31,
+        "label": "assistant/text",
+        "tokens": 8000
+      }
+    ],
+    "surfaceLabelCounts": {
+      "assistant/text": 11,
+      "assistant/tool-call": 6,
+      "tool/result:tool-summary": 4,
+      "tool/result:tool-pruned": 2
+    }
+  },
+  "criteria": {
+    "fixedBeforeRun": true,
+    "verdictRule": "reproduced = op① really executed against the real store, committed a durable replacement, and op② did not process that same successful group (while op② was demonstrably live on other tool-zone work)",
+    "op1Executed": true,
+    "op1CommittedReplacement": true,
+    "storeRealAndDurable": true,
+    "op2Live": true,
+    "op2SawOtherToolZoneWork": true,
+    "op2TouchedOp1Group": [],
+    "routeFailed": false,
+    "verdictFromCriteria": "reproduced",
+    "planSection5Criteria": {
+      "definition": "工具区有合格候选却无 replacement，或候选越区、成功摘要又被裁剪，则 reproduced",
+      "noReplacementDespiteCandidates": false,
+      "candidateGroupsOutOfZone": false,
+      "successfulSummaryPruned": false,
+      "verdict": "not-reproduced"
+    }
+  },
+  "limitations": [
+    "token 是 fixture 计价（code points / 4），不是 provider token；E = 0，无真实 system prompt / 工具 schema / runtime envelope。可迁移的是比例形状，不是绝对数字。",
+    "fake LLM：只验证结构、请求/输出体积与缩减关系，不验证摘要语义质量；facts 由 fixture 从源文本中逐字复制以满足生产 provenance 断言。",
+    "summary 的 usage 未观测（fake adapter 不产生 usage），故 provider token 与真实计费量不可得。",
+    "触发口径为 trigger=\"pressure\"（生产同一入口同时承载 40%/70% 与 80% 两档）；本 fixture 只构造 40%–70% 档，未触发 overflow recovery。",
+    "真实 DSH 会话中工具组的形状、大小分布、以及真实会话是否达到 40%–70% 档从未被本实验测量；本实验构造的是\"合格完整工具组位于工具区\"这一条件。",
+    "单进程、单 Session、单次维护调用：不代表真实调度下的触发频率、并发或重启行为。",
+    "toolGroupAuditStore 由 E01 目录内的临时 JSON storage domain 提供（真实 dsh-storage 组件 + 真实 openToolGroupAuditStore），不是生产 $DSH_HOME 下的实例。",
+    "op②（裁剪）由 fixture 的 fake pruner 实现：它按生产候选集与 onReplacement 协议被调用，用于观测互斥性，不是生产 ToolResultPruner 的字节。",
+    "E01 的 engine 是 harness 的 seam 模式（plain object + BasicCompactionEngine.prototype），不是通过 ctx.plugin 挂载的真实 BasicCompactionEngine 实例；真实的是 op①/op② 方法体、zones/budget、以及 storage domain。"
+  ]
+}

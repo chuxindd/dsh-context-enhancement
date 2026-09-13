@@ -1,0 +1,258 @@
+{
+  "experiment": "E03-pressure-thrashing",
+  "title": "一个工具调用一次压缩（压力抖动）",
+  "baseline": {
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "a66e4702",
+    "source": "workspace-src",
+    "harness": "审计资料/实验结果/harness/compaction-harness.ts (read-only, unmodified, reused as-is)",
+    "invokedAs": "BasicCompactionEngine.prototype.compactIfNeeded(agent, 'pressure', signal)"
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/E03-压力抖动/e03-pressure-thrash.spec.ts --reporter=verbose",
+  "verdict": "reproduced",
+  "verdictBasis": "5 个连续相邻维护间隔，每个间隔之间恰好新增 1 个 tool/result（4 000 fixture token），且后一次维护都确实提交了 replacement（surface generation +1、summary.requests = 1、stopReasons 为空）；判据 requiredConsecutiveThrashGaps = 3 已在实验前固定，见 criteria。",
+  "fixture": {
+    "level": "L1 (fake token meter + fake LLM + temporary Session, no real process, no real $HOME/.dsh)",
+    "contextWindow": 100000,
+    "watermarks": {
+      "toolMaintenance40pct": 40000,
+      "forgetMaintenance70pct": 70000,
+      "pressure80pct": 80000,
+      "retainTokens": 20000,
+      "responseReserveTokens": 8192,
+      "safetyMarginTokens": 2048
+    },
+    "envelopeTokens": 0,
+    "turnLayout": [
+      "turn 1 (completed): 31 x assistant/message x 2 000 = 62 000",
+      "turn 2 (completed): 3 x (tool-call 1 000 + tool-result 4 000) = 15 000",
+      "turn 3 (OPEN): 1 x (tool-call 1 000 + tool-result 4 000) = 5 000"
+    ],
+    "initialTotalTokens": 82000,
+    "initialTotalRatio": 0.82,
+    "cycles": 5,
+    "maintenanceInvocations": 6,
+    "appendedPerCycle": {
+      "toolCalls": 1,
+      "toolResults": 1,
+      "toolCallFixtureTokens": 1000,
+      "toolResultFixtureTokens": 4000,
+      "target": "the OPEN turn, one new step per cycle (one model step + one tool execution)"
+    },
+    "pricingRule": "fixture characters / 4 (CHARS_PER_TOKEN = 4) — fixture tokens, NOT provider tokens"
+  },
+  "observations": [
+    {
+      "id": "O1-next-maintenance-re-fires",
+      "statement": "5/5 周期：追加 1 个典型 tool/result（1 000 + 4 000 fixture token）后，下一次 pressure maintenance 都再次触发并提交一个 replacement。",
+      "evidence": "ledger rows cycle 1..5: beforeTotalTokens 83 000/84 000/83 000/84 000/83 000，均 ≥ 80 000（tier = pressure），replacementCommitted 全为 true，stopReasons 全为 []。",
+      "value": {
+        "thrashStreak": 5,
+        "required": 3
+      }
+    },
+    {
+      "id": "O2-headroom-below-typical-tool-result",
+      "statement": "每次维护后 headroom（80 000 − after）只有 1 000–2 000 fixture token，小于下一典型 tool/result 的 4 000；计入生产规则下的 framed checkpoint 价后 headroom 为 605–1 637，仍远小于 4 000。",
+      "evidence": "ledger rows headroomTokens = 2 000/1 000/2 000/1 000/2 000/1 000；derivedHeadroomWithFramedCheckpointTokens = 1 637/614/1 487/605/1 487/605；headroomGapStreak = 5。",
+      "value": {
+        "headroomTokens": [2000, 1000, 2000, 1000, 2000, 1000],
+        "derivedHeadroomWithFramedCheckpointTokens": [1637, 614, 1487, 605, 1487, 605],
+        "typicalToolResultFixtureTokens": 4000
+      }
+    },
+    {
+      "id": "O3-exit-point-near-trigger-not-70pct",
+      "statement": "维护退出点停在 78%–79%（78 000/79 000），从未回落到 70% 水位；与「无 pressureExitRatio、退出目标是当前缺口」一致。",
+      "evidence": "6 次维护的 afterTotalTokens = 78 000/79 000/78 000/79 000/78 000/79 000；belowThresholdAfter 全为 true，但均高于 forgetWatermark 70 000。",
+      "value": {
+        "afterTotalTokens": [78000, 79000, 78000, 79000, 78000, 79000],
+        "forgetWatermarkTokens": 70000,
+        "pressureThresholdTokens": 80000
+      }
+    },
+    {
+      "id": "O4-one-span-and-one-call-per-invocation",
+      "statement": "每次维护只发 1 次摘要调用、只提交 1 个跨度（surface generation +1），不存在同一调用内的重试或多批次。",
+      "evidence": "6 次维护 summary.requests 全为 1，generation 增量全为 1，shadowedNodes = 2/3/4/3/4/3，stopReasons 全为 []。",
+      "value": {
+        "summaryRequests": [1, 1, 1, 1, 1, 1],
+        "generationDelta": [1, 1, 1, 1, 1, 1],
+        "selectedTokens": [4000, 4000, 6000, 4000, 6000, 4000]
+      }
+    },
+    {
+      "id": "O5-selected-span-is-deficit-sized-and-re-enters-last-checkpoint",
+      "statement": "选中跨度按赤字尺寸选取（4 000/6 000），起点恒为 surface index 0；从第 2 次维护起，跨度首节点是上一轮刚落地 checkpoint（sourceKinds[0] = 'user/message'），即上一轮摘要被下一轮再次折入。",
+      "evidence": "ledger rows selected.startIndex 全为 0；cycle ≥ 1 的 sourceKinds[0] = 'user/message'；sourceSeqs[0] 为新增 checkpoint 序号（47/53/59/65/71）。",
+      "value": {
+        "selectedStartIndex": [0, 0, 0, 0, 0, 0],
+        "firstSourceKindPerRow": ["assistant/message", "user/message", "user/message", "user/message", "user/message", "user/message"]
+      }
+    },
+    {
+      "id": "O6-low-net-release-ratio-but-always-committed",
+      "statement": "净释放比率 4.82%–7.14%，全部低于理想方案的最小净收益（netReleaseRatio ≥ 0.15）；当前实现没有 low-yield 判定，全部照常提交，且没有任何 no-progress 记录。",
+      "evidence": "ledger rows netReleaseRatio = 0.0488/0.0482/0.0714/0.0482/0.0714/0.0482；stopReasons 全为 []。",
+      "value": {
+        "netReleaseRatio": [0.0488, 0.0482, 0.0714, 0.0482, 0.0714, 0.0482],
+        "idealMinimumRatio": 0.15
+      }
+    },
+    {
+      "id": "O7-retained-tail-grows-squeezing-the-head",
+      "statement": "由于每周期都追加到 OPEN turn，retained tail 下限（open turn + 最后完成 turn）每周期增长 5 000：recent 区 20 000 → 45 000、tool 区 30 000 → 6 000。该 fixture 的头部空间有限，本实验只跑了 5 个周期；更长周期下抖动是否会因头部耗尽而终止未被观测。",
+      "evidence": "ledger rows zonesBefore.recentTokens = 20 000/25 000/30 000/35 000/40 000/45 000；zonesBefore.toolTokens = 30 000/26 000/20 000/16 000/10 000/6 000。",
+      "value": {
+        "recentTokens": [20000, 25000, 30000, 35000, 40000, 45000],
+        "toolTokens": [30000, 26000, 20000, 16000, 10000, 6000]
+      }
+    },
+    {
+      "id": "O8-auxiliary-input-priced-near-the-release",
+      "statement": "按 fixture 计价，摘要请求输入（4 451–6 846）与净释放量（4 000–6 000）同量级。真实 provider 侧可复用前缀 KV cache，故不能等同于真实计费量。",
+      "evidence": "ledger rows summary.inputTokens = 4 451/4 814/6 837/4 963/6 846/4 964；netReleasedTokens = 4 000/4 000/6 000/4 000/6 000/4 000。",
+      "value": {
+        "summaryInputTokens": [4451, 4814, 6837, 4963, 6846, 4964],
+        "netReleasedTokens": [4000, 4000, 6000, 4000, 6000, 4000]
+      }
+    }
+  ],
+  "criteria": {
+    "fixedBeforeRun": true,
+    "definition": {
+      "reproduced": "连续至少 3 次相邻维护之间只有 1 个新增 tool/result，且维护确实提交 replacement",
+      "not-reproduced": "完整多周期账本存在但不满足上述连续条件",
+      "inconclusive": "fixture/runner 无法产出证据",
+      "design-confirmed": "只有静态设计证据、无动态账本"
+    },
+    "requiredConsecutiveThrashGaps": 3,
+    "thrashStreak": 5,
+    "headroomGapStreak": 5,
+    "completeLedger": true,
+    "verdictFromCriteria": "reproduced",
+    "note": "判据不依赖 E02 已反证的 whole-zone 假设；E03 只验证 repeated invocation 与 headroom。"
+  },
+  "matchedStaticFindings": [
+    {
+      "id": "IB-R2",
+      "title": "压力档收敛性【需实验确认】",
+      "source": "审计资料/10-预算调度与三区差异.md:135（并见 IB-05:83、IB-06:84、IB-10:93 的「是（IB-R2…）」标注）",
+      "staticClaim": "需测量贴近 80% 时会话的释放轮数、low-yield 出现频率、是否长期抖动在 80% 附近",
+      "dynamicEvidence": "受控 L1：6 次维护后总量在 78 000–84 000 之间反复，5 个连续单工具间隔全部再次提交，退出点 78%–79%",
+      "evidenceLevel": "controlled-reproduced (fixture tokens; 真实会话频率未测)"
+    },
+    {
+      "id": "IB-05",
+      "title": "无 pressureExitRatio；压力档退出目标是赤字尺寸前缀",
+      "source": "审计资料/10-预算调度与三区差异.md:83；src/internal/compaction/config.ts:29-37；src/compaction-basic.ts:450,526,569",
+      "staticClaim": "压力档退出不是回落到 0.70，而是赤字尺寸前缀/ cap 内最宽前缀",
+      "dynamicEvidence": "每次维护后 78 000/79 000，headroom 1 000–2 000，未回落到 70 000",
+      "evidenceLevel": "controlled-supported"
+    },
+    {
+      "id": "IB-06",
+      "title": "只有严格缩减断言；低收益批次照常提交；no-progress 只在完全未下降时生效",
+      "source": "审计资料/10-预算调度与三区差异.md:84；src/internal/compaction/region.ts:449-454；src/compaction-basic.ts:707-714",
+      "staticClaim": "低收益批次会被提交并计费；可能反复付费而不解压",
+      "dynamicEvidence": "6 次提交的 netReleaseRatio = 4.82%–7.14%（理想 ≥0.15），stopReasons 全空，无 low-yield 记录",
+      "evidenceLevel": "controlled-supported"
+    },
+    {
+      "id": "IB-08",
+      "title": "压力档为单次跨度语义调用，不受 targetBatchTokens/maxBatchTokens 约束",
+      "source": "审计资料/10-预算调度与三区差异.md:91",
+      "staticClaim": "单次调用可能取走整个遗忘区或 cap 内最宽前缀，无同调用重试",
+      "dynamicEvidence": "每次维护 summary.requests = 1、generation +1，跨度 4 000/6 000（远小于 16 000/24 000 batch 预算）",
+      "evidenceLevel": "controlled-supported"
+    },
+    {
+      "id": "IB-10",
+      "title": "本调用内不重试，靠下一个 pre-step 重新规划",
+      "source": "审计资料/10-预算调度与三区差异.md:93；src/compaction-basic.ts:704-715",
+      "staticClaim": "释放是否结束压力由下一 pre-step 重新规划决定",
+      "dynamicEvidence": "连续 5 个 pre-step 均重新规划并再次提交 replacement，形成一工具一压缩",
+      "evidenceLevel": "controlled-supported"
+    },
+    {
+      "id": "IB-09",
+      "title": "遗忘区跑工具①②（工具摘要/裁剪）",
+      "source": "审计资料/10-预算调度与三区差异.md:92",
+      "staticClaim": "70%+ 时先在遗忘区执行 op①/op②",
+      "dynamicEvidence": "本 fixture 未覆盖：audit store 为 undefined、未挂 fake pruner、被选跨度内无工具对",
+      "evidenceLevel": "not-verified (E01 scope)"
+    },
+    {
+      "id": "IB-07",
+      "title": "净释放/比率与 stop reason 无生产账本",
+      "source": "审计资料/10-预算调度与三区差异.md:85",
+      "staticClaim": "生产只记录 shadowed N nodes（启发式影子价），不记录净释放",
+      "dynamicEvidence": "本实验的净释放/headroom 由 fixture 侧重建，非生产落账",
+      "evidenceLevel": "not-verified (observability gap confirmed as-is)"
+    }
+  ],
+  "limitations": [
+    "token 是 fixture 计价（字符数/4），不是 provider token，且 E = 0、无真实 system/tools/runtime envelope；可迁移的是比例形状（退出点落在触发线下约 2–3% 窗口、典型 tool/result 约占窗口 4%），不是绝对数字。",
+    "replacement checkpoint 在 fixture meter 中计 0（harness 只对 append() 过的节点定价），故 netReleasedTokens 等于跨度价，是净释放上界；账本另给 framedCheckpointTokens 与 derivedHeadroomWithFramedCheckpointTokens，计入后 headroom 更小（605–1 637），抖动结论不变且只会更强。",
+    "fake LLM：只验证结构、请求/输出体积与缩减关系，不验证摘要语义质量；输出为 inputChars/16 的填充文本。",
+    "无 pruner、toolGroupAuditStore = undefined、hasPendingToolIntermediateWork = 'none'：本实验不测工具组摘要、裁剪、tool-stage debt 否决路径。",
+    "「典型 tool/result = 4 000 fixture token / 100 000 窗口」是实验设定的构造条件，不是实测分布；reproduced 的前提「典型工具结果 > 维护后 headroom」由本实验构造，真实会话是否满足未被测量。",
+    "单进程、单 Session、无并发维护、无重启；不代表真实调度下 pre-step 的实际触发频率。",
+    "只跑了 5 个周期：retained tail 每周期增长 5 000（recent 20 000 → 45 000），头部空间有限；更长周期下抖动是否因头部耗尽而终止未观测。",
+    "触发口径只走 trigger='pressure'（该入参在生产中同时承载 70% 与 80% 两档），未触发 overflow recovery，故 recoveryLevel 未观测。",
+    "静态推理但未在本实验观测：维护后停在 78%–79%（≥70% 水位）时，即便不追加任何内容，下一次 pre-step 也会进入 70% 档并提交一个有界批次。该推断来自 src/compaction-basic.ts:490-571 的代码路径，不是本实验的观测值。"
+  ],
+  "unobservedFields": [
+    { "field": "provider tokens / real usage", "value": null, "reason": "fake adapter 不产生 usage；所有 token 均为 fixture 计价" },
+    { "field": "netReleasedTokens 的真实值", "value": null, "reason": "上界：checkpoint 在 fixture meter 中计 0；真实值 = 跨度价 − framed checkpoint 价（账本可推导）" },
+    { "field": "envelopeTokens", "value": 0, "reason": "fixture meter 令 totalTokens == surfaceTokens" },
+    { "field": "recoveryLevel", "value": null, "reason": "未走 overflow 触发路径" },
+    { "field": "no-progress / low-yield / veto stop reason", "value": [], "reason": "6 次维护全部正常提交，未走到否决路径；当前实现无 low-yield 判定本身为静态事实" },
+    { "field": "model / outputReserve / framingReserve（方案 §4.1 账本字段）", "value": null, "reason": "harness ledger 未暴露；resolveModelInfo 由 fixture 固定返回 contextWindow" },
+    { "field": "真实会话中的触发频率与工具结果分布", "value": null, "reason": "L1 fake 实验边界之外，需真实会话回放" }
+  ],
+  "testSummary": {
+    "testFiles": { "total": 1, "passed": 1, "failed": 0 },
+    "tests": { "total": 1, "passed": 1, "failed": 0, "skipped": 0 },
+    "durationMs": 657,
+    "testsDurationMs": 27,
+    "exitCode": 0,
+    "runner": "vitest 4.1.11",
+    "rawOutput": "vitest-output.txt",
+    "note": "用例通过 = fixture 断言通过（判据按实验前固定规则成立），不代表理想方案通过，也不代表用户现象在真实会话中的频率已被测定。"
+  },
+  "sourceDrift": false,
+  "sourceDriftDetail": {
+    "baselineHashFile": "审计资料/实验结果/E-baseline-hashes.json",
+    "filesChecked": 342,
+    "mismatchBefore": 0,
+    "mismatchAfter": 0,
+    "gitStatusBeforeEqualsAfter": true,
+    "gitStatusLineCount": 134,
+    "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "changedPaths": ["审计资料/实验结果/E03-压力抖动/** (new files only)"],
+    "note": "审计资料 整体为未跟踪目录，故 git status --short 行未变化；新增文件全部位于 E03 实验目录内。未修改生产源码、现有 tests、package.json、vitest.config.ts、lib、tgz、其他实验目录或 harness 文件；未构建/安装/启动 DSH 或 GUI；未访问真实 $HOME/.dsh 或现有会话。"
+  },
+  "artifacts": [
+    "审计资料/实验结果/E03-压力抖动/e03-pressure-thrash.spec.ts",
+    "审计资料/实验结果/E03-压力抖动/e03-ledger.json",
+    "审计资料/实验结果/E03-压力抖动/README.md",
+    "审计资料/实验结果/E03-压力抖动/result.json",
+    "审计资料/实验结果/E03-压力抖动/vitest-output.txt",
+    "审计资料/实验结果/E03-压力抖动/hash-check-before.json",
+    "审计资料/实验结果/E03-压力抖动/hash-check-after.json",
+    "审计资料/实验结果/E03-压力抖动/git-status-before.txt",
+    "审计资料/实验结果/E03-压力抖动/git-status-after.txt",
+    "审计资料/实验结果/E03-压力抖动/git-head-before.txt",
+    "审计资料/实验结果/E03-压力抖动/git-head-after.txt"
+  ],
+  "ledgerSummary": [
+    { "maintenance": 1, "cycle": 0, "addedToolResultsSincePrevious": 0, "tier": "pressure", "beforeTotalTokens": 82000, "selectedTokens": 4000, "selectedRange": [0, 1], "summaryRequests": 1, "summaryInputTokens": 4451, "summaryOutputTokens": 278, "afterTotalTokens": 78000, "netReleasedTokens": 4000, "netReleaseRatio": 0.0488, "headroomTokens": 2000, "derivedHeadroomWithFramedCheckpointTokens": 1637, "stopReasons": [], "surfaceGeneration": [0, 1], "replacementCommitted": true },
+    { "maintenance": 2, "cycle": 1, "addedToolResultsSincePrevious": 1, "tier": "pressure", "beforeTotalTokens": 83000, "selectedTokens": 4000, "selectedRange": [0, 2], "summaryRequests": 1, "summaryInputTokens": 4814, "summaryOutputTokens": 301, "afterTotalTokens": 79000, "netReleasedTokens": 4000, "netReleaseRatio": 0.0482, "headroomTokens": 1000, "derivedHeadroomWithFramedCheckpointTokens": 614, "stopReasons": [], "surfaceGeneration": [1, 2], "replacementCommitted": true },
+    { "maintenance": 3, "cycle": 2, "addedToolResultsSincePrevious": 1, "tier": "pressure", "beforeTotalTokens": 84000, "selectedTokens": 6000, "selectedRange": [0, 3], "summaryRequests": 1, "summaryInputTokens": 6837, "summaryOutputTokens": 428, "afterTotalTokens": 78000, "netReleasedTokens": 6000, "netReleaseRatio": 0.0714, "headroomTokens": 2000, "derivedHeadroomWithFramedCheckpointTokens": 1487, "stopReasons": [], "surfaceGeneration": [2, 3], "replacementCommitted": true },
+    { "maintenance": 4, "cycle": 3, "addedToolResultsSincePrevious": 1, "tier": "pressure", "beforeTotalTokens": 83000, "selectedTokens": 4000, "selectedRange": [0, 2], "summaryRequests": 1, "summaryInputTokens": 4963, "summaryOutputTokens": 310, "afterTotalTokens": 79000, "netReleasedTokens": 4000, "netReleaseRatio": 0.0482, "headroomTokens": 1000, "derivedHeadroomWithFramedCheckpointTokens": 605, "stopReasons": [], "surfaceGeneration": [3, 4], "replacementCommitted": true },
+    { "maintenance": 5, "cycle": 4, "addedToolResultsSincePrevious": 1, "tier": "pressure", "beforeTotalTokens": 84000, "selectedTokens": 6000, "selectedRange": [0, 3], "summaryRequests": 1, "summaryInputTokens": 6846, "summaryOutputTokens": 428, "afterTotalTokens": 78000, "netReleasedTokens": 6000, "netReleaseRatio": 0.0714, "headroomTokens": 2000, "derivedHeadroomWithFramedCheckpointTokens": 1487, "stopReasons": [], "surfaceGeneration": [4, 5], "replacementCommitted": true },
+    { "maintenance": 6, "cycle": 5, "addedToolResultsSincePrevious": 1, "tier": "pressure", "beforeTotalTokens": 83000, "selectedTokens": 4000, "selectedRange": [0, 2], "summaryRequests": 1, "summaryInputTokens": 4964, "summaryOutputTokens": 310, "afterTotalTokens": 79000, "netReleasedTokens": 4000, "netReleaseRatio": 0.0482, "headroomTokens": 1000, "derivedHeadroomWithFramedCheckpointTokens": 605, "stopReasons": [], "surfaceGeneration": [5, 6], "replacementCommitted": true }
+  ]
+}

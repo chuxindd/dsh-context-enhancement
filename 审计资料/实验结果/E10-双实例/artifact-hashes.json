@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2026-09-12T23:22:25.5378732+08:00",
+  "runId": "b85f8dd0",
+  "algorithm": "SHA-256",
+  "fileCount": 27,
+  "note": "本文件自身不参与清单（避免自指）；tmp-control/ 下的按代命令/响应通道文件数量多且属于过程数据，单独计数在 controlChannelFiles 字段。",
+  "controlChannelFiles": 46,
+  "files": [
+    {
+      "path": "drift-check-after.json",
+      "bytes": 1103,
+      "sha256": "ec9c637f9ac18fb49f24f0fd17fa8ec6b9e08e6c406ec5e93076ddbc81b3d93b"
+    },
+    {
+      "path": "worker-S-gen2-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-process.log",
+      "bytes": 9081,
+      "sha256": "3d723cda17c15c949d435955d1bb9895753ad8454b0726116e87368e712353f1"
+    },
+    {
+      "path": "worker-C-gen3-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-C-gen3-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-B-gen2-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-B-gen2-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-B-gen1-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-B-gen1-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-A-gen2-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-A-gen2-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-A-gen1-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-S-gen2-stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "worker-A-gen1-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "result.json",
+      "bytes": 19221,
+      "sha256": "6f5fcf02b6770b0e5d69f79e3084e1f6e39d41242f9022504f2f2c297027e25d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 18031,
+      "sha256": "c129c1ce5c8b80d0f9185182c61956dc7997ce346b8d4d3b6c4eefd64bb95edc"
+    },
+    {
+      "path": "hash-check-before.json",
+      "bytes": 174,
+      "sha256": "2706139f31e0f44afeff2b219f05b8e87287670f64cbbe9bf5728c40ddbb62ab"
+    },
+    {
+      "path": "hash-check-after.json",
+      "bytes": 174,
+      "sha256": "4ca71597402d9552e85ac2c00fb407d6d6bb0687c6d8b842798a97855855cee9"
+    },
+    {
+      "path": "git-status-before.txt",
+      "bytes": 5902,
+      "sha256": "ead922468f17d1a2ca12059589724b07a205f2ea1559f024f933b4ec7a18ceef"
+    },
+    {
+      "path": "git-status-after.txt",
+      "bytes": 5902,
+      "sha256": "ead922468f17d1a2ca12059589724b07a205f2ea1559f024f933b4ec7a18ceef"
+    },
+    {
+      "path": "git-head-before.txt",
+      "bytes": 42,
+      "sha256": "1958ca6b13c39b93d19c148e3d4736235e059cda90bf57dfea1d0e8771a04f46"
+    },
+    {
+      "path": "git-head-after.txt",
+      "bytes": 42,
+      "sha256": "1958ca6b13c39b93d19c148e3d4736235e059cda90bf57dfea1d0e8771a04f46"
+    },
+    {
+      "path": "e10-storage-worker.mts",
+      "bytes": 28135,
+      "sha256": "f2e02a0034b4d311ef6773e66a55fc71ce36931a1f02a85888d085f4a12843ad"
+    },
+    {
+      "path": "e10-ledger.json",
+      "bytes": 43927,
+      "sha256": "8f544fcf147dd6a1293e0084771cc8230f7542adabb319589a75e68c4af78162"
+    },
+    {
+      "path": "e10-dual-instance.spec.ts",
+      "bytes": 71574,
+      "sha256": "baed6a0561958b403f0e098b0372878e17aad14e8a76696a7bb7f4886a97a2b5"
+    },
+    {
+      "path": "vitest-output-run1.txt",
+      "bytes": 506,
+      "sha256": "013372c0b8f4d3d5a6ed1112df14eadc9daeda7c30d526d1f29fb7e581f6145b"
+    },
+    {
+      "path": "tmp-storage/run-b85f8dd0/context_enhancement_task_state.json",
+      "bytes": 1956,
+      "sha256": "c4b588d76122c30f952666ea25850ea466e10fa47cba2be1167eebf46f5b0142"
+    }
+  ]
+}

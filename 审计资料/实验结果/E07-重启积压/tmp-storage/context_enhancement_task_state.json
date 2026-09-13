@@ -1,0 +1,157 @@
+{
+  "unit": {
+    "name": "context_enhancement_task_state",
+    "version": 1
+  },
+  "global": null,
+  "tables": {
+    "sessions": {
+      "e07-restart-backlog": {
+        "session": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+        },
+        "stable": {
+          "schemaVersion": 1,
+          "revision": 2,
+          "filterVersion": "task-state-basic/filter-v2",
+          "sourceCursor": 10,
+          "digest": "43afeac9dc412207a00bf62d5f4c218242265ca0775ad091c5b8ca9b8538acef",
+          "facts": [
+            {
+              "id": "fact-46e2dec5-1bc5-4cd8-bf2f-244f6c60d465",
+              "content": "e07 durable record folded eligible events through 10"
+            }
+          ],
+          "decisions": [],
+          "constraints": [],
+          "risks": [],
+          "evidence": [],
+          "todoReferences": [],
+          "continuation": {
+            "currentObjective": "E07 restart backlog probe window-through-10",
+            "currentFocus": "observing whether startup folds an unprocessed tail",
+            "openWork": [],
+            "nextActions": []
+          }
+        }
+      }
+    },
+    "audit": {
+      "ts-c710c53f-6e3c-430a-bed3-e3a250089c33": {
+        "requestId": "ts-c710c53f-6e3c-430a-bed3-e3a250089c33",
+        "time": 1789222165212,
+        "session": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+        },
+        "request": {
+          "requestId": "ts-c710c53f-6e3c-430a-bed3-e3a250089c33",
+          "revision": 1,
+          "base": null,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "current-route",
+            "model": "current-model"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-c710c53f-6e3c-430a-bed3-e3a250089c33",
+          "revision": 1,
+          "sourceCursor": 3,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"e07 durable record folded eligible events through 3\"}],\"decisions\":[],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E07 restart backlog probe window-through-3\",\"currentFocus\":\"observing whether startup folds an unprocessed tail\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-ec17a318-59e5-4296-9cfc-b66ee937310a": {
+        "requestId": "ts-ec17a318-59e5-4296-9cfc-b66ee937310a",
+        "time": 1789222168480,
+        "session": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+        },
+        "request": {
+          "requestId": "ts-ec17a318-59e5-4296-9cfc-b66ee937310a",
+          "revision": 2,
+          "base": {
+            "facts": [
+              {
+                "id": "fact-2ce86460-9f7e-41c8-a526-31b58e9d49ba",
+                "content": "e07 durable record folded eligible events through 3"
+              }
+            ],
+            "decisions": [],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E07 restart backlog probe window-through-3",
+              "currentFocus": "observing whether startup folds an unprocessed tail",
+              "openWork": [],
+              "nextActions": []
+            },
+            "schemaVersion": 1,
+            "revision": 1,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 3,
+            "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299"
+          },
+          "includedSeqs": [
+            6,
+            7,
+            8,
+            10
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "current-route",
+            "model": "current-model"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-ec17a318-59e5-4296-9cfc-b66ee937310a",
+          "revision": 2,
+          "sourceCursor": 10,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"e07 durable record folded eligible events through 10\"}],\"decisions\":[],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E07 restart backlog probe window-through-10\",\"currentFocus\":\"observing whether startup folds an unprocessed tail\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      }
+    }
+  }
+}

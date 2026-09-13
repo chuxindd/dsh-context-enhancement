@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/E03-压力抖动/e03-pressure-thrash.spec.ts > E03 · pressure thrashing: one typical tool/result per maintenance > runs 1 initial + 5 cycle maintenance invocations and records every ledger field 26ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:34:45
+   Duration  657ms (transform 185ms, setup 0ms, import 449ms, tests 27ms, environment 0ms)
+

@@ -1,0 +1,25 @@
+dsh: initialized profile web at C:\Users\chuxi\AppData\Local\Temp\dsh-context-verify-tXnaZr\profiles\web
+Progress: resolved 0, reused 1, downloaded 0, added 0
+[WARN] Issues with peer dependencies found. Run "pnpm peers check" to list them.
+
+dependencies:
++ dsh-context-enhancement file:C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/dsh-context-enhancement-0.1.10.tgz
+
+Packages: +20
+++++++++++++++++++++
+Progress: resolved 20, reused 20, downloaded 0, added 20, done
+Done in 1.2s using pnpm v11.7.0
+note - artifact under test: C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\dsh-context-enhancement-0.1.10.tgz
+note - artifact sha256: 5553D2A01EF55C970DCB6A952ADE95687740AF10E8297553192944CCC924C8A5
+note - installed copy: C:\Users\chuxi\AppData\Local\Temp\dsh-context-verify-tXnaZr\profiles\web\node_modules\dsh-context-enhancement\lib\client.js
+note - installed lib/client.js sha256: D2DC6BBECDC034DADE0F0B363FC3A2C131B923877DA593E56CD49EA7EC0F49D3
+ok - installed client bundle registers Loader id "dsh-context-enhancement"
+ok - installed client bundle is byte-identical to the workspace build
+ok - profile layers: @deepseek-ai/dsh-base, @deepseek-ai/dsh-web-app, dsh-context-enhancement
+ok - profile-local bundle preset present
+ok - agent-presets default is contextual
+ok - roster: contextual, cordis, minimal, ptc, standard
+ok - contextual preset is healthy on the roster
+ok - contextual standing mount validated (no waiting rows, no leaked services, no duplicate provider)
+note: mandated closure preset root absent for a profile-local install; the ctx.baseUrl-derived root discovers the preset, and an absent root contributes no presets by design
+ok - isolated-profile install + standing-mount verification passed

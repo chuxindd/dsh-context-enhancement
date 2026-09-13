@@ -1,0 +1,79 @@
+{
+  "timestamp": "2026-09-11T10:00:00+08:00",
+  "plugin": {
+    "commit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "commitSubject": "Refine context summary inline editing",
+    "commitDate": "2026-09-08T12:51:00+08:00",
+    "branch": "main",
+    "dirtyEntries": 133,
+    "modified": 102,
+    "untracked": 31,
+    "dirtyBreakdown": {
+      "src_modified": 20,
+      "lib_modified": 72,
+      "tests_modified": 7,
+      "docs_modified": 1,
+      "root_modified": 2
+    },
+    "untrackedBreakdown": {
+      "root_temp_investigation": 5,
+      "lib_new_chunks": 6,
+      "src_new": 1,
+      "docs_new": 1,
+      "scripts_new": 5,
+      "tests_new": 13,
+      "investigation_dir": 1
+    }
+  },
+  "dsh": {
+    "commit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "commitSubject": "release(dsh): 0.1.2-rc.1",
+    "commitDate": "2026-09-03T02:27:19+08:00",
+    "branch": "main",
+    "dirtyEntries": 0
+  },
+  "package": {
+    "name": "dsh-context-enhancement",
+    "version": "0.1.10",
+    "packageManager": "pnpm@11.7.0",
+    "type": "module",
+    "engines": "node ^22.19.0 || >=24.0.0"
+  },
+  "hashes": {
+    "package_json": "20454835EACDDC3878B65CBAA7BEA95309A2E6715F8A4B7A1E7C17C8786702E9",
+    "pnpm_lock": "385431F7EDEBF3E9736E1C36D64647813A369984CD4A0E1B55E9129341C135F4",
+    "src_index": "5F53AEAB615F405A372AF5492F8675D96D58B91E82E5F056758EA42F7413F20B",
+    "cordis_patch": "95E8C9C0F115C41D8DE67B79E46285D61D31B00E7C26F0CFCEFA0FA8D12268FE",
+    "ideal_plan": "12734F966D815C20921052FB4868740D769FB2F822089E670F62A3E71BB92435",
+    "compression_scheme_4": "6767763D83B79831FBA4B7702FC9C4DA0177C51B53699611C7AE9816521AA901",
+    "tgz": "BE9DE3DE1F560E65B6E68E4A9B1647CA8CC042F98A8D58112C6961E6665A7E40",
+    "lib_index_js": "921F8F660FADB12747BDC694C9D7144CCBEDB6C43ADA08A122FE5F0B24A20510",
+    "lib_compaction_basic_js": "4718F3AD7AC59FE89BC0D3ADC53BA41A163674D6F15B18DCC9A8BA2F0CBBC0D1",
+    "lib_task_state_basic_js": "6BF1AD7171DC93FE8E764CE5C092C4C76E5F0507296155D7D510ABE7C060825A",
+    "lib_tool_result_pruner_js": "5E8D5CB5CF6DAB3A2990DD4B6CBDCF8E4269CE9AAA27B8F7D9A769592CA1F1C9",
+    "src_compaction_basic_ts": "5585C60DCAE9BB61C8BB50DAA1A3FCF67AAD18E2BCEF319D84590895AD46B653",
+    "src_task_state_basic_ts": "93F180752934037FDBB17C7CE67658610E0D30C4CA52CEBFB4F0A154E485F3C3",
+    "src_tool_result_pruner_ts": "BF126FF026FF72CE6042CA013B27CF36AC12E3443F4B3ECE4BBA03A021025DE1",
+    "src_config_ts": "C8801BA48331CFD276C29702FC26CD966A9EE2C00DA32E83039548C1E0960F8E"
+  },
+  "buildArtifacts": {
+    "srcNewest": "2026-09-11T09:44:06",
+    "libNewest": "2026-09-11T09:49:09",
+    "tgzDate": "2026-09-10T20:51:02",
+    "tgzSize": 1321348,
+    "libFilesCount": 239,
+    "srcFilesCount": 56,
+    "testsFilesCount": 44,
+    "tgzStale": true,
+    "staleNote": "tgz built 09/10 20:51, 20 src files modified after that"
+  },
+  "guiLoadingEvidence": {
+    "clientPlatform": "web",
+    "hostEntry": "lib/index.js",
+    "clientEntry": "lib/client.js",
+    "presetPath": "presets/contextual/",
+    "cordisPatchInserts": ["task-state-basic", "task-state-control", "context-enhancement-ui"],
+    "cannotProveRuntimeLoad": true
+  },
+  "baselineDrift": false
+}

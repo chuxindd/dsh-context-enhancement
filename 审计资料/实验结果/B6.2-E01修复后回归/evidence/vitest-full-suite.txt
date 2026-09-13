@@ -1,0 +1,136 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ❯ tests/artifact-parity.spec.ts (5 tests | 1 failed) 415ms
+     ✓ verifies generated lib/ files and tarball exist on disk 1ms
+     ✓ verifies ToolResultPruner runtime behavior in lib/tool-result-pruner.js 109ms
+     ✓ verifies BasicCompactionEngine runtime exports and schema in lib/compaction-basic.js 277ms
+     × verifies lib/client.js contains patched module id 5ms
+     ✓ extracts and inspects dsh-context-enhancement-0.1.10.tgz for full parity 21ms
+ ✓ tests/task-state-infeasible-progress.spec.ts (8 tests) 5383ms
+     ✓ quarantines exactly the measured culprit sequence with durable terminal provenance  681ms
+     ✓ restores the verdict across a restart without re-paying, and new facts open a new generation  697ms
+     ✓ never quarantines an oversized todo/write and leaves the committed TODO view intact  996ms
+     ✓ never quarantines an oversized goal/change and keeps the committed Goal view  559ms
+     ✓ records a transient infrastructure failure as retryable and never as a terminal verdict  371ms
+     ✓ fails closed when the committed stable itself exceeds the input budget  1099ms
+     ✓ continues through several measured culprits and stops when the backlog is clean  598ms
+     ✓ records a quarantine for an infeasible window before the first commit without inventing a stable  381ms
+ ✓ tests/task-state-goal-authority.spec.ts (16 tests) 4775ms
+     ✓ gives an authority fact that arrives during a running wave one urgent follow-up  376ms
+     ✓ folds one eligible authority sequence at most once, however often its urgent request repeats  409ms
+     ✓ collapses two authority facts observed in one tick into one urgent wave  425ms
+     ✓ commits nothing for a failed urgent wave and folds the fact in a later legal wave  323ms
+     ✓ fails closed on a durable record that carries no authoritative views  518ms
+     ✓ folds an inherited Goal change as a startup wave  582ms
+     ✓ carries the authoritative Goal view across a durable restart without refolding it  473ms
+     ✓ records no authority change for an unchanged Goal snapshot  446ms
+ ✓ tests/task-state-todo-authority.spec.ts (13 tests) 4247ms
+     ✓ commits nothing for a failed clear wave and folds the clear in a later legal wave  383ms
+     ✓ folds one write sequence at most once, however often its urgent request repeats  433ms
+     ✓ collapses two writes observed in one tick into one urgent wave, and a write+clear ends cleared  720ms
+     ✓ gives a clear appended during a running wave one urgent follow-up  397ms
+     ✓ folds an inherited clear as a startup wave  595ms
+     ✓ keeps the cleared list durable across a restart with its own digest  505ms
+ ✓ tests/task-state-terminal-generation.spec.ts (5 tests) 3125ms
+     ✓ blocks an oversized authority fact without skipping it, and does not re-measure an unchanged generation  1060ms
+     ✓ re-opens a blocked authority window when the authority fact is REPLACED, folding both pending facts  703ms
+     ✓ records a base-only overflow as its own typed non-event cause that blames no sequence, and re-opens when the base content changes  917ms
+     ✓ quarantines an ordinary culprit as one safe prefix and records its provenance in the same put  443ms
+ ✓ tests/task-state-terminal-bootstrap.spec.ts (5 tests) 2974ms
+     ✓ persists a first-commit quarantine, never fabricates a stable, and restores its cursor without re-paying  1142ms
+     ✓ advances nothing and claims nothing when the terminal write itself fails  548ms
+     ✓ writes no terminal verdict for a transient failure or an abandoned wave, and never bans the session  591ms
+     ✓ never reads or rewrites the retired v1 document and fails closed on a mismatched stamp  554ms
+ ✓ tests/task-state-startup-backlog.spec.ts (8 tests) 2931ms
+     ✓ folds an inherited eligible tail after a restart with no new Session event  425ms
+     ✓ admits one startup wave per runtime when hydration is offered repeatedly  391ms
+     ✓ starts nothing for a sub-threshold backlog, and an arriving event crosses the threshold instead  531ms
+     ✓ starts nothing for a hydrated Session whose backlog is empty  369ms
+     ✓ starts nothing for a Session whose lifecycle does not match the stored record  372ms
+     ✓ starts nothing when the authoritative domain fails to open  392ms
+ ✓ tests/task-state-recovery-provenance.spec.ts (4 tests) 2269ms
+     ✓ leaves exactly an OPEN audit row for an in-flight exit, commits nothing, and refolds the tail  418ms
+     ✓ never repairs an un-settled attempt into a commit for a revision no stable holds  579ms
+     ✓ repairs a lost finished audit and keeps the coexisting terminal verdict untouched  945ms
+     ✓ distinguishes the paid, the retryable and the quarantined attempt on one durable ledger  325ms
+ ✓ tests/task-state-worker.spec.ts (8 tests) 901ms
+ ✓ tests/task-state-prompt-fixed-slot.spec.ts (13 tests) 809ms
+     ✓ keeps exactly ONE visible slot node across 20 revisions, hides every old revision, and stamps a monotone replacement chain  340ms
+ ✓ tests/task-state-restart-recovery.spec.ts (10 tests) 761ms
+ ✓ tests/task-state-composition.spec.ts (8 tests) 434ms
+ ✓ tests/compaction-tool-audit-recovery.spec.ts (10 tests) 455ms
+ ✓ tests/task-state-injection-budget.spec.ts (12 tests) 342ms
+ ✓ tests/task-state-long-session.spec.ts (2 tests) 368ms
+ ✓ tests/task-state-update.spec.ts (22 tests) 144ms
+ ✓ tests/task-state-control-store.spec.ts (6 tests) 136ms
+ ✓ tests/compaction-tool-provenance-replay.spec.ts (11 tests) 75ms
+ ✓ tests/task-state-storage-capability.spec.ts (6 tests) 82ms
+ ✓ tests/compaction-envelope-budget.spec.ts (38 tests) 54ms
+ ✓ tests/compaction-three-zone.spec.ts (38 tests) 42ms
+ ✓ tests/compaction-pressure-reentry.spec.ts (4 tests) 33ms
+ ✓ tests/task-state-render.spec.ts (11 tests) 44ms
+ ✓ tests/compaction-tool-stage-debt.spec.ts (13 tests) 33ms
+ ✓ tests/compaction-audit-store-injection.spec.ts (3 tests) 34ms
+ ✓ tests/task-state-view.spec.ts (12 tests) 28ms
+ ✓ tests/compaction-tool-group-audit-failure.spec.ts (5 tests) 29ms
+ ✓ tests/task-state-prompt.spec.ts (10 tests) 25ms
+ ✓ tests/compaction-tool-groups.spec.ts (9 tests) 21ms
+ ✓ tests/compaction-tool-segments-coverage.spec.ts (16 tests) 19ms
+ ✓ tests/compaction-reentry-liveness.spec.ts (4 tests) 17ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts (6 tests) 15ms
+ ✓ tests/compaction-tool-group-summarizer.spec.ts (2 tests) 14ms
+ ✓ tests/compaction-pressure-low-yield.spec.ts (4 tests) 16ms
+ ✓ tests/compaction-tool-group-full-request-budget.spec.ts (3 tests) 16ms
+ ✓ tests/task-state-host.spec.ts (19 tests) 13ms
+ ✓ tests/compaction-tool-pairing-coverage.spec.ts (10 tests) 13ms
+ ✓ tests/compaction-segments-guard.spec.ts (10 tests) 14ms
+ ✓ tests/task-state-filter.spec.ts (41 tests) 14ms
+ ✓ tests/task-state-batch.spec.ts (9 tests) 10ms
+ ✓ tests/task-state-schema.spec.ts (17 tests) 13ms
+ ✓ tests/compaction-selection-guard-coverage.spec.ts (8 tests) 12ms
+ ✓ tests/compaction-served-provenance.spec.ts (5 tests) 13ms
+ ✓ tests/task-state-unload.spec.ts (2 tests) 12ms
+ ✓ tests/compaction-tool-group-summary.spec.ts (3 tests) 10ms
+ ✓ tests/compaction-pressure-exit.spec.ts (9 tests) 10ms
+ ✓ tests/compaction-helpers.spec.ts (4 tests) 8ms
+ ✓ tests/task-state-control-host.spec.ts (4 tests) 10ms
+ ✓ tests/compaction-retained-tail-turn-semantics.spec.ts (4 tests) 9ms
+ ✓ tests/compaction-recent-hard-limit.spec.ts (2 tests) 8ms
+ ✓ tests/effect-projection.spec.ts (2 tests) 8ms
+ ✓ tests/compaction-lifecycle-scheduling.spec.ts (5 tests) 5ms
+ ✓ tests/task-state-config.spec.ts (8 tests) 5ms
+ ✓ tests/task-state-control-protocol.spec.ts (10 tests) 5ms
+ ✓ tests/compaction-regressions.spec.ts (3 tests) 6ms
+ ✓ tests/task-state-bytes.spec.ts (6 tests) 4ms
+ ✓ tests/task-state-audit.spec.ts (5 tests) 5ms
+ ✓ tests/compaction-config-tool-groups.spec.ts (2 tests) 5ms
+ ✓ tests/compaction-tool-group-audit.spec.ts (3 tests) 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies lib/client.js contains patched module id
+AssertionError: unpatched package id must not remain
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/artifact-parity.spec.ts:128:12
+    126|     const clientSource = readFileSync(resolve(rootDir, 'lib/client.js'…
+    127|     assert.ok(clientSource.includes('dsh-context-enhancement'), 'clien…
+    128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+       |            ^
+    129|   })
+    130|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 58 passed (59)
+      Tests  1 failed | 540 passed (541)
+   Start at  17:09:58
+   Duration  49.40s (transform 1.40s, setup 0ms, import 7.92s, tests 31.28s, environment 5ms)
+

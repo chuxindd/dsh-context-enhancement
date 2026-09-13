@@ -1,0 +1,38 @@
+{
+  "id": "cmd-026",
+  "worker": "A",
+  "op": "get",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 78568,
+  "ppid": 22700,
+  "workerStartedAt": 1789263249565,
+  "respondedAt": 1789263249976,
+  "result": {
+    "key": "e10-session-fork",
+    "table": "sessions",
+    "view": {
+      "key": "e10-session-fork",
+      "present": true,
+      "schemaValid": true,
+      "session": {
+        "createdAt": 1700000000000,
+        "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+      },
+      "stable": {
+        "revision": 4,
+        "sourceCursor": 21,
+        "digest": "E10-DIGEST-A-r4-fork",
+        "filterVersion": "e10-filter-v1",
+        "schemaVersion": 1,
+        "objective": "E10 objective A-r4-fork",
+        "facts": [
+          "E10 A-r4-fork durable fact one.",
+          "E10 A-r4-fork durable fact two."
+        ]
+      },
+      "recordSha256": "4ad03a27d7e67f2fd95b4cd8fd10e6e3aca4e781c2bbdfb0f6bf5c5cd86bd771"
+    }
+  }
+}

@@ -7,6 +7,13 @@ export interface ContextEnhancementEvidence {
   taskStateRequests: number
   taskStateBasic: number
   taskStatePrompt: number
+  /**
+   * Successful tool-result reductions on the current surface: the umbrella
+   * "归纳工具操作" capability. Every reduction path — semantic tool-group
+   * summarization and the deterministic head/middle prune — logs the shared
+   * `compaction/prune` shadow-price event immediately before its replacement,
+   * so this one counter covers them all without a separate capability.
+   */
   toolResultPruner: number
   compactionBasic: number
 }

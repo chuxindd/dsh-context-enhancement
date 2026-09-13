@@ -1,0 +1,69 @@
+{
+  "id": "cmd-004",
+  "worker": "B",
+  "op": "inspect",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 36824,
+  "ppid": 22700,
+  "workerStartedAt": 1789263248621,
+  "respondedAt": 1789263248758,
+  "result": {
+    "inProcess": {
+      "sessionKeys": [],
+      "sessionCount": 0,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {},
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "c8355de09ff14ef39a0ca56e7e402587cc6c6ff20d077910016d2c63e328a6c9"
+    },
+    "disk": {
+      "present": true,
+      "sha256": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3",
+      "size": 1871,
+      "mtimeMs": 1789263248729.817
+    },
+    "diskView": {
+      "present": true,
+      "unit": {
+        "name": "context_enhancement_task_state",
+        "version": 1
+      },
+      "sessionKeys": [
+        "e10-session-a"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-a": {
+          "key": "e10-session-a",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 5,
+            "digest": "E10-DIGEST-A-t1",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective A-t1",
+            "facts": [
+              "E10 A-t1 durable fact one.",
+              "E10 A-t1 durable fact two."
+            ]
+          },
+          "recordSha256": "642f5542439fb89618a5fe884f843c63fd0a4d4922faef36540851bb5de63c94"
+        }
+      },
+      "audit": {},
+      "viewSha256": "add2e54f2d19252fa207a2c004050161aa4c12316391fffd24b1e38201070b9b"
+    }
+  }
+}

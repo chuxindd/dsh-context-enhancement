@@ -1,0 +1,37 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ❯ tests/artifact-parity.spec.ts (5 tests | 1 failed) 431ms
+     ✓ verifies generated lib/ files and tarball exist on disk 2ms
+     ✓ verifies ToolResultPruner runtime behavior in lib/tool-result-pruner.js 112ms
+     ✓ verifies BasicCompactionEngine runtime exports and schema in lib/compaction-basic.js 288ms
+     × verifies lib/client.js contains patched module id 6ms
+     ✓ extracts and inspects dsh-context-enhancement-0.1.10.tgz for full parity 20ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/artifact-parity.spec.ts > Artifact Parity (lib/ and dsh-context-enhancement-0.1.10.tgz vs src) > verifies lib/client.js contains patched module id
+AssertionError: unpatched package id must not remain
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/artifact-parity.spec.ts:128:12
+    126|     const clientSource = readFileSync(resolve(rootDir, 'lib/client.js'…
+    127|     assert.ok(clientSource.includes('dsh-context-enhancement'), 'clien…
+    128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+       |            ^
+    129|   })
+    130|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  17:07:50
+   Duration  688ms (transform 266ms, setup 0ms, import 66ms, tests 431ms, environment 0ms)
+

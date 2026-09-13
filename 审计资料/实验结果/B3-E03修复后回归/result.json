@@ -1,0 +1,196 @@
+{
+  "experiment": "B3-E03-pressure-thrashing-regression",
+  "title": "B3 修复后 E03 压力抖动回归实验",
+  "baseline": {
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "cf034b4",
+    "source": "workspace-src (post-B3.1/B3.2)",
+    "harness": "审计资料/实验结果/harness/compaction-harness.ts (read-only, unmodified, reused as-is)",
+    "invokedAs": "BasicCompactionEngine.prototype.compactIfNeeded(agent, 'pressure', signal)"
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/B3-E03修复后回归/b3-e03-regression.spec.ts --reporter=verbose",
+  "verdict": "fixed",
+  "verdictBasis": "thrashStreak = 1（< 3），原 E03 的连续 5 次「一工具一维护」抖动不再成立。B3.1 exit target 修复使 pressure maintenance 退出至 68000–69000（≤ exit line 70000），headroom 11000–12000 fixture token（远大于典型 tool/result 的 4000），需 2–3 个 tool/result 周期才能重新触发 pressure tier。5 次循环中只有 2 次 pressure invoke（cycle 0 和 cycle 3），且均以 pressure-exit 正常结束。",
+  "fixture": {
+    "level": "L1 (fake token meter + fake LLM + temporary Session, no real process, no real $HOME/.dsh)",
+    "contextWindow": 100000,
+    "watermarks": {
+      "toolMaintenance40pct": 40000,
+      "forgetMaintenance70pct": 70000,
+      "pressure80pct": 80000,
+      "pressureExitTokens": 70000,
+      "retainTokens": 20000,
+      "responseReserveTokens": 8192,
+      "safetyMarginTokens": 2048
+    },
+    "envelopeTokens": 0,
+    "turnLayout": [
+      "turn 1 (completed): 31 x assistant/message x 2 000 = 62 000",
+      "turn 2 (completed): 3 x (tool-call 1 000 + tool-result 4 000) = 15 000",
+      "turn 3 (OPEN): 1 x (tool-call 1 000 + tool-result 4 000) = 5 000"
+    ],
+    "initialTotalTokens": 82000,
+    "initialTotalRatio": 0.82,
+    "cycles": 5,
+    "maintenanceInvocations": 6,
+    "appendedPerCycle": {
+      "toolCalls": 1,
+      "toolResults": 1,
+      "toolCallFixtureTokens": 1000,
+      "toolResultFixtureTokens": 4000,
+      "target": "the OPEN turn, one new step per cycle (one model step + one tool execution)"
+    },
+    "pricingRule": "fixture characters / 4 (CHARS_PER_TOKEN = 4) — fixture tokens, NOT provider tokens"
+  },
+  "observations": [
+    {
+      "id": "O1-exit-line-reached",
+      "statement": "初始 pressure maintenance（82%）退出至 68000，低于 exit line 70000，stop reason = pressure-exit。第二次 pressure maintenance（83%）退出至 69000，同样 pressure-exit。",
+      "evidence": "ledger rows cycle 0: afterTotalTokens=68000, stopReasons=['pressure-exit']; cycle 3: afterTotalTokens=69000, stopReasons=['pressure-exit']。",
+      "value": {
+        "pressureExits": [68000, 69000],
+        "exitLine": 70000,
+        "stopReasons": ["pressure-exit", "pressure-exit"]
+      }
+    },
+    {
+      "id": "O2-no-thrash-streak",
+      "statement": "thrashStreak = 1（< 3），原 E03 的连续 5 次「一工具一维护」抖动不再成立。5 个 gaps 中只有 1 个 thrashGap（cycle 2→3），且这是因为 2 个 tool/result 累积后重新触发 pressure tier。",
+      "evidence": "gaps: thrashGap = [false, false, true, false, false]; thrashStreak = 1; headroomGapStreak = 1。",
+      "value": {
+        "thrashStreak": 1,
+        "headroomGapStreak": 1,
+        "required": 3,
+        "gapsThrashGap": [false, false, true, false, false]
+      }
+    },
+    {
+      "id": "O3-headroom-well-above-typical-tool-result",
+      "statement": "pressure maintenance 后 headroom 为 11000–12000 fixture token，远大于典型 tool/result 的 4000。需要 2–3 个 tool/result 周期才能重新触发 pressure tier。",
+      "evidence": "cycle 0: headroom=12000; cycle 3: headroom=11000。cycle 1 headroom=7000, cycle 2 headroom=2000（接近但仍 > 0），cycle 4 headroom=6000, cycle 5 headroom=1000。",
+      "value": {
+        "headroomAfterPressure": [12000, 11000],
+        "typicalToolResultTokens": 4000,
+        "cyclesToReTrigger": [2, 2]
+      }
+    },
+    {
+      "id": "O4-maintenance-tier-does-not-commit",
+      "statement": "在 70%–80% 维护档（cycle 1, 2, 4, 5），compactIfNeeded 进入 maintenance tier 但未提交 replacement（selected=null, requests=0, replacementCommitted=false）。维护档的 bounded batch 未执行实际压缩。",
+      "evidence": "cycle 1: tier=maintenance, selected=null, requests=0, committed=false; cycle 2: same; cycle 4: same; cycle 5: same。",
+      "value": {
+        "maintenanceCyclesNoCommit": [1, 2, 4, 5],
+        "maintenanceTiers": ["maintenance", "maintenance", "maintenance", "maintenance"]
+      }
+    },
+    {
+      "id": "O5-pressure-tier-fires-only-when-crossing-80pct",
+      "statement": "pressure tier 只在 totalTokens >= 80000 时触发（cycle 0: 82000, cycle 3: 83000）。exit line 修复使 pressure 退出至 68%–69%，留下充足 headroom，打破了「一工具一维护」的抖动模式。",
+      "evidence": "cycle 0: tier=pressure, beforeTotal=82000; cycle 3: tier=pressure, beforeTotal=83000; 其余 cycle 为 maintenance tier。",
+      "value": {
+        "pressureTierCycles": [0, 3],
+        "maintenanceTierCycles": [1, 2, 4, 5],
+        "pressureTrigger": 80000,
+        "exitLine": 70000
+      }
+    },
+    {
+      "id": "O6-selected-span-is-deficit-sized",
+      "statement": "pressure tier 选中的跨度为 deficit-sized（14000 token），起点恒为 surface index 0，与 E03 O5 的 deficit-prefix 行为一致。",
+      "evidence": "cycle 0: selected.startIndex=0, selected.tokens=14000; cycle 3: selected.startIndex=0, selected.tokens=14000。",
+      "value": {
+        "selectedStartIndex": [0, 0],
+        "selectedTokens": [14000, 14000],
+        "reclaimTokens": [12000, 13000]
+      }
+    },
+    {
+      "id": "O7-one-span-and-one-call-per-pressure-invocation",
+      "statement": "每次 pressure invocation 只发 1 次摘要调用、只提交 1 个跨度（surface generation +1），与 E03 O4 一致。",
+      "evidence": "cycle 0: summary.requests=1, generation delta=1; cycle 3: summary.requests=1, generation delta=1。",
+      "value": {
+        "summaryRequests": [1, 1],
+        "generationDelta": [1, 1],
+        "selectedTokens": [14000, 14000]
+      }
+    },
+    {
+      "id": "O8-net-release-ratio-adequate",
+      "statement": "pressure batch 的 net release ratio 为 16.9%–17.1%，高于 B3.1 的 minNetReleaseRatio 0.15 阈值，因此不会触发 low-yield 判定。",
+      "evidence": "cycle 0: netReleaseRatio=0.1707; cycle 3: netReleaseRatio=0.1687。",
+      "value": {
+        "netReleaseRatio": [0.1707, 0.1687],
+        "minNetReleaseRatio": 0.15
+      }
+    }
+  ],
+  "criteria": {
+    "fixedBeforeRun": true,
+    "definition": {
+      "fixed": "连续一工具一维护 streak < 3，且 pressure invoke 按 exit line / low-yield / typed stop 正常结束",
+      "still-reproduced": "原 streak >= 3 仍成立",
+      "inconclusive": "fixture 因接口变化无法运行或账本不足"
+    },
+    "requiredConsecutiveThrashGaps": 3,
+    "thrashStreak": 1,
+    "headroomGapStreak": 1,
+    "completeLedger": true,
+    "verdictFromCriteria": "fixed",
+    "note": "B3.1 exit target 修复是关键差异：pressure maintenance 退出至 68%–69%（exit line = 70%），headroom 11000–12000 >> 典型 tool/result 4000，需 2–3 个 tool/result 才重新触发 pressure tier。原 E03 的 thrashStreak=5 降至 1。"
+  },
+  "comparisonWithOriginalE03": {
+    "originalVerdict": "reproduced",
+    "originalThrashStreak": 5,
+    "originalHeadroomGapStreak": 5,
+    "originalAfterTotalTokens": [78000, 79000, 78000, 79000, 78000, 79000],
+    "originalHeadroomTokens": [2000, 1000, 2000, 1000, 2000, 1000],
+    "currentVerdict": "fixed",
+    "currentThrashStreak": 1,
+    "currentHeadroomGapStreak": 1,
+    "currentAfterTotalTokens": [68000, 73000, 78000, 69000, 74000, 79000],
+    "currentHeadroomTokens": [12000, 7000, 2000, 11000, 6000, 1000],
+    "keyDifference": "B3.1 exit target (exit line = 70000) 使 pressure maintenance 退出至 68%–69%，而非原来的 78%–79%。这提供了充足的 headroom（11000–12000 vs 1000–2000），打破了每工具调用重触发维护的抖动模式。",
+    "exitBehaviorChange": "原 E03: 退出点 78000–79000（接近 80% trigger），headroom 不足一个典型 tool/result。B3 修复后: 退出点 68000–69000（低于 70% exit line），headroom 足以容纳 2–3 个 tool/result。"
+  },
+  "testSummary": {
+    "testFiles": { "total": 1, "passed": 1, "failed": 0 },
+    "tests": { "total": 1, "passed": 1, "failed": 0, "skipped": 0 },
+    "durationMs": 634,
+    "testsDurationMs": 25,
+    "exitCode": 0,
+    "runner": "vitest 4.1.11",
+    "rawOutput": "vitest-output.txt",
+    "note": "用例通过 = fixture 断言通过（结构完整性），判据按实验前固定规则从实际 thrashStreak 计算。"
+  },
+  "sourceDrift": false,
+  "sourceDriftDetail": {
+    "filesChecked": {
+      "src/compaction-basic.ts": "6A1896D6E1E2126A3DF70BDC040E3AC4841F004360456F0F82AB579D58D38B86 (pre=post)",
+      "src/internal/compaction/config.ts": "2254A88E09559111F58F653BC318F45B31ADBDA11F0745E75E31B86DA4BA00D7 (pre=post)",
+      "src/internal/compaction/zones.ts": "E3D0342F723D705C7F85CBE3A46EC184552514F57309291424C858BD981E48F7 (pre=post)",
+      "harness/compaction-harness.ts": "E85ADCB19809AAE22DC4A3EA8EB1E709B85D85B3C382142773BFF395DB86EDCC (pre=post)"
+    },
+    "mismatchBefore": 0,
+    "mismatchAfter": 0,
+    "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "changedPaths": ["审计资料/实验结果/B3-E03修复后回归/** (new files only)"],
+    "note": "未修改生产源码、现有 tests、package.json、vitest.config.ts、lib、tgz、其他实验目录或 harness 文件；未构建/安装/启动 DSH 或 GUI。审计目录新增文件不计入 drift。"
+  },
+  "artifacts": [
+    "审计资料/实验结果/B3-E03修复后回归/b3-e03-regression.spec.ts",
+    "审计资料/实验结果/B3-E03修复后回归/ledger.json",
+    "审计资料/实验结果/B3-E03修复后回归/result.json",
+    "审计资料/实验结果/B3-E03修复后回归/README.md",
+    "审计资料/实验结果/B3-E03修复后回归/vitest-output.txt",
+    "审计资料/实验结果/B3-E03修复后回归/post-run-hashes.json"
+  ],
+  "ledgerSummary": [
+    { "maintenance": 1, "cycle": 0, "tier": "pressure", "beforeTotalTokens": 82000, "selectedTokens": 14000, "selectedRange": [0, 6], "summaryRequests": 1, "summaryInputTokens": 14451, "summaryOutputTokens": 903, "afterTotalTokens": 68000, "netReleasedTokens": 14000, "netReleaseRatio": 0.1707, "headroomTokens": 12000, "stopReasons": ["pressure-exit"], "surfaceGeneration": [0, 1], "replacementCommitted": true },
+    { "maintenance": 2, "cycle": 1, "tier": "maintenance", "beforeTotalTokens": 73000, "selectedTokens": null, "summaryRequests": 0, "afterTotalTokens": 73000, "netReleasedTokens": 0, "headroomTokens": 7000, "stopReasons": [], "surfaceGeneration": [1, 1], "replacementCommitted": false },
+    { "maintenance": 3, "cycle": 2, "tier": "maintenance", "beforeTotalTokens": 78000, "selectedTokens": null, "summaryRequests": 0, "afterTotalTokens": 78000, "netReleasedTokens": 0, "headroomTokens": 2000, "stopReasons": [], "surfaceGeneration": [1, 1], "replacementCommitted": false },
+    { "maintenance": 4, "cycle": 3, "tier": "pressure", "beforeTotalTokens": 83000, "selectedTokens": 14000, "selectedRange": [0, 7], "summaryRequests": 1, "summaryInputTokens": 15439, "summaryOutputTokens": 965, "afterTotalTokens": 69000, "netReleasedTokens": 14000, "netReleaseRatio": 0.1687, "headroomTokens": 11000, "stopReasons": ["pressure-exit"], "surfaceGeneration": [1, 2], "replacementCommitted": true },
+    { "maintenance": 5, "cycle": 4, "tier": "maintenance", "beforeTotalTokens": 74000, "selectedTokens": null, "summaryRequests": 0, "afterTotalTokens": 74000, "netReleasedTokens": 0, "headroomTokens": 6000, "stopReasons": [], "surfaceGeneration": [2, 2], "replacementCommitted": false },
+    { "maintenance": 6, "cycle": 5, "tier": "maintenance", "beforeTotalTokens": 79000, "selectedTokens": null, "summaryRequests": 0, "afterTotalTokens": 79000, "netReleasedTokens": 0, "headroomTokens": 1000, "stopReasons": [], "surfaceGeneration": [2, 2], "replacementCommitted": false }
+  ]
+}

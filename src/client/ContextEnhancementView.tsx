@@ -132,13 +132,17 @@ const statusCountStyle: CSSProperties = {
   fontSize: 11,
 }
 const pageStyle: CSSProperties = {
-  minHeight: '100%',
+  flex: '1 1 0',
+  minHeight: 0,
+  height: '100%',
+  overflowY: 'auto',
   background: 'var(--dsw-alias-bg-base)',
   color: 'var(--dsw-alias-label-primary)',
+  boxSizing: 'border-box',
 }
 const summaryAreaStyle: CSSProperties = {
   margin: '0 auto',
-  padding: '24px 28px 32px',
+  padding: '24px 28px 200px',
 }
 const emptyCardStyle: CSSProperties = {
   maxWidth: 580,
@@ -172,7 +176,7 @@ const summarySectionStyle: CSSProperties = {
   display: 'inline-block',
   width: '100%',
   breakInside: 'avoid',
-  marginBottom: 24,
+  marginBottom: 36,
   verticalAlign: 'top',
   boxSizing: 'border-box',
 }
@@ -697,7 +701,7 @@ function NonContextualGuide({ t }: { t: ContextEnhancementViewProps['t'] }): Rea
         </div>
       </section>
 
-      <section style={{ padding: '24px 28px 32px' }}>
+      <section style={{ padding: '24px 28px 200px' }}>
         <h2 style={{ margin: 0, fontSize: 16, lineHeight: '22px', fontWeight: 600 }}>
           {t('empty.nonContextual.featuresTitle')}
         </h2>

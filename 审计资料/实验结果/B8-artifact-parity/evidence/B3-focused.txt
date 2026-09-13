@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ tests/compaction-envelope-budget.spec.ts (38 tests) 50ms
+ ✓ tests/compaction-three-zone.spec.ts (38 tests) 49ms
+ ✓ tests/compaction-pressure-reentry.spec.ts (4 tests) 32ms
+ ✓ tests/compaction-reentry-liveness.spec.ts (4 tests) 17ms
+ ✓ tests/compaction-pressure-low-yield.spec.ts (4 tests) 14ms
+ ✓ tests/compaction-pressure-exit.spec.ts (9 tests) 11ms
+ ✓ tests/compaction-retained-tail-turn-semantics.spec.ts (4 tests) 8ms
+
+ Test Files  7 passed (7)
+      Tests  101 passed (101)
+   Start at  17:53:22
+   Duration  2.81s (transform 299ms, setup 0ms, import 1.41s, tests 181ms, environment 1ms)
+

@@ -1,0 +1,39 @@
+X4 attempt-2 determinism report
+===============================
+
+两次独立运行（各自 rmSync + 重建 tmp-storage、全新 cordis Context、全新 AgentLoop 实例）：
+  run A ledger: tmp/run-a-ledger.json  sha256 FCB65EBB809BBF1559DE48B8BD9F23EDDA3FC09F05F14A5EADD782D9B11DBADD
+  run B ledger: x4-ledger.json         sha256 036CBA6BEB8BCAE09697E53C7BE762A12D2192A633A71F3D7398A78954723D7B
+  vitest-output.txt / x4-ledger.json / result.json 均来自 run B（同一进程、同一次运行）
+
+逐字段递归比较：24 个叶子字段不同，其中 content digest 类 24 个、其他 0 个。
+
+差异字段路径（去下标）：
+  DIFF ledger.cycles[].before.visibleSlot.textHash
+  DIFF ledger.cycles[].rebuild.rebuiltSlotTextHash
+  DIFF ledger.cycles[].rebuild.surface.visibleSlot.textHash
+  DIFF ledger.cycles[].stable.digest
+  DIFF ledger.cycles[].warmupSteps[].surface.visibleSlot.textHash
+
+1) content digest 差异的原因：真实 TaskStateBasicService 每次 commit 都为每条 entry mint 随机 UUID
+   （randomUUID），因此渲染出的 slot 文本 hash 与 stable digest 每次运行必然不同。这不是机制不确定性。
+
+结构性证据逐字段一致：
+  criteria A = {"fixedBeforeRun":true,"engineAvailable":true,"routeWorked":true,"compactionAttempts":4,"observedCompactions":4,"completeCycles":4,"allOneVisibleSlot":true,"generationsStrictlyIncreasing":true,"allTaskStateSlotKind":true,"injectionFlat":true,"dshChannelEmpty":true,"noSlotSelfFeedback":true,"requestCarriesRebuiltSlot":true,"retainedTailOk":true,"evidenceComplete":true,"verdict":"fixed"}
+  criteria B = {"fixedBeforeRun":true,"engineAvailable":true,"routeWorked":true,"compactionAttempts":4,"observedCompactions":4,"completeCycles":4,"allOneVisibleSlot":true,"generationsStrictlyIncreasing":true,"allTaskStateSlotKind":true,"injectionFlat":true,"dshChannelEmpty":true,"noSlotSelfFeedback":true,"requestCarriesRebuiltSlot":true,"retainedTailOk":true,"evidenceComplete":true,"verdict":"fixed"}
+  run A: c1: seeds 0-19, shadowed 24, repl 51, rebuild 56/gen3 | c2: seeds 67-86, shadowed 28, repl 117, rebuild 122/gen6 | c3: seeds 133-152, shadowed 28, repl 183, rebuild 188/gen9 | c4: seeds 199-218, shadowed 28, repl 249, rebuild 254/gen12
+  run B: c1: seeds 0-19, shadowed 24, repl 51, rebuild 56/gen3 | c2: seeds 67-86, shadowed 28, repl 117, rebuild 122/gen6 | c3: seeds 133-152, shadowed 28, repl 183, rebuild 188/gen9 | c4: seeds 199-218, shadowed 28, repl 249, rebuild 254/gen12
+  injection tokens: A = 172,172,174,174   B = 172,172,174,174
+  per-cycle store (read/rev/rows): A = True/1/1 True/2/2 True/3/3 True/4/4
+                                   B = True/1/1 True/2/2 True/3/3 True/4/4
+  storeFinal A = {"read":true,"domainFile":"审计资料\\实验结果\\X4-Stable槽位压缩回收\\tmp-storage\\context_enhancement_task_state_v2.json","domainFileBytes":35817,"stableRecordCountForSession":1,"stableRevision":5,"auditRowCount":5}
+              B = {"read":true,"domainFile":"审计资料\\实验结果\\X4-Stable槽位压缩回收\\tmp-storage\\context_enhancement_task_state_v2.json","domainFileBytes":35817,"stableRecordCountForSession":1,"stableRevision":5,"auditRowCount":5}
+  storeQuiesced: A = True  B = True
+
+时序相关项 —— trailing 波次（已记录在 ledger.storeFinalNote 与 ledger.limitations）：
+  生产 task-state worker 在 cycle 4 的 threshold commit 之后还会跑一个 trailing 波次。本 fixture 用即时
+  fake LLM 连续驱动 step、几乎不留空闲时间，因此该波次是否在 teardown 之前完成提交是时序相关的：
+  同一 spec 版本的 11 次独立运行中共观察到两种取值：stableRevision = 4（8 次）与 5（3 次），auditRowCount 同步为 4/5。
+  该 revision 出现在全部 4 轮测量之后；其后的 slot 维护只发生在下一次真实 agent/pre-step，而本实验不再
+  触发新的 step。因此它不进入任何 cycle 判据，也不影响 verdict。每个 cycle 自己观察到的 committed
+  revision 在全部运行中恒为 1,2,3,4。

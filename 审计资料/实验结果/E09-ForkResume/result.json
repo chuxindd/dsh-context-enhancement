@@ -1,0 +1,263 @@
+{
+  "experiment": "E09-fork-resume",
+  "title": "E09 · Fork/Resume（Stable Task State 在 resume 与 fork child 两种生命周期下是否正确区分 identity / stable / cursor / 继承前缀）",
+  "question": "Task State stable 在同一 Session 的 resume 与 fork child 两种生命周期下，是否正确区分 identity、stable、cursor 和继承前缀：fork child 是否错误共享父 stable？resume 是否丢失已有 stable？是否误用 firstLiveSeq 代替 inheritedEventCount？",
+  "layer": "L2",
+  "verdict": "not-reproduced",
+  "verdictMeaning": "在真实 JSONL persistence、真实 resume（习语 + ctx.agents.resume）、真实 ctx.sessions.fork、真实 TaskStateBasicService 与真实注入 consumer 下，R1–R4 四条判据全为假：resume 三次都恢复同一 lifecycle 的 stable（rev1/cursor5 与 rev2/cursor28，createdAt 不变，0 次模型调用）；fork child 在 fork 当刻没有任何 stable（getStable=undefined、域内无记录），其后提交的是自己的 revision 1（digest 与父不同），父 stable 逐字段不变；两条 Session 的 audit 行与记录按 lifecycle 完全分离；继承边界来自真实 fork 的 inheritedEventCount=29，且插件源码根本不读 inheritedEventCount/firstLiveSeq/isSeeded。同时记录两条与《理想化落地方案》§5.5 不一致的契约缺口（cursor 起点非 own-events 边界、无父 stable 一次性 bootstrap 及其 inherited 标记），它们属契约不完整，不构成 reproduced。",
+  "verdictRule": "reproduced = 真实路径产出错误的 identity/cursor/stable 交叉引用（R1 resume 未恢复同 lifecycle stable；R2 child 把父 committed stable 当作自己的；R3 一个 Session 的 stable/cursor/audit 被另一 Session 读或写；R4 继承边界由 firstLiveSeq 而非 inheritedEventCount/ownEvents 算出）。not-reproduced = R1–R4 全为假。inconclusive = fixture/runner/介质无法产出证据（不伪造 SessionId/继承字段）。design-confirmed = 仅有静态设计证据。",
+  "verdictScope": "只回答上面的唯一问题；不宣称理想方案通过、不宣称用户可见现象不存在、不覆盖 E01–E08/E10。",
+  "baseline": {
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "pluginCommitAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "a66e4702",
+    "dshCommitFull": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "dshCommitSource": "read-only from DSH checkout .git (HEAD + refs) inside the spec; recorded in ledger.components.agentLoop.dshHead",
+    "workspace": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+    "dshWorkspace": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\deepseek-harness",
+    "source": "workspace-src",
+    "plan": "审计资料/32-运行时复现实验方案.md §5 E09",
+    "designContract": "理想化落地方案.md §5.5 (:538-543) + §3.13 (:233-243) + §3.11 (:214-218)",
+    "coreFileHashCheck": {
+      "declared": 342,
+      "before": { "match": 342, "mismatch": 0, "missing": 0, "file": "hash-check-before.json" },
+      "after": { "match": 342, "mismatch": 0, "missing": 0, "file": "hash-check-after.json" },
+      "coverage": "src (56) + lib (239) + tests (44) + package.json + vitest.config.ts + dsh-context-enhancement-0.1.10.tgz"
+    },
+    "gitStatusLines": { "before": 134, "after": 134, "identical": true, "statusDiffEntries": 0 },
+    "gitHead": { "before": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2", "after": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2" }
+  },
+  "sourceDrift": {
+    "coreFiles": "none (342/342 match, 0 mismatch, 0 missing, before and after)",
+    "nonAuditDirectoryDrift": "none",
+    "writesOnlyInside": "审计资料/实验结果/E09-ForkResume/",
+    "auditDirAdditionCountsAsDrift": false,
+    "productionSourceModified": false,
+    "existingTestsModified": false,
+    "harnessModified": false,
+    "packageJsonOrVitestConfigModified": false,
+    "libTgzOrOtherExperimentDirsModified": false,
+    "realDshHomeTouched": false,
+    "existingSessionsTouched": false,
+    "port8080OrWebOrMultiInstance": false,
+    "dshCheckoutReadOnly": true,
+    "stopConditionTriggered": false,
+    "detail": "drift-check-after.json"
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/E09-ForkResume/e09-fork-resume.spec.ts --reporter=verbose",
+  "spec": "审计资料/实验结果/E09-ForkResume/e09-fork-resume.spec.ts",
+  "testSummary": {
+    "testFiles": 1,
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "exitCode": 0,
+    "runnerDurationMs": 1240,
+    "testDurationMs": 596,
+    "determinismRerun": {
+      "passed": 1,
+      "failed": 0,
+      "exitCode": 0,
+      "testDurationMs": 598,
+      "identicalVerdictAndCursors": true,
+      "identicalNumbers": {
+        "parentCursorA": 5,
+        "parentCursorAfterAppend": 28,
+        "childInheritedCount": 29,
+        "childOwnCursor": 33,
+        "parentAuditRows": 3,
+        "childAuditRows": 1,
+        "childIncludedSeqs": "1,2,3,5,11,13,19,21,24,25,26,28,31,32,33",
+        "R1_R2_R3_R4": [true, true, true, true]
+      },
+      "rawOutput": "vitest-output-run1.txt",
+      "identicalRawBytesWithFinalRun": true
+    },
+    "rawOutput": "vitest-output-run2.txt",
+    "passingRuns": 3,
+    "runnerFailed": false,
+    "errorsInLedger": 0,
+    "specIterationsBeforeFirstPass": 5,
+    "specIterationsNote": "spec 在首次通过前被迭代 5 次（fix 掉一个可空 stage 记录引发的判据崩溃、两种 resume 混用同一 Context 被生产拒绝、fixture 插件来源节点缺 message id 导致 fork 校验失败、以及两处写死的 seq 断言）；这些早期运行的失败输出未保留（其原始错误信息已写入 README §10）。保留的 run1/run2 均为最终 spec 的通过输出。"
+  },
+  "config": {
+    "provider": "deepseek-official",
+    "model": "deepseek-v4-flash",
+    "minEvents": 1,
+    "minEventsNote": "生产允许的最小阈值。部署值 20 下单个完整 turn 只有 3 个可投影 eligible 事件，永远不能提交，且 E07 已证明 resume 不开 startup 波，故 1 才能把 resume 丢 stable 与未达阈值分开；阈值不参与任何 fork/resume identity 判定。",
+    "maxEvents": 200,
+    "maxInputBytes": 60000,
+    "maxOutputTokens": 4000,
+    "timeoutMs": 120000,
+    "maxInfraRetries": 2,
+    "maxEntriesPerKind": 50,
+    "maxEntryBytes": 4000,
+    "maxListItems": 40,
+    "promptMaxBytes": 8000,
+    "configSource": "cordis.patch.yml (host task-state-basic) + presets/contextual/agent.cordis.yml (task-state-prompt maxBytes 8000)",
+    "routeAdapter": "scripted fake LlmAdapter (no usage emitted)",
+    "sessionIds": { "parent": "e09-parent", "child": "e09-parent-fork-child" },
+    "medium": { "sessionRoot": "审计资料/实验结果/E09-ForkResume/tmp-sessions", "domainRoot": "审计资料/实验结果/E09-ForkResume/tmp-storage" }
+  },
+  "realForkResumeCoverage": {
+    "realSessionFork": true,
+    "realForkApi": "ctx.sessions.fork(source, SessionSeq(boundary), childSessionId) — SessionStore.fork, the documented production Session fork primitive (DSH API catalog)",
+    "realForkResult": { "newSessionId": "e09-parent-fork-child", "isSeeded": true, "parentSession": "e09-parent", "inheritedEventCount": 29, "firstLiveSeq": 29, "ownEvents": [29], "prefixSeqs": "0..28", "storeLive": true },
+    "realResumeIdiom": true,
+    "realResumeIdiomApi": "ctx.sessionPersistence.prepare(id) → ctx.sessions.enter(session) → ctx.sessions.announce(session)",
+    "realAgentResume": true,
+    "realAgentResumeApi": "ctx.agents.resume({ resumeSessionId, agentOptions }) on the loaded DSH AgentLoop (lib sha256 a9142d46163d961ed5774ad544cb997da2197fefca5684ec820060dd50c1c935, dshHead a66e470204…)",
+    "realJsonlPersistence": true,
+    "realTaskStateService": true,
+    "realSystemPromptAssembly": true,
+    "realModelRequest": true,
+    "fakeLlm": true,
+    "fakeNotes": "唯一模型是脚本化 adapter；不产出 usage；候选 JSON 是 fixture 文本。",
+    "handForgedIdentityFields": false,
+    "workerManuallyInvoked": false
+  },
+  "stages": [
+    { "stage": "A", "process": "P1", "role": "父 Session 形成 stable（rev1 / cursor5）", "observation": "stable revision 1, sourceCursor 5；插件来源 hidden 节点 seq4 eligible=true projection=null，且不在 facts 中" },
+    { "stage": "B", "process": "P2", "role": "同 SessionId/lifecycle 的 resume 习语，不追加事件", "observation": "恢复同一 stable（rev1/cursor5/digest 一致），createdAt 未变，0 次模型调用；firstLiveSeq=6, inheritedEventCount=0, logLength=7" },
+    { "stage": "B2", "process": "P5", "role": "真实 ctx.agents.resume + 一次真实 step", "observation": "真实模型请求含 2 条 runtime-context 消息，其一为 ‘(revision 1, source event 5, digest …)’；assembly 层 renderedRevision=1 / renderedSourceCursor=5，hash 与请求内文本一致" },
+    { "stage": "C", "process": "P6", "role": "习语 resume + 追加父第二个 turn + FORK + child 追加自己的 turn", "observation": "父 rev2/cursor28；fork(boundary=28) ⇒ child inheritedEventCount=29, firstLiveSeq=29, ownEvents=[29]；fork 后 child stable=undefined（未共享父 stable）；child 提交自己的 rev1/cursor33（距继承切口 +4），父 stable 逐字段不变" },
+    { "stage": "D", "process": "P7", "role": "同时 resume 父与 fork child", "observation": "child 恢复 rev1/cursor33；firstLiveSeq=34 ≠ inheritedEventCount=29（logLength=35）；isOwnSeq(0..28) 全为 false" },
+    { "stage": "E", "process": "all closed", "role": "从磁盘读回真实域文档", "observation": "2 条 Session 记录 + 4 条 audit 行；child 首轮 includedSeqs = 1,2,3,5,11,13,19,21,24,25,26,28,31,32,33（前 12 个 <29 属继承前缀，后 3 个 ≥29 属自己事件）" }
+  ],
+  "observations": {
+    "identity": {
+      "parent": { "sessionId": "e09-parent", "isSeeded": false, "inheritedEventCount": 0, "parentSession": null },
+      "child": { "sessionId": "e09-parent-fork-child", "isSeeded": true, "inheritedEventCount": 29, "parentSession": "e09-parent" },
+      "providerRecordFence": "(createdAt, cwd) only — service.ts lifecycleOf/recordFor; isSeeded 与 inheritedEventCount 不在插件记录键中（审计资料 22 A3 静态结论在本次实测中成立，但本次未构造同 id 碰撞，故未触发任何串味）",
+      "createdAtDistinct": true
+    },
+    "stable": {
+      "parentAfterStageA": { "revision": 1, "sourceCursor": 5 },
+      "parentBeforeFork": { "revision": 2, "sourceCursor": 28 },
+      "childAtFork": null,
+      "childFirstCommit": { "revision": 1, "sourceCursor": 33 },
+      "parentAfterChildCommit": { "revision": 2, "sourceCursor": 28 },
+      "parentUntouchedByChildCommit": true,
+      "childDigestDiffersFromParent": true
+    },
+    "cursor": {
+      "childCursorOrigin": 0,
+      "childCursorOriginReason": "child 无记录 ⇒ committedCursor=-1 ⇒ 首批窗口从 seq 0 起（foldBatchWindow: seq > cursor）",
+      "childOwnCursor": 33,
+      "childInheritedCount": 29,
+      "childCursorDistanceFromInheritedCut": 4,
+      "childCursorAtOrAboveInheritedCut": true,
+      "childFoldedInheritedPrefix": true,
+      "childInheritedEligibleEventsFolded": 12,
+      "childInheritedEligibleEventsTotal": 12,
+      "note": "child 首批把继承前缀的 12 个 eligible 事件全部折叠，其中包含父已提交 rev2 窗口的全部内容；child 自己新增的 3 个 eligible 事件也在同一窗口"
+    },
+    "firstLiveSeqVsInheritedEventCount": {
+      "freshParent": { "firstLiveSeq": 0, "inheritedEventCount": 0, "logLength": 6, "distinguishable": false },
+      "resumedParent": { "firstLiveSeq": 6, "inheritedEventCount": 0, "logLength": 7, "distinguishable": true, "note": "firstLiveSeq = 本生命周期构造 seed 长度（= resume 前的完整存储日志长度）；end-seed 标记在 firstLiveSeq 定格之后追加，故 logLength 大 1" },
+      "childAtFork": { "firstLiveSeq": 29, "inheritedEventCount": 29, "logLength": 30, "distinguishable": false, "note": "fork 当刻 child 日志恰为 seed（前缀+一个 end-seed），二者按构造相等" },
+      "childAfterResume": { "firstLiveSeq": 34, "inheritedEventCount": 29, "logLength": 35, "distinguishable": true },
+      "misusedAsInheritedBoundary": false,
+      "misuseCheck": "src/ 内 inheritedEventCount|firstLiveSeq|isSeeded 命中 0；插件从不读取这两个字段，fold 只用 seq > committedCursor，因此不存在把 firstLiveSeq 当继承边界使用的代码路径"
+    },
+    "auditRows": {
+      "total": 4,
+      "parentRows": [
+        { "outcome": "success", "targetRevision": 1, "baseCursor": null, "includedSeqs": [1, 2, 3, 5], "finishedCursor": 5 },
+        { "outcome": "open", "targetRevision": 2, "baseCursor": 5, "includedSeqs": [11], "finishedCursor": null },
+        { "outcome": "success", "targetRevision": 2, "baseCursor": 5, "includedSeqs": [11, 13, 19, 21, 24, 25, 26, 28], "finishedCursor": 28 }
+      ],
+      "childRows": [
+        { "outcome": "success", "targetRevision": 1, "baseCursor": null, "includedSeqs": [1, 2, 3, 5, 11, 13, 19, 21, 24, 25, 26, 28, 31, 32, 33], "finishedCursor": 33 }
+      ],
+      "separatedByLifecycle": true,
+      "sideObservation": "父 Session 有一条停留在 open 的 audit 行（target rev2/base rev1/单条 seq），随后另一行从同一 base 成功提交 rev2：这是 worker 的失败/放弃尝试路径，不是 fork/resume identity 事实，不计入任何 E09 判据。"
+    },
+    "injection": {
+      "renderer": "src/internal/task-state/prompt/render.ts renderTaskStateSnapshot(stable, 8000) — consumer task-state-prompt 交给 ctx.systemPrompt 的同一文本",
+      "parentRevision1": { "chars": 325, "bytes": 325, "hashFnv1aPerRun": ["51fd02d9", "a72965a4"], "hashSha256_16": "3a861c50bd54572b" },
+      "parentRevision2": { "chars": 330, "bytes": 330, "hashFnv1aPerRun": ["2e2d96a8", "c7c9ace8"], "hashSha256_16": "137069e0392b3e7c" },
+      "childRevision1": { "chars": 330, "bytes": 330, "hashFnv1aPerRun": ["2db2cb7b", "14b09e21"], "hashSha256_16": "a62631b0d7950ab6" },
+      "hashVariesAcrossRuns": "注入文本包含 fake 候选的自增标记（E09-CALL-n-…），故跨运行 hash 不同；结构（revision/sourceCursor/digest 关系）与判定逐项一致。",
+      "realModelRequestSnapshot": { "count": 2, "matchesParentRevision1Header": true, "assemblyRenderedRevision": 1, "assemblyRenderedSourceCursor": 5 }
+    },
+    "criteria": {
+      "R1_resumeKeptSameLifecycleStable": true,
+      "R2_childHasOwnStableAndParentUntouched": true,
+      "R3_noCrossSessionReference": true,
+      "R4_boundaryFromDurableInheritedCut": true,
+      "reproducedCriteria": { "R1": false, "R2": false, "R3": false, "R4": false },
+      "anyReproduced": false,
+      "evidenceComplete": true,
+      "routeWorked": true,
+      "realAgentStepWorked": true
+    },
+    "contractDeviations": [
+      {
+        "id": "fork-cursor-origin",
+        "plan": "理想化落地方案 §5.5：Fork 默认创建独立 stable，cursor 起点为子 own events 边界",
+        "observed": "child 无记录 ⇒ committedCursor=-1 ⇒ 首批窗口从 seq 0 起，折叠整个继承前缀（12 个继承 eligible 事件，含父已提交 rev2 的全部窗口）",
+        "class": "契约不完整（无错误交叉引用、无数据损坏）",
+        "matchesStatic": "D10 confirmed-for-default-branch"
+      },
+      {
+        "id": "no-inherited-bootstrap-marker",
+        "plan": "理想化落地方案 §3.13/§5.5：父 stable 可作为一次性 bootstrap 候选，但必须标记 inherited 并在子第一批成功后替换",
+        "observed": "既无该可选路径，也无 inherited 来源标记字段（src/ 零命中）",
+        "class": "design-confirmed（静态可判定，本实验未构造该分支）",
+        "matchesStatic": "D10 confirmed"
+      },
+      {
+        "id": "child-revision-1-series",
+        "plan": "理想化落地方案 §5.5：子第一批更新必须读取继承前缀和 own events，形成自己的 revision 1",
+        "observed": "child 首批确为 rev1、确读继承前缀 + own events",
+        "class": "符合契约（记录为对照，非差异）"
+      }
+    ]
+  },
+  "matchedStaticFindings": [
+    { "id": "D10", "source": "审计资料/23-长期状态Worker与注入差异.md D10 + 理想化落地方案 §3.13/§5.5", "agreement": "confirmed-for-default-branch", "dynamicEvidence": "child fork 后无 stable，首批重建自己的 rev1，窗口从 seq 0 起、cursor 33 落在继承前缀之上（inheritedEventCount=29）；无 inherited 标记、无 own-events 边界、无父 stable bootstrap" },
+    { "id": "E-17", "source": "审计资料/23 §3 表 E-17（resume 同 id 不覆盖旧记录）", "agreement": "confirmed", "dynamicEvidence": "三次 resume 均恢复同一 lifecycle stable，createdAt 不变，0 次模型调用，revision 未重置" },
+    { "id": "A3", "source": "审计资料/22-长期状态存储恢复与多实例差异.md A3", "agreement": "confirmed-untested-collision", "dynamicEvidence": "插件记录键实测只有 (createdAt, cwd)；本次 fork child 的 SessionId 与 createdAt 均不同，未发生串味；同 id 同 cwd 不同 isSeeded 的碰撞未构造（需伪造 header，按纪律不做）" },
+    { "id": "X2", "source": "审计资料/23 §4 表 X2", "agreement": "partially-answered", "dynamicEvidence": "child 首批确实折叠了继承前缀事件；前缀中的插件来源 filter 不可投影节点被正确丢弃（不出现在任何 stable facts）；被 replacement 遮蔽的 eligible 原始事件未构造" }
+  ],
+  "limitations": [
+    "fake LLM：唯一模型是脚本化 adapter（task-state 辅助请求返回固定结构候选 JSON，agent 请求返回一段文本、无 tool call；不产出 usage）。真实摘要语义、provider token、计费量均未测量。",
+    "route 被替换：部署 route (deepseek-official/deepseek-v4-flash) 下注册的是 fake adapter。",
+    "AgentLoop 以原生 import() 读入被审计 DSH checkout 的 packages/core/agent-loop/lib/index.js（sha256 a9142d46163d961ed5774ad544cb997da2197fefca5684ec820060dd50c1c935，dshHead a66e470204…）；本工作区未新增/复制该包文件。",
+    "minEvents=1 生产最小值；部署值 20 无法对单个 turn 触发提交（E07 已证明无 startup 波），故 1 用于隔离 fork/resume 问题与阈值问题。",
+    "fork 走 Session 级原语 ctx.sessions.fork，未走 Web/CLI 的 ctx.agents.create({seed, inheritedEventCount, meta}) 包装；包装层差异未覆盖。",
+    "7 个 process 是同进程内顺序挂载/销毁的 Context，不是操作系统进程；每阶段 JSONL/存储句柄完整 dispose 并从磁盘重开，任一时刻只有一个 Context 存活。未覆盖跨进程/多实例。",
+    "两种 resume 机制必须分属不同 Context：同一 Context 内先由 resume 习语使 Session live，再调 ctx.agents.resume 会被生产以 'cannot prepare session … while it is live' 显式拒绝（首轮开发实测到）。这是生产的正确防护，不是缺陷。",
+    "未覆盖：① 同 id、同 createdAt/cwd、不同 isSeeded/inheritedEventCount 的碰撞 lifecycle（A3 碰撞分支未测）；② fork 子折叠被 replacement 遮蔽的原始事件（未挂压缩插件，X2 只得半边）；③ resume 后 fork 前缀被重新播种的差异；④ 真实 prompt 的可见节点数与 token 归因；⑤ 多实例/跨进程 fork/resume。",
+    "注入 hash 只证明该 lifecycle 读到哪一份 stable；真实请求中的 snapshot 文本仅 2 条（一条是 fixture 的 hidden 节点，一条是真实 runtime-context 快照），不测量完整 prompt 归因。",
+    "本实验通过只表示 fixture 与结构断言通过；verdict 只回答唯一实验问题，不代表理想方案通过。"
+  ],
+  "artifacts": [
+    "e09-fork-resume.spec.ts",
+    "e09-ledger.json",
+    "vitest-output-run1.txt",
+    "vitest-output-run2.txt",
+    "tmp-storage/context_enhancement_task_state.json",
+    "tmp-sessions/…/e09-parent/session.jsonl",
+    "tmp-sessions/…/e09-parent-fork-child/session.jsonl",
+    "hash-check-before.json",
+    "hash-check-after.json",
+    "git-head-before.txt",
+    "git-head-after.txt",
+    "git-status-before.txt",
+    "git-status-after.txt",
+    "drift-check-after.json",
+    "artifact-hashes.json",
+    "README.md",
+    "result.json"
+  ],
+  "safety": {
+    "realDshHomeTouched": false,
+    "existingSessionsTouched": false,
+    "port8080OrWebOrMultiInstance": false,
+    "backgroundJobsStopped": true,
+    "productionSourceModified": false,
+    "writes": "全部新增文件位于 审计资料/实验结果/E09-ForkResume/（不在 342 文件基线内，且 审计资料 为未跟踪目录，故 git status 行数不变）"
+  }
+}

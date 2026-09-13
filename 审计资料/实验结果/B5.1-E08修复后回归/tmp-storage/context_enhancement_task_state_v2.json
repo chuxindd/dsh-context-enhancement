@@ -1,0 +1,2081 @@
+{
+  "unit": {
+    "name": "context_enhancement_task_state_v2",
+    "version": 2
+  },
+  "global": null,
+  "tables": {
+    "sessions": {
+      "b51-fixed-slot-regression": {
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "stable": {
+          "schemaVersion": 2,
+          "revision": 20,
+          "filterVersion": "task-state-basic/filter-v3",
+          "sourceCursor": 666,
+          "digest": "1d55e5da7ae4ed8a5ef1d21a4fefdd26c22084fb516c8f2c63ef24149b691a23",
+          "facts": [
+            {
+              "id": "fact-e3d77b91-77cc-4e80-8183-2d3d5c9d7333",
+              "content": "B51 durable marker B51-CALL-20-THROUGH-SEQ-666: the folded window ended at session event 666."
+            },
+            {
+              "id": "fact-72ddeee9-4ed2-428e-9131-ebde3a88c973",
+              "content": "B51 padding B51-CALL-20-THROUGH-SEQ-666: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+            }
+          ],
+          "decisions": [
+            {
+              "id": "decision-86ef80ae-b314-44f3-b508-6cbe47e7e6f3",
+              "content": "B51 decision B51-CALL-20-THROUGH-SEQ-666"
+            }
+          ],
+          "constraints": [],
+          "risks": [],
+          "evidence": [],
+          "todoReferences": [],
+          "goalView": {
+            "status": "none"
+          },
+          "todoView": {
+            "status": "none",
+            "items": []
+          },
+          "continuation": {
+            "currentObjective": "B51 objective B51-CALL-20-THROUGH-SEQ-666",
+            "currentFocus": "B51 focus B51-CALL-20-THROUGH-SEQ-666",
+            "openWork": [],
+            "nextActions": []
+          }
+        }
+      }
+    },
+    "audit": {
+      "ts-bb5bd0fc-c5d8-41a8-b2c4-0a2207be7be1": {
+        "requestId": "ts-bb5bd0fc-c5d8-41a8-b2c4-0a2207be7be1",
+        "time": 1789279310168,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-bb5bd0fc-c5d8-41a8-b2c4-0a2207be7be1",
+          "revision": 1,
+          "trigger": "startup",
+          "base": null,
+          "includedSeqs": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-bb5bd0fc-c5d8-41a8-b2c4-0a2207be7be1",
+          "revision": 1,
+          "sourceCursor": 19,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-1-THROUGH-SEQ-19: the folded window ended at session event 19.\"},{\"content\":\"B51 padding B51-CALL-1-THROUGH-SEQ-19: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-1-THROUGH-SEQ-19\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-1-THROUGH-SEQ-19\",\"currentFocus\":\"B51 focus B51-CALL-1-THROUGH-SEQ-19\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-8c8c910d-4ef6-4fc1-a3ef-ba1c660b55ea": {
+        "requestId": "ts-8c8c910d-4ef6-4fc1-a3ef-ba1c660b55ea",
+        "time": 1789279310200,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-8c8c910d-4ef6-4fc1-a3ef-ba1c660b55ea",
+          "revision": 2,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 1,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 19,
+            "digest": "2165691341ec158d1633578f00b3cb4e5e43ac9c1188d1772f59e11357b1cbbf",
+            "facts": [
+              {
+                "id": "fact-4d0fa07a-b984-46c8-8646-ef9483fd15cf",
+                "content": "B51 durable marker B51-CALL-1-THROUGH-SEQ-19: the folded window ended at session event 19."
+              },
+              {
+                "id": "fact-e38febf3-2d82-4f45-91e2-26311b15a17a",
+                "content": "B51 padding B51-CALL-1-THROUGH-SEQ-19: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-5886c9f6-a126-4144-9082-94a131568214",
+                "content": "B51 decision B51-CALL-1-THROUGH-SEQ-19"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-1-THROUGH-SEQ-19",
+              "currentFocus": "B51 focus B51-CALL-1-THROUGH-SEQ-19",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            25,
+            26,
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-8c8c910d-4ef6-4fc1-a3ef-ba1c660b55ea",
+          "revision": 2,
+          "sourceCursor": 54,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-2-THROUGH-SEQ-54: the folded window ended at session event 54.\"},{\"content\":\"B51 padding B51-CALL-2-THROUGH-SEQ-54: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-2-THROUGH-SEQ-54\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-2-THROUGH-SEQ-54\",\"currentFocus\":\"B51 focus B51-CALL-2-THROUGH-SEQ-54\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-c7f5bea8-5d7c-40bd-9574-e8862bd1f94e": {
+        "requestId": "ts-c7f5bea8-5d7c-40bd-9574-e8862bd1f94e",
+        "time": 1789279310218,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-c7f5bea8-5d7c-40bd-9574-e8862bd1f94e",
+          "revision": 3,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 2,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 54,
+            "digest": "29e68eb375ff724b223a05ddc4277034d9af29b7585532f0fff0e40f756d2b4f",
+            "facts": [
+              {
+                "id": "fact-c239b432-bb4f-46bc-ba62-52f3fa4b3422",
+                "content": "B51 durable marker B51-CALL-2-THROUGH-SEQ-54: the folded window ended at session event 54."
+              },
+              {
+                "id": "fact-2ed6f169-f863-4fd8-ac41-afae8e4d766e",
+                "content": "B51 padding B51-CALL-2-THROUGH-SEQ-54: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-00a94b72-a253-4353-956d-d539117eb2fe",
+                "content": "B51 decision B51-CALL-2-THROUGH-SEQ-54"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-2-THROUGH-SEQ-54",
+              "currentFocus": "B51 focus B51-CALL-2-THROUGH-SEQ-54",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            60,
+            66,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-c7f5bea8-5d7c-40bd-9574-e8862bd1f94e",
+          "revision": 3,
+          "sourceCursor": 88,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-3-THROUGH-SEQ-88: the folded window ended at session event 88.\"},{\"content\":\"B51 padding B51-CALL-3-THROUGH-SEQ-88: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-3-THROUGH-SEQ-88\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-3-THROUGH-SEQ-88\",\"currentFocus\":\"B51 focus B51-CALL-3-THROUGH-SEQ-88\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-8b3b4e06-63eb-4213-bddd-55cc4f218550": {
+        "requestId": "ts-8b3b4e06-63eb-4213-bddd-55cc4f218550",
+        "time": 1789279310240,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-8b3b4e06-63eb-4213-bddd-55cc4f218550",
+          "revision": 4,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 3,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 88,
+            "digest": "8d2555508ed79fb1e435b9ef27d23adc8a67b748756360601144a43af746cf5f",
+            "facts": [
+              {
+                "id": "fact-dfcf164c-3e44-4263-b455-23f951f499cb",
+                "content": "B51 durable marker B51-CALL-3-THROUGH-SEQ-88: the folded window ended at session event 88."
+              },
+              {
+                "id": "fact-1d610265-0d7d-4153-93b9-022f0489445c",
+                "content": "B51 padding B51-CALL-3-THROUGH-SEQ-88: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-b58590bb-f547-44b0-967c-944848f50e08",
+                "content": "B51 decision B51-CALL-3-THROUGH-SEQ-88"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-3-THROUGH-SEQ-88",
+              "currentFocus": "B51 focus B51-CALL-3-THROUGH-SEQ-88",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            94,
+            100,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            118,
+            119,
+            120,
+            121,
+            122
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-8b3b4e06-63eb-4213-bddd-55cc4f218550",
+          "revision": 4,
+          "sourceCursor": 122,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-4-THROUGH-SEQ-122: the folded window ended at session event 122.\"},{\"content\":\"B51 padding B51-CALL-4-THROUGH-SEQ-122: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-4-THROUGH-SEQ-122\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-4-THROUGH-SEQ-122\",\"currentFocus\":\"B51 focus B51-CALL-4-THROUGH-SEQ-122\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-d152537b-a005-43d2-be2c-92f33af196b1": {
+        "requestId": "ts-d152537b-a005-43d2-be2c-92f33af196b1",
+        "time": 1789279310256,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-d152537b-a005-43d2-be2c-92f33af196b1",
+          "revision": 5,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 4,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 122,
+            "digest": "1164b66ddc1b1d18509cd640b015d0753528f3f7f7d24c7c6d73c5ba9c537a3d",
+            "facts": [
+              {
+                "id": "fact-7041d89e-c027-4816-86e7-fa89479189f6",
+                "content": "B51 durable marker B51-CALL-4-THROUGH-SEQ-122: the folded window ended at session event 122."
+              },
+              {
+                "id": "fact-2c9ff73a-4eb2-4a3b-bc82-5e7d8815d0a0",
+                "content": "B51 padding B51-CALL-4-THROUGH-SEQ-122: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-52e6ef43-aaaf-4adb-b341-ae8deb208414",
+                "content": "B51 decision B51-CALL-4-THROUGH-SEQ-122"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-4-THROUGH-SEQ-122",
+              "currentFocus": "B51 focus B51-CALL-4-THROUGH-SEQ-122",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            128,
+            134,
+            136,
+            137,
+            138,
+            139,
+            140,
+            141,
+            142,
+            143,
+            144,
+            145,
+            146,
+            147,
+            148,
+            149,
+            150,
+            151,
+            152,
+            153,
+            154,
+            155,
+            156
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-d152537b-a005-43d2-be2c-92f33af196b1",
+          "revision": 5,
+          "sourceCursor": 156,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-5-THROUGH-SEQ-156: the folded window ended at session event 156.\"},{\"content\":\"B51 padding B51-CALL-5-THROUGH-SEQ-156: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-5-THROUGH-SEQ-156\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-5-THROUGH-SEQ-156\",\"currentFocus\":\"B51 focus B51-CALL-5-THROUGH-SEQ-156\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-51906aa4-97bb-47ca-9f41-48d1ad7f34d8": {
+        "requestId": "ts-51906aa4-97bb-47ca-9f41-48d1ad7f34d8",
+        "time": 1789279310272,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-51906aa4-97bb-47ca-9f41-48d1ad7f34d8",
+          "revision": 6,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 5,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 156,
+            "digest": "9ae19bdaca8cf28a5e60acfa393d8a188e9a5713abd2a7333007396ea5640265",
+            "facts": [
+              {
+                "id": "fact-25f9b534-8884-4cdb-8aab-c54c687a3115",
+                "content": "B51 durable marker B51-CALL-5-THROUGH-SEQ-156: the folded window ended at session event 156."
+              },
+              {
+                "id": "fact-b3c8c882-bc43-4ba7-ae90-3c4313985deb",
+                "content": "B51 padding B51-CALL-5-THROUGH-SEQ-156: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-7ac76b6f-1db4-4723-aac1-3c2c68ef61df",
+                "content": "B51 decision B51-CALL-5-THROUGH-SEQ-156"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-5-THROUGH-SEQ-156",
+              "currentFocus": "B51 focus B51-CALL-5-THROUGH-SEQ-156",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            162,
+            168,
+            170,
+            171,
+            172,
+            173,
+            174,
+            175,
+            176,
+            177,
+            178,
+            179,
+            180,
+            181,
+            182,
+            183,
+            184,
+            185,
+            186,
+            187,
+            188,
+            189,
+            190
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-51906aa4-97bb-47ca-9f41-48d1ad7f34d8",
+          "revision": 6,
+          "sourceCursor": 190,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-6-THROUGH-SEQ-190: the folded window ended at session event 190.\"},{\"content\":\"B51 padding B51-CALL-6-THROUGH-SEQ-190: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-6-THROUGH-SEQ-190\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-6-THROUGH-SEQ-190\",\"currentFocus\":\"B51 focus B51-CALL-6-THROUGH-SEQ-190\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-3d4bf7e0-e391-4955-8f20-b93702620c20": {
+        "requestId": "ts-3d4bf7e0-e391-4955-8f20-b93702620c20",
+        "time": 1789279310289,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-3d4bf7e0-e391-4955-8f20-b93702620c20",
+          "revision": 7,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 6,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 190,
+            "digest": "f71d8b53f6bd6f2a5cf57e6efd7477864d5f5b3cbf07fdce3c3060eb48b19ef9",
+            "facts": [
+              {
+                "id": "fact-bd4c9416-9b73-4fb7-aff5-5929ba00a511",
+                "content": "B51 durable marker B51-CALL-6-THROUGH-SEQ-190: the folded window ended at session event 190."
+              },
+              {
+                "id": "fact-1dee000e-d573-44f9-8f3c-40d1016b636d",
+                "content": "B51 padding B51-CALL-6-THROUGH-SEQ-190: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-28f4a23b-a5c4-4280-be96-24b9d5655ea6",
+                "content": "B51 decision B51-CALL-6-THROUGH-SEQ-190"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-6-THROUGH-SEQ-190",
+              "currentFocus": "B51 focus B51-CALL-6-THROUGH-SEQ-190",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            196,
+            202,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            212,
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            219,
+            220,
+            221,
+            222,
+            223,
+            224
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-3d4bf7e0-e391-4955-8f20-b93702620c20",
+          "revision": 7,
+          "sourceCursor": 224,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-7-THROUGH-SEQ-224: the folded window ended at session event 224.\"},{\"content\":\"B51 padding B51-CALL-7-THROUGH-SEQ-224: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-7-THROUGH-SEQ-224\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-7-THROUGH-SEQ-224\",\"currentFocus\":\"B51 focus B51-CALL-7-THROUGH-SEQ-224\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-f74d7ffe-2a58-416e-9949-afcc5815034e": {
+        "requestId": "ts-f74d7ffe-2a58-416e-9949-afcc5815034e",
+        "time": 1789279310308,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-f74d7ffe-2a58-416e-9949-afcc5815034e",
+          "revision": 8,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 7,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 224,
+            "digest": "954946ccdc294312daca3bd5bafe31cfe5a62a11d04cc1332fcf612a4ab8ab74",
+            "facts": [
+              {
+                "id": "fact-cf36fbce-4a13-4197-8847-cf8483896b2d",
+                "content": "B51 durable marker B51-CALL-7-THROUGH-SEQ-224: the folded window ended at session event 224."
+              },
+              {
+                "id": "fact-269f15a5-a7e9-4102-b388-ff479942e2c4",
+                "content": "B51 padding B51-CALL-7-THROUGH-SEQ-224: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-3a30fd7b-a380-4374-90d2-bc49556bb1d9",
+                "content": "B51 decision B51-CALL-7-THROUGH-SEQ-224"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-7-THROUGH-SEQ-224",
+              "currentFocus": "B51 focus B51-CALL-7-THROUGH-SEQ-224",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            230,
+            236,
+            238,
+            239,
+            240,
+            241,
+            242,
+            243,
+            244,
+            245,
+            246,
+            247,
+            248,
+            249,
+            250,
+            251,
+            252,
+            253,
+            254,
+            255,
+            256,
+            257,
+            258
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-f74d7ffe-2a58-416e-9949-afcc5815034e",
+          "revision": 8,
+          "sourceCursor": 258,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-8-THROUGH-SEQ-258: the folded window ended at session event 258.\"},{\"content\":\"B51 padding B51-CALL-8-THROUGH-SEQ-258: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-8-THROUGH-SEQ-258\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-8-THROUGH-SEQ-258\",\"currentFocus\":\"B51 focus B51-CALL-8-THROUGH-SEQ-258\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-575bdd4d-c953-48fd-b636-360729fcc741": {
+        "requestId": "ts-575bdd4d-c953-48fd-b636-360729fcc741",
+        "time": 1789279310330,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-575bdd4d-c953-48fd-b636-360729fcc741",
+          "revision": 9,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 8,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 258,
+            "digest": "ee5881c0044c70942b3c58ed7cd18ce8c16c06b239561f57546b1601df95f05c",
+            "facts": [
+              {
+                "id": "fact-20b74d1a-4ef0-4aec-be35-72b5d24aa794",
+                "content": "B51 durable marker B51-CALL-8-THROUGH-SEQ-258: the folded window ended at session event 258."
+              },
+              {
+                "id": "fact-d7fbd6eb-8baa-4b99-8117-8c8b08994cf0",
+                "content": "B51 padding B51-CALL-8-THROUGH-SEQ-258: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-7e521ca0-0eca-4afd-a3e7-582eb2f39bdc",
+                "content": "B51 decision B51-CALL-8-THROUGH-SEQ-258"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-8-THROUGH-SEQ-258",
+              "currentFocus": "B51 focus B51-CALL-8-THROUGH-SEQ-258",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            264,
+            270,
+            272,
+            273,
+            274,
+            275,
+            276,
+            277,
+            278,
+            279,
+            280,
+            281,
+            282,
+            283,
+            284,
+            285,
+            286,
+            287,
+            288,
+            289,
+            290,
+            291,
+            292
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-575bdd4d-c953-48fd-b636-360729fcc741",
+          "revision": 9,
+          "sourceCursor": 292,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-9-THROUGH-SEQ-292: the folded window ended at session event 292.\"},{\"content\":\"B51 padding B51-CALL-9-THROUGH-SEQ-292: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-9-THROUGH-SEQ-292\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-9-THROUGH-SEQ-292\",\"currentFocus\":\"B51 focus B51-CALL-9-THROUGH-SEQ-292\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-7bdcbdf4-3995-4b0b-a795-7448dd11e37c": {
+        "requestId": "ts-7bdcbdf4-3995-4b0b-a795-7448dd11e37c",
+        "time": 1789279310347,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-7bdcbdf4-3995-4b0b-a795-7448dd11e37c",
+          "revision": 10,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 9,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 292,
+            "digest": "dc1508ca0a3320324ca725a16916cd64aa9da07c223a3ea706482060cf6afe7c",
+            "facts": [
+              {
+                "id": "fact-61c4bfc3-8917-4a18-9cf1-a839d7c94078",
+                "content": "B51 durable marker B51-CALL-9-THROUGH-SEQ-292: the folded window ended at session event 292."
+              },
+              {
+                "id": "fact-495b904d-3cb9-46bb-81ec-162ec1fc3a5c",
+                "content": "B51 padding B51-CALL-9-THROUGH-SEQ-292: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-6dfde5a9-915a-497e-8843-5c9ea9bd5746",
+                "content": "B51 decision B51-CALL-9-THROUGH-SEQ-292"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-9-THROUGH-SEQ-292",
+              "currentFocus": "B51 focus B51-CALL-9-THROUGH-SEQ-292",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            298,
+            304,
+            306,
+            307,
+            308,
+            309,
+            310,
+            311,
+            312,
+            313,
+            314,
+            315,
+            316,
+            317,
+            318,
+            319,
+            320,
+            321,
+            322,
+            323,
+            324,
+            325,
+            326
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-7bdcbdf4-3995-4b0b-a795-7448dd11e37c",
+          "revision": 10,
+          "sourceCursor": 326,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-10-THROUGH-SEQ-326: the folded window ended at session event 326.\"},{\"content\":\"B51 padding B51-CALL-10-THROUGH-SEQ-326: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-10-THROUGH-SEQ-326\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-10-THROUGH-SEQ-326\",\"currentFocus\":\"B51 focus B51-CALL-10-THROUGH-SEQ-326\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-bb3434c0-2182-4bda-a60a-337ef5175f05": {
+        "requestId": "ts-bb3434c0-2182-4bda-a60a-337ef5175f05",
+        "time": 1789279310366,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-bb3434c0-2182-4bda-a60a-337ef5175f05",
+          "revision": 11,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 10,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 326,
+            "digest": "755cad31a23a86a722d35aee3a1fb73c5a5e1eed7b31993dc5d86b7310ef1b25",
+            "facts": [
+              {
+                "id": "fact-c9576cba-9cdc-4c4e-82bd-79476aefcfc4",
+                "content": "B51 durable marker B51-CALL-10-THROUGH-SEQ-326: the folded window ended at session event 326."
+              },
+              {
+                "id": "fact-d6eec6f4-5bec-4023-8955-de53bff1a4be",
+                "content": "B51 padding B51-CALL-10-THROUGH-SEQ-326: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-31695cc5-bc81-47bc-9bd1-a8f38367afa3",
+                "content": "B51 decision B51-CALL-10-THROUGH-SEQ-326"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-10-THROUGH-SEQ-326",
+              "currentFocus": "B51 focus B51-CALL-10-THROUGH-SEQ-326",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            332,
+            338,
+            340,
+            341,
+            342,
+            343,
+            344,
+            345,
+            346,
+            347,
+            348,
+            349,
+            350,
+            351,
+            352,
+            353,
+            354,
+            355,
+            356,
+            357,
+            358,
+            359,
+            360
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-bb3434c0-2182-4bda-a60a-337ef5175f05",
+          "revision": 11,
+          "sourceCursor": 360,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-11-THROUGH-SEQ-360: the folded window ended at session event 360.\"},{\"content\":\"B51 padding B51-CALL-11-THROUGH-SEQ-360: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-11-THROUGH-SEQ-360\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-11-THROUGH-SEQ-360\",\"currentFocus\":\"B51 focus B51-CALL-11-THROUGH-SEQ-360\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-7920a270-430a-4bb7-a799-2780a9dd1db1": {
+        "requestId": "ts-7920a270-430a-4bb7-a799-2780a9dd1db1",
+        "time": 1789279310386,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-7920a270-430a-4bb7-a799-2780a9dd1db1",
+          "revision": 12,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 11,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 360,
+            "digest": "5578353d4561fe68b729381186ed4e075969bc0e288bc03e6c878b207ecbd010",
+            "facts": [
+              {
+                "id": "fact-9dedd575-5c5c-4e4e-b0cb-887c23e15045",
+                "content": "B51 durable marker B51-CALL-11-THROUGH-SEQ-360: the folded window ended at session event 360."
+              },
+              {
+                "id": "fact-4075cb77-240a-45fb-94a5-14fff6fb806a",
+                "content": "B51 padding B51-CALL-11-THROUGH-SEQ-360: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-9c66d69c-d66c-40bc-be36-7e423cb03f3e",
+                "content": "B51 decision B51-CALL-11-THROUGH-SEQ-360"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-11-THROUGH-SEQ-360",
+              "currentFocus": "B51 focus B51-CALL-11-THROUGH-SEQ-360",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            366,
+            372,
+            374,
+            375,
+            376,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            387,
+            388,
+            389,
+            390,
+            391,
+            392,
+            393,
+            394
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-7920a270-430a-4bb7-a799-2780a9dd1db1",
+          "revision": 12,
+          "sourceCursor": 394,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-12-THROUGH-SEQ-394: the folded window ended at session event 394.\"},{\"content\":\"B51 padding B51-CALL-12-THROUGH-SEQ-394: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-12-THROUGH-SEQ-394\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-12-THROUGH-SEQ-394\",\"currentFocus\":\"B51 focus B51-CALL-12-THROUGH-SEQ-394\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-f8c330a8-dbc9-4445-8dc7-9fac78b3bade": {
+        "requestId": "ts-f8c330a8-dbc9-4445-8dc7-9fac78b3bade",
+        "time": 1789279310407,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-f8c330a8-dbc9-4445-8dc7-9fac78b3bade",
+          "revision": 13,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 12,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 394,
+            "digest": "234ad540179110ecff45e184570f26d7216f2c22186013098a1c4631e4859892",
+            "facts": [
+              {
+                "id": "fact-930e6f8d-9b6c-4d8e-81f0-9300c00c32e1",
+                "content": "B51 durable marker B51-CALL-12-THROUGH-SEQ-394: the folded window ended at session event 394."
+              },
+              {
+                "id": "fact-02cd1390-ce3c-4c82-b32d-2d31ab7afdba",
+                "content": "B51 padding B51-CALL-12-THROUGH-SEQ-394: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-6fca24fb-60de-407e-8a5c-bab30fb53fe1",
+                "content": "B51 decision B51-CALL-12-THROUGH-SEQ-394"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-12-THROUGH-SEQ-394",
+              "currentFocus": "B51 focus B51-CALL-12-THROUGH-SEQ-394",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            400,
+            406,
+            408,
+            409,
+            410,
+            411,
+            412,
+            413,
+            414,
+            415,
+            416,
+            417,
+            418,
+            419,
+            420,
+            421,
+            422,
+            423,
+            424,
+            425,
+            426,
+            427,
+            428
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-f8c330a8-dbc9-4445-8dc7-9fac78b3bade",
+          "revision": 13,
+          "sourceCursor": 428,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-13-THROUGH-SEQ-428: the folded window ended at session event 428.\"},{\"content\":\"B51 padding B51-CALL-13-THROUGH-SEQ-428: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-13-THROUGH-SEQ-428\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-13-THROUGH-SEQ-428\",\"currentFocus\":\"B51 focus B51-CALL-13-THROUGH-SEQ-428\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-41512111-22dd-415f-abd1-59a989292e91": {
+        "requestId": "ts-41512111-22dd-415f-abd1-59a989292e91",
+        "time": 1789279310428,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-41512111-22dd-415f-abd1-59a989292e91",
+          "revision": 14,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 13,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 428,
+            "digest": "27758ebafcb9ad9aaae45d5ebf5a8add7784bed6918fe2cc79247820bb465c31",
+            "facts": [
+              {
+                "id": "fact-427f1354-a883-44c6-bb7f-7aeb5ca9b539",
+                "content": "B51 durable marker B51-CALL-13-THROUGH-SEQ-428: the folded window ended at session event 428."
+              },
+              {
+                "id": "fact-ef908b99-2dd4-4126-a84a-57585b169321",
+                "content": "B51 padding B51-CALL-13-THROUGH-SEQ-428: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-3e6cb3dc-10ff-4dd2-8fa6-01a35bfe77b7",
+                "content": "B51 decision B51-CALL-13-THROUGH-SEQ-428"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-13-THROUGH-SEQ-428",
+              "currentFocus": "B51 focus B51-CALL-13-THROUGH-SEQ-428",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            434,
+            440,
+            442,
+            443,
+            444,
+            445,
+            446,
+            447,
+            448,
+            449,
+            450,
+            451,
+            452,
+            453,
+            454,
+            455,
+            456,
+            457,
+            458,
+            459,
+            460,
+            461,
+            462
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-41512111-22dd-415f-abd1-59a989292e91",
+          "revision": 14,
+          "sourceCursor": 462,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-14-THROUGH-SEQ-462: the folded window ended at session event 462.\"},{\"content\":\"B51 padding B51-CALL-14-THROUGH-SEQ-462: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-14-THROUGH-SEQ-462\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-14-THROUGH-SEQ-462\",\"currentFocus\":\"B51 focus B51-CALL-14-THROUGH-SEQ-462\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-5520a16a-2d02-4ecd-b8e2-9ae066fe9797": {
+        "requestId": "ts-5520a16a-2d02-4ecd-b8e2-9ae066fe9797",
+        "time": 1789279310453,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-5520a16a-2d02-4ecd-b8e2-9ae066fe9797",
+          "revision": 15,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 14,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 462,
+            "digest": "1f4dc5e77d27a1f8febd222dc5530f6952a62384a263502f32480630b5774070",
+            "facts": [
+              {
+                "id": "fact-12a81752-0a5a-47de-89c2-87f0f2eb8292",
+                "content": "B51 durable marker B51-CALL-14-THROUGH-SEQ-462: the folded window ended at session event 462."
+              },
+              {
+                "id": "fact-ba154c73-664a-40fe-810f-f515f7d20526",
+                "content": "B51 padding B51-CALL-14-THROUGH-SEQ-462: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-2836f1b8-e5e5-495d-a985-5c4e76e95091",
+                "content": "B51 decision B51-CALL-14-THROUGH-SEQ-462"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-14-THROUGH-SEQ-462",
+              "currentFocus": "B51 focus B51-CALL-14-THROUGH-SEQ-462",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            468,
+            474,
+            476,
+            477,
+            478,
+            479,
+            480,
+            481,
+            482,
+            483,
+            484,
+            485,
+            486,
+            487,
+            488,
+            489,
+            490,
+            491,
+            492,
+            493,
+            494,
+            495,
+            496
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-5520a16a-2d02-4ecd-b8e2-9ae066fe9797",
+          "revision": 15,
+          "sourceCursor": 496,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-15-THROUGH-SEQ-496: the folded window ended at session event 496.\"},{\"content\":\"B51 padding B51-CALL-15-THROUGH-SEQ-496: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-15-THROUGH-SEQ-496\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-15-THROUGH-SEQ-496\",\"currentFocus\":\"B51 focus B51-CALL-15-THROUGH-SEQ-496\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-af4574c2-9ac8-4551-a495-2e8983613f19": {
+        "requestId": "ts-af4574c2-9ac8-4551-a495-2e8983613f19",
+        "time": 1789279310474,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-af4574c2-9ac8-4551-a495-2e8983613f19",
+          "revision": 16,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 15,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 496,
+            "digest": "085873cbdc4054b79893e3fe12c70486efa863fc57a71a4c78e30422f2f75a41",
+            "facts": [
+              {
+                "id": "fact-9a754187-e344-4308-b815-b0dc9a804c6b",
+                "content": "B51 durable marker B51-CALL-15-THROUGH-SEQ-496: the folded window ended at session event 496."
+              },
+              {
+                "id": "fact-85e48f11-e41b-4e68-a8c9-76c0606a0f4b",
+                "content": "B51 padding B51-CALL-15-THROUGH-SEQ-496: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-35bae20e-6e62-4825-a707-b3f2e75cdd13",
+                "content": "B51 decision B51-CALL-15-THROUGH-SEQ-496"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-15-THROUGH-SEQ-496",
+              "currentFocus": "B51 focus B51-CALL-15-THROUGH-SEQ-496",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            502,
+            508,
+            510,
+            511,
+            512,
+            513,
+            514,
+            515,
+            516,
+            517,
+            518,
+            519,
+            520,
+            521,
+            522,
+            523,
+            524,
+            525,
+            526,
+            527,
+            528,
+            529,
+            530
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-af4574c2-9ac8-4551-a495-2e8983613f19",
+          "revision": 16,
+          "sourceCursor": 530,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-16-THROUGH-SEQ-530: the folded window ended at session event 530.\"},{\"content\":\"B51 padding B51-CALL-16-THROUGH-SEQ-530: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-16-THROUGH-SEQ-530\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-16-THROUGH-SEQ-530\",\"currentFocus\":\"B51 focus B51-CALL-16-THROUGH-SEQ-530\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-5f4e41af-69c5-42c9-a144-f7c1af3c435b": {
+        "requestId": "ts-5f4e41af-69c5-42c9-a144-f7c1af3c435b",
+        "time": 1789279310495,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-5f4e41af-69c5-42c9-a144-f7c1af3c435b",
+          "revision": 17,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 16,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 530,
+            "digest": "c9b6ac69e05551476df4811637a4383302e3fd16efaebcd57ec119a63cc3381f",
+            "facts": [
+              {
+                "id": "fact-eba6635d-675c-4a1f-a2f9-a81e6a27abba",
+                "content": "B51 durable marker B51-CALL-16-THROUGH-SEQ-530: the folded window ended at session event 530."
+              },
+              {
+                "id": "fact-71fef21f-1e55-48e6-bbe5-5d9315ee3d8c",
+                "content": "B51 padding B51-CALL-16-THROUGH-SEQ-530: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-396660a5-0b10-45cf-bd0e-64d157733746",
+                "content": "B51 decision B51-CALL-16-THROUGH-SEQ-530"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-16-THROUGH-SEQ-530",
+              "currentFocus": "B51 focus B51-CALL-16-THROUGH-SEQ-530",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            536,
+            542,
+            544,
+            545,
+            546,
+            547,
+            548,
+            549,
+            550,
+            551,
+            552,
+            553,
+            554,
+            555,
+            556,
+            557,
+            558,
+            559,
+            560,
+            561,
+            562,
+            563,
+            564
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-5f4e41af-69c5-42c9-a144-f7c1af3c435b",
+          "revision": 17,
+          "sourceCursor": 564,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-17-THROUGH-SEQ-564: the folded window ended at session event 564.\"},{\"content\":\"B51 padding B51-CALL-17-THROUGH-SEQ-564: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-17-THROUGH-SEQ-564\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-17-THROUGH-SEQ-564\",\"currentFocus\":\"B51 focus B51-CALL-17-THROUGH-SEQ-564\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-20ef418c-e3c5-47ad-974f-c42eac82dd28": {
+        "requestId": "ts-20ef418c-e3c5-47ad-974f-c42eac82dd28",
+        "time": 1789279310520,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-20ef418c-e3c5-47ad-974f-c42eac82dd28",
+          "revision": 18,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 17,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 564,
+            "digest": "4819f70747b8f4b38806c68e6a268b4dfe3b994e2edd42d1a05ceb0fa2be2d96",
+            "facts": [
+              {
+                "id": "fact-d68ce994-ac4b-407a-8765-c6ba11b9a20a",
+                "content": "B51 durable marker B51-CALL-17-THROUGH-SEQ-564: the folded window ended at session event 564."
+              },
+              {
+                "id": "fact-0c98018d-2ea3-434b-8bec-1211cdddf212",
+                "content": "B51 padding B51-CALL-17-THROUGH-SEQ-564: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-8757b3c8-e7dd-499d-8fe4-767724f9fa19",
+                "content": "B51 decision B51-CALL-17-THROUGH-SEQ-564"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-17-THROUGH-SEQ-564",
+              "currentFocus": "B51 focus B51-CALL-17-THROUGH-SEQ-564",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            570,
+            576,
+            578,
+            579,
+            580,
+            581,
+            582,
+            583,
+            584,
+            585,
+            586,
+            587,
+            588,
+            589,
+            590,
+            591,
+            592,
+            593,
+            594,
+            595,
+            596,
+            597,
+            598
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-20ef418c-e3c5-47ad-974f-c42eac82dd28",
+          "revision": 18,
+          "sourceCursor": 598,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-18-THROUGH-SEQ-598: the folded window ended at session event 598.\"},{\"content\":\"B51 padding B51-CALL-18-THROUGH-SEQ-598: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-18-THROUGH-SEQ-598\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-18-THROUGH-SEQ-598\",\"currentFocus\":\"B51 focus B51-CALL-18-THROUGH-SEQ-598\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-b1572fd2-de39-4288-880f-b613ee9f269c": {
+        "requestId": "ts-b1572fd2-de39-4288-880f-b613ee9f269c",
+        "time": 1789279310544,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-b1572fd2-de39-4288-880f-b613ee9f269c",
+          "revision": 19,
+          "trigger": "threshold",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 18,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 598,
+            "digest": "d51bb9dcc22a2eb391b42a7b9ffaae9ec7c694434d0dcb71f7c2fc4a893cd478",
+            "facts": [
+              {
+                "id": "fact-f37063f1-08a6-4fcd-b3a8-ebf8d9fefcce",
+                "content": "B51 durable marker B51-CALL-18-THROUGH-SEQ-598: the folded window ended at session event 598."
+              },
+              {
+                "id": "fact-13746cd7-e35c-44a8-8e74-1d3c53e40134",
+                "content": "B51 padding B51-CALL-18-THROUGH-SEQ-598: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-daf7e466-f36b-4ee9-92dc-ef6247619ed5",
+                "content": "B51 decision B51-CALL-18-THROUGH-SEQ-598"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-18-THROUGH-SEQ-598",
+              "currentFocus": "B51 focus B51-CALL-18-THROUGH-SEQ-598",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            604,
+            610,
+            612,
+            613,
+            614,
+            615,
+            616,
+            617,
+            618,
+            619,
+            620,
+            621,
+            622,
+            623,
+            624,
+            625,
+            626,
+            627,
+            628,
+            629,
+            630,
+            631,
+            632
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-b1572fd2-de39-4288-880f-b613ee9f269c",
+          "revision": 19,
+          "sourceCursor": 632,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"B51 durable marker B51-CALL-19-THROUGH-SEQ-632: the folded window ended at session event 632.\"},{\"content\":\"B51 padding B51-CALL-19-THROUGH-SEQ-632: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"B51 decision B51-CALL-19-THROUGH-SEQ-632\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"B51 objective B51-CALL-19-THROUGH-SEQ-632\",\"currentFocus\":\"B51 focus B51-CALL-19-THROUGH-SEQ-632\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-0ed4fca7-3ef1-4d55-be41-0c5ae1351924": {
+        "requestId": "ts-0ed4fca7-3ef1-4d55-be41-0c5ae1351924",
+        "time": 1789279310565,
+        "session": {
+          "createdAt": 1789279310159
+        },
+        "request": {
+          "requestId": "ts-0ed4fca7-3ef1-4d55-be41-0c5ae1351924",
+          "revision": 20,
+          "trigger": "trailing",
+          "base": {
+            "schemaVersion": 2,
+            "revision": 19,
+            "filterVersion": "task-state-basic/filter-v3",
+            "sourceCursor": 632,
+            "digest": "eb3d7bbce06d5b522a5c47bdacbcddcf910682e4c127d360b010aeb7fed19b5f",
+            "facts": [
+              {
+                "id": "fact-15452b1e-3395-47b6-aafc-6de0d0bb4741",
+                "content": "B51 durable marker B51-CALL-19-THROUGH-SEQ-632: the folded window ended at session event 632."
+              },
+              {
+                "id": "fact-152fba34-5ed9-45bb-84a6-663fde2fddd2",
+                "content": "B51 padding B51-CALL-19-THROUGH-SEQ-632: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-6660d031-f0f7-4171-b347-22e77ac0407a",
+                "content": "B51 decision B51-CALL-19-THROUGH-SEQ-632"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "goalView": {
+              "status": "none"
+            },
+            "todoView": {
+              "status": "none",
+              "items": []
+            },
+            "continuation": {
+              "currentObjective": "B51 objective B51-CALL-19-THROUGH-SEQ-632",
+              "currentFocus": "B51 focus B51-CALL-19-THROUGH-SEQ-632",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            638,
+            644,
+            646,
+            647,
+            648,
+            649,
+            650,
+            651,
+            652,
+            653,
+            654,
+            655,
+            656,
+            657,
+            658,
+            659,
+            660,
+            661,
+            662,
+            663,
+            664,
+            665,
+            666
+          ],
+          "filterVersion": "task-state-basic/filter-v3",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nAuthoritative Goal and TODO views:\n- `authorityViews.goal` and `authorityViews.todo` in the input are AUTHORITATIVE views the Host resolved from the newest durable `goal/change` and `todo/write` facts of this exact window. They are not yours to write: the output schema above has no field for them and anything you emit for them is ignored.\n- A new goal revision REPLACES the previous goal outright; `authorityViews.changed` names every view whose committed value this window changed (a clear is a change), and `authorityViews.cleared` names the subset of those views this window emptied (a goal clear tombstone, or a whole-list TODO write carrying an empty list).\n- When `changed` or `cleared` names `goal`, the superseded objective is gone: never restate it, and never carry the old goal into `continuation.currentObjective` or `openWork`. State the objective that the authoritative view states, or nothing when the goal was cleared.\n- When `changed` or `cleared` names `todo`, the previous TODO list is gone. Never restate cleared items anywhere, and never treat the TODO list as yours to maintain: it is reproduced from the authoritative view, not from your output.\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and never merges into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 2
+          },
+          "truncation": []
+        }
+      }
+    }
+  }
+}

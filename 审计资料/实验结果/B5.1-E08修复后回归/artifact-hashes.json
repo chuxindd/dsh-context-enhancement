@@ -1,0 +1,51 @@
+{
+  "recordedAt": "2026-09-13T06:06:20.766Z",
+  "note": "artifact-hashes.json 自身不含在本表内（自引用哈希无意义）；b51-file-hashes.json 内的 src/spec 哈希也在同一时点复核。",
+  "artifacts": [
+    {
+      "name": "README.md",
+      "sha256": "d6e06ee4898763d9f0ac4c0174d22446bba122aeb9f9d95d44b657c2e13a4803",
+      "bytes": 23055
+    },
+    {
+      "name": "b51-e08-regression.spec.ts",
+      "sha256": "917d67d4e09ac9f2bdbd275d076c2b9699ca385817cd0759154d9d93a5e96956",
+      "bytes": 48812
+    },
+    {
+      "name": "b51-file-hashes.json",
+      "sha256": "1295952dab830fdd86277f785b01f4292b2e3e5bf2a08d8dce17116870b5890b",
+      "bytes": 1965
+    },
+    {
+      "name": "b51-ledger.json",
+      "sha256": "681742f780eed860ca20d5bf5a42fe889ec15ebbf3751b2a79a22793a3fd374b",
+      "bytes": 2514145
+    },
+    {
+      "name": "full-suite-output.txt",
+      "sha256": "ce07aefac748c47c701f1011daf525ca61fe29eb1a82c704858d40f3d4fae489",
+      "bytes": 9195
+    },
+    {
+      "name": "git-head.txt",
+      "sha256": "1958ca6b13c39b93d19c148e3d4736235e059cda90bf57dfea1d0e8771a04f46",
+      "bytes": 42
+    },
+    {
+      "name": "git-status.txt",
+      "sha256": "3c214f805876395afa7ab01fc96f206876c57b8e2717b3b3d47fdb13adb925c0",
+      "bytes": 7465
+    },
+    {
+      "name": "hash-check-after.json",
+      "sha256": "634b6c5c8a970ed30d5f6ba6886564a0bb357a3f9a94e87d3c5994340438db2e",
+      "bytes": 11028
+    },
+    {
+      "name": "vitest-output.txt",
+      "sha256": "d514abafd97af38ef83a2237059e71f9f34083ed9caa485431f491073726aa33",
+      "bytes": 557
+    }
+  ]
+}

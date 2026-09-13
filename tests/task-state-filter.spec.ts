@@ -205,6 +205,7 @@ describe('task-state-basic filter projections', () => {
     expect(result).not.toBeNull()
     expect(result?.event.fields).toEqual({
       kind: 'todo/write',
+      status: 'current',
       todos: [{ content: 'open the domain', status: 'in_progress' }],
     })
   })
@@ -226,8 +227,13 @@ describe('task-state-basic filter projections', () => {
     expect(irrelevant).toBeNull()
   })
 
-  it('drops an empty todo/write and plan-off', () => {
-    expect(filterEvent({ seq: 15, type: 'todo/write', data: { todos: [] } })).toBeNull()
+  it('projects an empty todo/write as an explicit current-state clear and plan-off', () => {
+    // The whole-list replacement invariant makes `{ todos: [] }` the legal
+    // way to clear the list: it is an authoritative fact, not an empty payload
+    // to drop, so the projection says so explicitly.
+    const cleared = filterEvent({ seq: 15, type: 'todo/write', data: { todos: [] } })
+    expect(cleared).not.toBeNull()
+    expect(cleared?.event.fields).toEqual({ kind: 'todo/write', status: 'cleared', todos: [] })
     const plan = filterEvent({ seq: 16, type: 'plan/mode', data: { active: false } })
     expect(plan).not.toBeNull()
     expect(plan?.event.fields).toEqual({ kind: 'plan/mode', active: false })
@@ -440,6 +446,7 @@ describe('task-state-basic filter hostile payloads', () => {
     expect(hostileTodo).not.toBeNull()
     expect(hostileTodo?.event.fields).toEqual({
       kind: 'todo/write',
+      status: 'current',
       todos: [{ content: '', status: '' }, { content: 'real', status: 'in_progress' }],
     })
   })

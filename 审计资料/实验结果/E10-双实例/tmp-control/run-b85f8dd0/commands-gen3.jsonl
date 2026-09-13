@@ -1,0 +1,4 @@
+{"id":"cmd-034","worker":"C","gen":3,"op":"open"}
+{"id":"cmd-035","worker":"C","gen":3,"op":"inspect"}
+{"id":"cmd-036","worker":"C","gen":3,"op":"close"}
+{"id":"cmd-037","worker":"C","gen":3,"op":"exit"}

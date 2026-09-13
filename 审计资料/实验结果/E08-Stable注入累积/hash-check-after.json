@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-09-12T22:26:09.2612560+08:00",
+  "baselineFile": "审计资料/实验结果/E-baseline-hashes.json",
+  "phase": "after",
+  "declaredCount": 342,
+  "mismatchCount": 0,
+  "missingCount": 0,
+  "mismatches": [],
+  "missing": []
+}

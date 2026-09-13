@@ -1,0 +1,20 @@
+{
+  "id": "cmd-005",
+  "worker": "B",
+  "op": "get",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 36824,
+  "ppid": 22700,
+  "workerStartedAt": 1789263248621,
+  "respondedAt": 1789263248786,
+  "result": {
+    "key": "e10-session-a",
+    "table": "sessions",
+    "view": {
+      "key": "e10-session-a",
+      "present": false
+    }
+  }
+}

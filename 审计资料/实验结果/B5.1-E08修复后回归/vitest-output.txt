@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/B5.1-E08修复后回归/b51-e08-regression.spec.ts > B5.1 · Stable 注入固定槽位（E08 对照回归） > 20 个 revision × 1 次真实 step：模型可见 slot 恒为 1、只呈现当前 revision、旧节点被 replacement 遮蔽、注入成本平坦 834ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:01:49
+   Duration  1.50s (transform 363ms, setup 0ms, import 494ms, tests 836ms, environment 0ms)
+

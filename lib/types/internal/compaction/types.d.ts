@@ -31,6 +31,28 @@ export interface CompactionPolicyConfig {
     forgetMaintenanceRatio?: number;
     /** Pressure trigger as a fraction of the model window. Defaults to `0.80`. */
     pressureRatio?: number;
+    /**
+     * Surface level a pressure pass must reclaim DOWN TO, as a fraction of the
+     * model window: the pass stops at `floor(contextWindow * pressureExitRatio)`,
+     * not "just below the trigger". Defaults to the resolved
+     * `forgetMaintenanceRatio` (so `0.70` by default). Legality requires
+     * `forgetMaintenanceRatio <= pressureExitRatio < pressureRatio`: an exit line
+     * at or above the trigger is a no-op, and one below the maintenance waterline
+     * would make the pressure tier reclaim past the ordinary maintenance target.
+     */
+    pressureExitRatio?: number;
+    /**
+     * Absolute floor of one semantic batch's net release, in tokens. A batch whose
+     * release is below BOTH this floor and {@link minNetReleaseRatio} is recorded
+     * as low-yield. Defaults to `1024`; `0` disables this branch of the gate.
+     */
+    minNetReleaseTokens?: number;
+    /**
+     * Relative floor of one semantic batch's net release, measured against the
+     * route price of the span the batch selected (`netRelease / selectedTokens`,
+     * the ideal-plan definition). Defaults to `0.15`; `0` disables this branch.
+     */
+    minNetReleaseRatio?: number;
     /** Summary provider; set together with summarizationModel, or inherit the conversation target. */
     summarizationProvider?: string;
     /** Summary model; set together with summarizationProvider, or inherit the conversation target. */
@@ -47,10 +69,20 @@ export interface CompactionPolicyConfig {
     maxBatchTokens?: number;
     /** Normal maintenance forget batches. Defaults to `1`; `0` disables this tier. */
     maxMaintenanceBatches?: number;
-    /** Overflow batches per protected zone and recovery attempt. Defaults to `2`; `0` disables semantic overflow recovery. */
+    /**
+     * Batch budget of one invocation. The ordinary pressure tier pays at most this
+     * many semantic batches before returning, and the overflow ladder pays at most
+     * this many batches per protected zone and recovery attempt. Defaults to `2`;
+     * `0` disables semantic overflow recovery and makes the pressure tier take no
+     * batch at all.
+     */
     maxPressureBatches?: number;
     /** Completed turns required before a history summary may re-enter. Defaults to `1`. */
     minReentryTurns?: number;
+    /** Response reserve excluded from the surface grant in envelope-budget mode. Defaults to `8192`. */
+    responseReserveTokens?: number;
+    /** Mispricing safety margin excluded from the surface grant in envelope-budget mode. Defaults to `2048`. */
+    safetyMarginTokens?: number;
 }
 /** Exact provider/model override merged over the default compaction policy. */
 export interface ModelCompactPolicyConfig extends CompactionPolicyConfig {
@@ -94,9 +126,16 @@ export interface ResolvedPolicyFields {
     readonly toolMaintenanceRatio: number;
     readonly forgetMaintenanceRatio: number;
     readonly pressureRatio: number;
+    /** Surface level a pressure pass reclaims down to, as a window fraction. */
+    readonly pressureExitRatio: number;
+    /** Absolute floor of one semantic batch's net release, in tokens. */
+    readonly minNetReleaseTokens: number;
+    /** Relative floor of one semantic batch's net release, over the selected span. */
+    readonly minNetReleaseRatio: number;
     readonly targetBatchTokens: number;
     readonly maxBatchTokens: number;
     readonly maxMaintenanceBatches: number;
+    /** Batch budget of one invocation: pressure batches, and overflow batches per zone. */
     readonly maxPressureBatches: number;
     readonly minReentryTurns: number;
     readonly summarizationProvider: string;
@@ -104,6 +143,10 @@ export interface ResolvedPolicyFields {
     readonly maxTokens: number;
     readonly compactionRetries: number;
     readonly maxOverflowRetries: number;
+    /** Response reserve held free by the surface grant. */
+    readonly responseReserveTokens: number;
+    /** Mispricing margin held free by the surface grant. */
+    readonly safetyMarginTokens: number;
 }
 /** Validated immutable config whose target-specific defaults remain unresolved. */
 export type ResolvedConfig = ResolvedPolicyFields & ResolvedRetention & {
@@ -120,5 +163,7 @@ export type ResolvedCompactSpec = Omit<ResolvedTargetPolicy, 'retainRatio' | 're
     readonly contextWindow: number;
     readonly thresholdTokens: number;
     readonly retainTokens: number;
+    /** `floor(contextWindow * pressureExitRatio)`: the pressure tier's exit line. */
+    readonly pressureExitTokens: number;
 };
 //# sourceMappingURL=types.d.ts.map

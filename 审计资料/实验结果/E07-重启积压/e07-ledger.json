@@ -1,0 +1,778 @@
+{
+  "experiment": "E07-restart-backlog",
+  "question": "When a committed stable sits at cursor = N and eligible events exist above N that no update folded, and the process is closed, does a NEW process reopening the SAME durable storage and resuming the SAME session — with NO new event — actively discover that backlog and update the stable inside the normal worker scheduling window?",
+  "verdictRule": "reproduced = backlog exists (count >= minEvents above the committed cursor), no new event after the restart leaves stable/cursor untouched through a wait far beyond the worker window (zero requests, zero new audit rows), AND exactly one newly appended eligible event triggers an update whose folded window contains the whole backlog; not-reproduced = startup updated it without new activity, or the new event failed to fold the backlog; inconclusive = the fixture/runner/medium could not produce the evidence.",
+  "measurement": "REAL durable storage domain + REAL JSONL session persistence + REAL resume (ctx.sessionPersistence.prepare/enter/announce) + REAL TaskStateBasicService (ctx.plugin) + REAL filter math + REAL renderer; FAKE LLM (scripted adapter, no usage); temporary medium INSIDE this E07 directory; no $HOME/.dsh, no existing session, no port, no concurrent process.",
+  "invokedAs": "ctx.plugin(TaskStateBasicService, CONFIG) — the production service; the fixture never constructs TaskStateWorker and never calls observe/maybeSchedule/performBatch by hand",
+  "workerManuallyInvoked": false,
+  "config": {
+    "provider": "current-route",
+    "model": "current-model",
+    "minEvents": 1,
+    "maxEvents": 20,
+    "maxInputBytes": 100000,
+    "maxOutputTokens": 4000,
+    "timeoutMs": 5000,
+    "maxInfraRetries": 0,
+    "maxEntriesPerKind": 10,
+    "maxEntryBytes": 2000,
+    "maxListItems": 8,
+    "note": "minEvents = 1: one eligible event above the committed cursor already meets the production trigger threshold, so \"below threshold\" cannot explain inactivity"
+  },
+  "processes": [
+    {
+      "id": "P1",
+      "role": "stage 1 — commit the base stable (cursor = N)"
+    },
+    {
+      "id": "P2",
+      "role": "stage 2 — append the eligible backlog above the cursor while the provider is not yet mounted; then mount the provider and settle"
+    },
+    {
+      "id": "P3",
+      "role": "stage 4 — reopen the same storage/session, no new event, wait, then append exactly one new event"
+    },
+    {
+      "id": "P2-close",
+      "role": "stage 3 — complete dispose/close of P2"
+    }
+  ],
+  "storage": {
+    "domainRootRelative": "审计资料\\实验结果\\E07-重启积压\\tmp-storage",
+    "sessionRootRelative": "审计资料\\实验结果\\E07-重启积压\\tmp-sessions",
+    "backend": "json",
+    "domain": "context_enhancement_task_state",
+    "domainFileRelative": "审计资料\\实验结果\\E07-重启积压\\tmp-storage\\context_enhancement_task_state.json",
+    "sessionArtifacts": [
+      {
+        "path": "--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-E07-~91CD~542F~79EF~538B-tmp-storage--\\e07-restart-backlog\\session.jsonl",
+        "bytes": 2160
+      }
+    ]
+  },
+  "stages": {
+    "stage1": {
+      "process": "P1",
+      "role": "commit the base stable (stage 1)",
+      "openedAt": "2026-09-12T14:09:25.197Z",
+      "sessionId": "e07-restart-backlog",
+      "lifecycle": {
+        "createdAt": 1700000000000,
+        "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+      },
+      "appendedSeqs": {
+        "turnStart": 0,
+        "user": 1,
+        "assistant": 2,
+        "turnEnd": 3
+      },
+      "lastAppendedSeq": 3,
+      "logBeforeClose": {
+        "length": 4,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end"
+        ],
+        "lastSeq": 3
+      },
+      "stableBeforeClose": {
+        "revision": 1,
+        "sourceCursor": 3,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299",
+        "objective": "E07 restart backlog probe window-through-3",
+        "facts": [
+          "e07 durable record folded eligible events through 3"
+        ],
+        "injectionChars": 312,
+        "injectionHash": "2e95c950"
+      },
+      "eligibleAboveCursorBeforeClose": [],
+      "surfaceSourceKinds": {
+        "user/message:original": 1,
+        "assistant/message:original": 1
+      },
+      "requests": [
+        {
+          "at": 1789222165226,
+          "windowSeqs": [
+            1,
+            2,
+            3
+          ],
+          "inputChars": 430
+        }
+      ],
+      "requestCount": 1,
+      "disposeError": null,
+      "closedAt": "2026-09-12T14:09:25.245Z",
+      "durableAfterClose": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-c710c53f-6e3c-430a-bed3-e3a250089c33",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+            },
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      }
+    },
+    "stage2": {
+      "process": "P2",
+      "role": "append the eligible backlog above the cursor (stage 2)",
+      "openedAt": "2026-09-12T14:09:25.245Z",
+      "restore": {
+        "header": {
+          "id": "e07-restart-backlog",
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage",
+          "isSeeded": false
+        },
+        "log": {
+          "length": 5,
+          "types": [
+            "turn/start",
+            "user/message",
+            "assistant/message",
+            "turn/end",
+            "session/end-seed"
+          ],
+          "lastSeq": 4
+        },
+        "closeMarkerCount": 1,
+        "closeMarkerEligible": false
+      },
+      "recoveredStableBeforeAppends": null,
+      "backlogAppended": {
+        "turnStart": 5,
+        "turnStartEligible": false,
+        "eligibleSeqs": [
+          6,
+          7,
+          8
+        ],
+        "filterKinds": [
+          {
+            "seq": 6,
+            "kind": "user"
+          },
+          {
+            "seq": 7,
+            "kind": "assistant"
+          },
+          {
+            "seq": 8,
+            "kind": "turn/end"
+          }
+        ],
+        "count": 3
+      },
+      "requestsAtAppendTime": 0,
+      "eligibleAboveCursorAfterAppends": [
+        6,
+        7,
+        8
+      ],
+      "logAfterAppends": {
+        "length": 9,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed",
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end"
+        ],
+        "lastSeq": 8
+      },
+      "surfaceSourceKinds": {
+        "user/message:original": 2,
+        "assistant/message:original": 2
+      },
+      "providerMounted": true,
+      "recoveredStable": {
+        "revision": 1,
+        "sourceCursor": 3,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299",
+        "objective": "E07 restart backlog probe window-through-3",
+        "facts": [
+          "e07 durable record folded eligible events through 3"
+        ],
+        "injectionChars": 312,
+        "injectionHash": "2e95c950"
+      },
+      "eligibleAboveCursorAtClose": [
+        6,
+        7,
+        8
+      ],
+      "requestsAfterSettle": 0,
+      "requestsAfterSettleRows": [],
+      "staleByEligibleEvents": 3,
+      "backlogStillUnprocessed": true,
+      "settleMs": 1200
+    },
+    "stage3": {
+      "process": "P2 (close)",
+      "role": "complete dispose of the process that created the backlog (stage 3)",
+      "closedAt": "2026-09-12T14:09:26.459Z",
+      "disposeError": null,
+      "durableAfterClose": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-c710c53f-6e3c-430a-bed3-e3a250089c33",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+            },
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      },
+      "sessionArtifacts": [
+        {
+          "path": "--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-E07-~91CD~542F~79EF~538B-tmp-storage--\\e07-restart-backlog\\session.jsonl",
+          "bytes": 1831
+        }
+      ],
+      "domainArtifactBytes": 5351
+    },
+    "stage4": {
+      "process": "P3",
+      "role": "reopen with an unprocessed backlog and no new event (stage 4)",
+      "openedAt": "2026-09-12T14:09:26.459Z",
+      "restore": {
+        "header": {
+          "id": "e07-restart-backlog",
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage",
+          "isSeeded": false
+        },
+        "log": {
+          "length": 10,
+          "types": [
+            "turn/start",
+            "user/message",
+            "assistant/message",
+            "turn/end",
+            "session/end-seed",
+            "turn/start",
+            "user/message",
+            "assistant/message",
+            "turn/end",
+            "session/end-seed"
+          ],
+          "lastSeq": 9
+        },
+        "closeMarkerCount": 2,
+        "closeMarkerEligible": false,
+        "identicalToClosedLog": false
+      },
+      "backlogAtReopen": {
+        "eligibleSeqs": [
+          6,
+          7,
+          8
+        ],
+        "count": 3,
+        "filterKinds": [
+          {
+            "seq": 6,
+            "kind": "user"
+          },
+          {
+            "seq": 7,
+            "kind": "assistant"
+          },
+          {
+            "seq": 8,
+            "kind": "turn/end"
+          }
+        ],
+        "sameSeqsAsBeforeClose": true
+      },
+      "surfaceSourceKindsAtReopen": {
+        "user/message:original": 2,
+        "assistant/message:original": 2
+      },
+      "startupWaitMs": 2010,
+      "samples": [
+        {
+          "tMs": 1,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        },
+        {
+          "tMs": 111,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        },
+        {
+          "tMs": 263,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        },
+        {
+          "tMs": 508,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        },
+        {
+          "tMs": 1006,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        },
+        {
+          "tMs": 1502,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        },
+        {
+          "tMs": 2010,
+          "stableRevision": 1,
+          "sourceCursor": 3,
+          "eligibleAboveCursor": 3,
+          "adapterRequests": 0,
+          "auditRowsOnDisk": 1
+        }
+      ],
+      "requestsDuringWindow": [],
+      "requestCountDuringWindow": 0,
+      "startupWaveTriggered": false,
+      "stableAfterWindow": {
+        "revision": 1,
+        "sourceCursor": 3,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299",
+        "objective": "E07 restart backlog probe window-through-3",
+        "facts": [
+          "e07 durable record folded eligible events through 3"
+        ],
+        "injectionChars": 312,
+        "injectionHash": "2e95c950"
+      },
+      "auditRowsOnDiskBeforeWindow": 1,
+      "auditRowsOnDiskAfterWindow": 1,
+      "newEvent": {
+        "seq": 10,
+        "filterKind": "user",
+        "appendedAtMsAfterReopen": 2022
+      },
+      "requestsAfterNewEvent": [
+        {
+          "at": 1789222168486,
+          "windowSeqs": [
+            6,
+            7,
+            8,
+            10
+          ],
+          "maxSeq": 10
+        }
+      ],
+      "stableAfterNewEvent": {
+        "revision": 2,
+        "sourceCursor": 10,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "43afeac9dc412207a00bf62d5f4c218242265ca0775ad091c5b8ca9b8538acef",
+        "objective": "E07 restart backlog probe window-through-10",
+        "facts": [
+          "e07 durable record folded eligible events through 10"
+        ],
+        "injectionChars": 315,
+        "injectionHash": "75afafe0"
+      },
+      "eligibleAboveCursorAfterNewEvent": [],
+      "surfaceSourceKindsAfterNewEvent": {
+        "user/message:original": 3,
+        "assistant/message:original": 2
+      },
+      "logAfterNewEvent": {
+        "length": 11,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed",
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed",
+          "user/message"
+        ],
+        "lastSeq": 10
+      },
+      "disposeError": null,
+      "closedAt": "2026-09-12T14:09:28.495Z",
+      "durableAfterClose": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+          },
+          "stable": {
+            "revision": 2,
+            "sourceCursor": 10,
+            "digest": "43afeac9dc412207a00bf62d5f4c218242265ca0775ad091c5b8ca9b8538acef"
+          }
+        },
+        "auditRowCount": 2,
+        "auditRows": [
+          {
+            "requestId": "ts-c710c53f-6e3c-430a-bed3-e3a250089c33",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+            },
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          },
+          {
+            "requestId": "ts-ec17a318-59e5-4296-9cfc-b66ee937310a",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E07-重启积压\\tmp-storage"
+            },
+            "baseRevision": 1,
+            "baseCursor": 3,
+            "targetRevision": 2,
+            "includedSeqs": [
+              6,
+              7,
+              8,
+              10
+            ],
+            "outcome": "success",
+            "finishedRevision": 2,
+            "finishedCursor": 10
+          }
+        ]
+      }
+    }
+  },
+  "backlog": {
+    "committedCursorN": 3,
+    "committedRevisionBase": 1,
+    "minEvents": 1,
+    "eligibleSeqs": [
+      6,
+      7,
+      8
+    ],
+    "filterKinds": [
+      {
+        "seq": 6,
+        "kind": "user"
+      },
+      {
+        "seq": 7,
+        "kind": "assistant"
+      },
+      {
+        "seq": 8,
+        "kind": "turn/end"
+      }
+    ],
+    "count": 3,
+    "aboveCursor": true,
+    "requestsWhileAlive": 0
+  },
+  "recovery": {
+    "restoredLog": {
+      "length": 10,
+      "types": [
+        "turn/start",
+        "user/message",
+        "assistant/message",
+        "turn/end",
+        "session/end-seed",
+        "turn/start",
+        "user/message",
+        "assistant/message",
+        "turn/end",
+        "session/end-seed"
+      ],
+      "lastSeq": 9
+    },
+    "logRestoredExactly": true,
+    "closeMarker": {
+      "type": "session/end-seed",
+      "eligible": false,
+      "countInLogBeforeClose": 1,
+      "countInLogAfterReopen": 2,
+      "appendedByThisRestore": 1,
+      "note": "the resume path closes a log durably by appending exactly one session/end-seed marker, which the production filter does NOT treat as eligible: the reopened log therefore holds strictly the same eligible tail and no new eligible activity"
+    },
+    "backlogSeqsSurvived": true,
+    "recoveredStable": {
+      "revision": 1,
+      "sourceCursor": 3,
+      "filterVersion": "task-state-basic/filter-v2",
+      "schemaVersion": 1,
+      "digest": "ecd082e2be4137725264ada69afcab56a067d720be55b80a50320513cc9a1299",
+      "objective": "E07 restart backlog probe window-through-3",
+      "facts": [
+        "e07 durable record folded eligible events through 3"
+      ],
+      "injectionChars": 312,
+      "injectionHash": "2e95c950"
+    },
+    "stableRecovered": true
+  },
+  "startupWindow": {
+    "waitMs": 2010,
+    "samples": [
+      {
+        "tMs": 1,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "tMs": 111,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "tMs": 263,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "tMs": 508,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "tMs": 1006,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "tMs": 1502,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "tMs": 2010,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": 3,
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      }
+    ],
+    "requestCountDuringWindow": 0,
+    "startupWaveTriggered": false,
+    "noStartupWave": true
+  },
+  "afterNewEvent": {
+    "newEventSeq": 10,
+    "requests": [
+      {
+        "at": 1789222168486,
+        "windowSeqs": [
+          6,
+          7,
+          8,
+          10
+        ],
+        "maxSeq": 10
+      }
+    ],
+    "stable": {
+      "revision": 2,
+      "sourceCursor": 10,
+      "filterVersion": "task-state-basic/filter-v2",
+      "schemaVersion": 1,
+      "digest": "43afeac9dc412207a00bf62d5f4c218242265ca0775ad091c5b8ca9b8538acef",
+      "objective": "E07 restart backlog probe window-through-10",
+      "facts": [
+        "e07 durable record folded eligible events through 10"
+      ],
+      "injectionChars": 315,
+      "injectionHash": "75afafe0"
+    },
+    "includedSeqsFromDurableAuditRow": [
+      6,
+      7,
+      8,
+      10
+    ],
+    "newEventTriggeredUpdate": true,
+    "foldedWindowContainsBacklog": true
+  },
+  "criteria": {
+    "fixedBeforeRun": true,
+    "backlogCount": 3,
+    "backlogAboveCursor": true,
+    "backlogPresentAtClose": true,
+    "logRestoredExactly": true,
+    "backlogSeqsSurvived": true,
+    "stableRecovered": true,
+    "noStartupWave": true,
+    "newEventTriggeredUpdate": true,
+    "foldedWindowContainsBacklog": true,
+    "routeWorked": true,
+    "evidenceComplete": true,
+    "verdict": "reproduced"
+  },
+  "verdict": "reproduced",
+  "errors": [],
+  "limitations": [
+    "token/字符量是 fake adapter 观测到的输入输出字符数，不是 provider token；fake adapter 不产生 usage，故 provider token、计费量与真实摘要语义均未测量。",
+    "backlog 的产生方式：第二阶段在 provider 挂载之前（生产 domain open / 挂载次序窗口，provider 自身 init 用 createdDuringOpen 覆盖该窗口）向已恢复的 Session 追加一个完整 turn，因此没有任何 worker 观测到这些事件（0 次模型请求）。真实断电场景还可能是「波次在飞行中进程退出」或「波次失败留下尾巴」；本实验未覆盖后两种 provenance（会在同一条重启路径上产生相同的存储状态，但语义上属于未测变体）。",
+    "三个阶段是同一 vitest 进程内顺序挂载/销毁的三个 Cordis Context，不是三个操作系统进程；但每个阶段的 storage/JSONL 句柄都已完整 close 并从磁盘重新打开，且任一时刻只有一个 Context 存活。",
+    "minEvents = 1 是生产允许的最小阈值（tests/task-state-restart-recovery.spec.ts 与 task-state-long-session.spec.ts 的 restart 用例同样用 1）；真实部署取值是否 ≥ 本实验未测量，但更大的 minEvents 只会让「startup 不处理 backlog」更容易成立。",
+    "单个 Session、单个 lifecycle、单次重启：未测多 Session、多实例、fork/resume、审计修复路径或真实 DSH 进程的退出竞态。",
+    "等待窗口 2 000 ms 远大于 worker 的微任务调度窗口，但仍是有限窗口：本实验证明的是「窗口内不发生」，不是「永不发生」。",
+    "renderTaskStateSnapshot 的注入文本 hash 只用于证明恢复后 stable 未变、以及新事件后 stable 已变；它不测量真实 prompt assembly 的可见节点数或 token 归因。",
+    "本实验「通过」只表示 fixture 断言通过，不代表理想方案通过或用户现象不存在；它只回答本文件开头的那一个问题。"
+  ],
+  "sourceKinds": {
+    "note": "source kinds of the events involved: the task-state filter projection kind per backlog seq, and the Session surface source kind (original user/assistant log event vs a derived replacement) at the close, at the reopen and after the new event",
+    "backlogFilterKinds": [
+      {
+        "seq": 6,
+        "kind": "user"
+      },
+      {
+        "seq": 7,
+        "kind": "assistant"
+      },
+      {
+        "seq": 8,
+        "kind": "turn/end"
+      }
+    ],
+    "surfaceSourceKindsAtStage2Close": {
+      "user/message:original": 2,
+      "assistant/message:original": 2
+    },
+    "surfaceSourceKindsAtReopen": {
+      "user/message:original": 2,
+      "assistant/message:original": 2
+    },
+    "surfaceSourceKindsAfterNewEvent": {
+      "user/message:original": 3,
+      "assistant/message:original": 2
+    }
+  }
+}

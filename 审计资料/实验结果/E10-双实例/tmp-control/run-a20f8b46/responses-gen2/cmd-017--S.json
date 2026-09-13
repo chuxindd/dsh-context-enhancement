@@ -1,0 +1,70 @@
+{
+  "id": "cmd-017",
+  "worker": "S",
+  "op": "put",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 76340,
+  "ppid": 22700,
+  "workerStartedAt": 1789263249260,
+  "respondedAt": 1789263249327,
+  "result": {
+    "key": "e10-session-fork",
+    "table": "sessions",
+    "marker": "SEED-r3",
+    "payloadSha256": "b05d6e7374828f162b970111e050ed2fb40639dbd2b3f13917b099f230f62c53",
+    "payloadRevision": 3,
+    "payloadDigest": "E10-DIGEST-SEED-r3",
+    "payloadObjective": "E10 objective SEED-r3",
+    "putStartedAt": 1789263249320,
+    "putSettledAt": 1789263249326,
+    "putMs": 6,
+    "beforeInProcessKeys": [],
+    "beforeInProcessAuditKeys": [],
+    "afterInProcess": {
+      "sessionKeys": [
+        "e10-session-fork"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-fork": {
+          "key": "e10-session-fork",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+          },
+          "stable": {
+            "revision": 3,
+            "sourceCursor": 20,
+            "digest": "E10-DIGEST-SEED-r3",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective SEED-r3",
+            "facts": [
+              "E10 SEED-r3 durable fact one.",
+              "E10 SEED-r3 durable fact two."
+            ]
+          },
+          "recordSha256": "b05d6e7374828f162b970111e050ed2fb40639dbd2b3f13917b099f230f62c53"
+        }
+      },
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "fc04f6c36bd871be4f1b6a83dfc1439fcc4e997cc431cfe239593d2128574784"
+    },
+    "beforeDiskSha256": null,
+    "afterDiskSha256": "335075a8d3b13877117e09186b9823c018281c6449c6f8bb4600d7833fbf2d56",
+    "diskSizeAfter": 1924,
+    "diskMtimeAfter": 1789263249322.3376,
+    "diskSessionKeysAfter": [
+      "e10-session-fork"
+    ],
+    "diskAuditKeysAfter": [],
+    "wrotePayloadSurvivesInOwnMemory": true
+  }
+}

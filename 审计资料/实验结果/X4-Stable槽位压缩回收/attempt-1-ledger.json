@@ -1,0 +1,123 @@
+{
+  "experiment": "X4-stable-slot-compaction-recovery",
+  "question": "当真实 compaction 覆盖 slot 节点后，下一合法 pre-step 能否安全重建？连续多轮后不变量是否成立？",
+  "verdictRule": "fixed = 连续 ≥3 轮压缩遮蔽→重建，每轮重建后可见 slot = 1，generation 严格递增，source-index 分类为 task-state-slot，injection tokens 平坦，DSH runtime-context 通道为空。inconclusive = fixture/route 未能产出证据。",
+  "measurement": "REAL TaskStateBasicService + REAL TaskStatePrompt + REAL BasicCompactionEngine(auto:false) + REAL DSH AgentLoop(a66e4702) + REAL 持久 storage。FAKE：唯一 LLM 为脚本化 adapter，无 provider usage。",
+  "baseline": {
+    "pluginCommit": "cf034b4b",
+    "dshCommit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d"
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/X4-Stable槽位压缩回收/x4.spec.ts --reporter=verbose",
+  "components": {
+    "agentLoop": {
+      "path": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\deepseek-harness\\packages\\core\\agent-loop\\lib\\index.js",
+      "sha256": "a9142d46163d961ed5774ad544cb997da2197fefca5684ec820060dd50c1c935",
+      "srcHashes": {
+        "agent.ts": "cc14a38d5cf32003699a9342286b597eccf35cec79740c28552e229ead43b4f8",
+        "runtime-context.ts": "ba960f755d136e7da6d430ede85948c4c5282b02a8fc5a4a97375ab95e297168"
+      },
+      "dshHead": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+      "imported": true,
+      "mountError": null
+    },
+    "promptConsumer": {
+      "module": "src/internal/task-state/prompt/index.ts",
+      "slotSourceKind": "task-state-slot"
+    },
+    "compaction": {
+      "module": "src/compaction-basic.ts",
+      "config": {
+        "auto": false,
+        "toolGroupSummarizer": {
+          "enabled": false
+        },
+        "contextWindowOverride": 3000,
+        "minReentryTurns": 1,
+        "maxMaintenanceBatches": 1,
+        "maxPressureBatches": 2,
+        "targetBatchTokens": 800,
+        "maxBatchTokens": 1200
+      }
+    },
+    "provider": {
+      "module": "src/task-state-basic.ts",
+      "config": {
+        "provider": "deepseek-official",
+        "model": "deepseek-v4-flash",
+        "minEvents": 20,
+        "maxEvents": 200,
+        "maxInputBytes": 60000,
+        "maxOutputTokens": 4000,
+        "timeoutMs": 120000,
+        "maxInfraRetries": 2,
+        "maxEntriesPerKind": 50,
+        "maxEntryBytes": 4000,
+        "maxListItems": 40
+      }
+    }
+  },
+  "config": {
+    "provider": "deepseek-official",
+    "model": "deepseek-v4-flash",
+    "minEvents": 20,
+    "maxEvents": 200,
+    "maxInputBytes": 60000,
+    "maxOutputTokens": 4000,
+    "timeoutMs": 120000,
+    "maxInfraRetries": 2,
+    "maxEntriesPerKind": 50,
+    "maxEntryBytes": 4000,
+    "maxListItems": 40,
+    "promptMaxBytes": 8000,
+    "cycleCount": 4,
+    "seedsPerCycle": 20,
+    "warmupStepsPerCycle": 2,
+    "compactionConfig": {
+      "auto": false,
+      "toolGroupSummarizer": {
+        "enabled": false
+      },
+      "contextWindowOverride": 3000,
+      "minReentryTurns": 1,
+      "maxMaintenanceBatches": 1,
+      "maxPressureBatches": 2,
+      "targetBatchTokens": 800,
+      "maxBatchTokens": 1200
+    }
+  },
+  "surfaceRoute": {
+    "available": false,
+    "reason": "Compaction engine not available (auto mode may have interfered)",
+    "agentId": "x4-compaction-slot-rebuild"
+  },
+  "cycles": [],
+  "criteria": {
+    "fixedBeforeRun": true,
+    "routeWorked": true,
+    "completeCycles": 0,
+    "allOneVisibleSlot": false,
+    "generationsStrictlyIncreasing": false,
+    "allTaskStateSlotKind": true,
+    "injectionFlat": false,
+    "dshChannelEmpty": true,
+    "evidenceComplete": false,
+    "verdict": "inconclusive"
+  },
+  "storeFinal": {
+    "read": false,
+    "domainFile": "审计资料\\实验结果\\X4-Stable槽位压缩回收\\tmp-storage\\context_enhancement_task_state_v2.json",
+    "domainFileBytes": null,
+    "stableRecordCountForSession": null,
+    "stableRevision": null,
+    "auditRowCount": null
+  },
+  "verdict": "inconclusive",
+  "errors": [],
+  "limitations": [
+    "fake LLM：唯一模型是脚本化 adapter，不产出 provider usage；token 数字来自真实 dsh-token-meter 的固定启发式定价。",
+    "模型路由被替换：部署 route 下注册的是 fake adapter。",
+    "DSH AgentLoop 从被审计 checkout 以原生 ESM import() 载入；其 sha256 记入 ledger.components.agentLoop。",
+    "compaction 通过 manual compactNow 触发（idle-session 路径），而非等待自动压力触发。",
+    "\"通过\"只表示 fixture 断言通过，且只回答本文件第 1 节那一个问题。"
+  ]
+}

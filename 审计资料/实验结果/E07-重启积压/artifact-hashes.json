@@ -1,0 +1,78 @@
+{
+  "experiment": "E07-restart-backlog",
+  "fileCount": 14,
+  "files": [
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\e07-ledger.json",
+      "bytes": 25208,
+      "sha256": "CE9DACBE3133CC8B7C0FC9F4623E80FDF97C0552F84634A99A2900AA42517153"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\e07-restart-backlog.spec.ts",
+      "bytes": 51709,
+      "sha256": "E83811E5F2CDEDA265738559CC7631B0A059F113FA4CB44605E97736291B4090"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\git-head-after.txt",
+      "bytes": 42,
+      "sha256": "1958CA6B13C39B93D19C148E3D4736235E059CDA90BF57DFEA1D0E8771A04F46"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\git-head-before.txt",
+      "bytes": 42,
+      "sha256": "1958CA6B13C39B93D19C148E3D4736235E059CDA90BF57DFEA1D0E8771A04F46"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\git-status-after.txt",
+      "bytes": 5902,
+      "sha256": "EAD922468F17D1A2CA12059589724B07A205F2EA1559F024F933B4EC7A18CEEF"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\git-status-before.txt",
+      "bytes": 5902,
+      "sha256": "EAD922468F17D1A2CA12059589724B07A205F2EA1559F024F933B4EC7A18CEEF"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\hash-check-after.json",
+      "bytes": 260,
+      "sha256": "4C8665D6FF2D58A1C96F41A67429CD5A75A74F34F7F7134E2AF3073208901262"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\hash-check-before.json",
+      "bytes": 220,
+      "sha256": "EF1A7D8ECA7ADA7FC8D04FCB1A7B1917FD5DA89AC1839D099A481EFFFA9F506D"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\README.md",
+      "bytes": 15785,
+      "sha256": "A069A01FD1747155BA0BE0BC82FC72DFE7C068CE343E883056C96E411AFF2808"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\result.json",
+      "bytes": 18537,
+      "sha256": "15B80C32BBA41D3D37304B73C8576C74520D2F0AD042C83D907D5EB8455E16F5"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\tmp-sessions\\--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-E07-~91CD~542F~79EF~538B-tmp-storage--\\e07-restart-backlog\\session.jsonl",
+      "bytes": 2160,
+      "sha256": "AAD59F44529B0F907C6E63027DD22C72D3BC319722AD7778E7683D1AB0F7D17D"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\tmp-storage\\context_enhancement_task_state.json",
+      "bytes": 10321,
+      "sha256": "752E8E081D60FAF6E6968605702D7692B34D534DC3501EB80ECEE52A7EF0D3CF"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\vitest-output-run1.txt",
+      "bytes": 541,
+      "sha256": "E1B501E61B762AE158C32E0626F37EA64E1F495EBAA20441B783C17762BE6CEA"
+    },
+    {
+      "path": "审计资料\\实验结果\\E07-重启积压\\vitest-output.txt",
+      "bytes": 541,
+      "sha256": "2C753BFFBEA6125B458B5CAD4CF426087CDE34E36D665B50F26B404FA4C91E21"
+    }
+  ],
+  "note": "E07 目录内全部产物自身的 SHA-256（不含本文件）；核心源码 342 文件的基线核对见 hash-check-before/after.json",
+  "computedAt": "2026-09-12T22:12:06.3790281+08:00"
+}

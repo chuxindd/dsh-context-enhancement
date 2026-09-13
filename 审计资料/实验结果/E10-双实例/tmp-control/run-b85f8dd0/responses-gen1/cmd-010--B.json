@@ -1,0 +1,95 @@
+{
+  "id": "cmd-010",
+  "worker": "B",
+  "op": "put",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 54880,
+  "ppid": 51736,
+  "workerStartedAt": 1789226297199,
+  "respondedAt": 1789226297513,
+  "result": {
+    "key": "ts-e10-shared-audit-row",
+    "table": "audit",
+    "marker": "B-audit-t1",
+    "payloadSha256": "6684e9e99c091038008f24387a0bd6195901ce0baabbb3c1aebef38760b103db",
+    "payloadRevision": 2,
+    "payloadDigest": "E10-AUDIT-B-audit-t1",
+    "payloadObjective": null,
+    "putStartedAt": 1789226297509,
+    "putSettledAt": 1789226297513,
+    "putMs": 4,
+    "beforeInProcessKeys": [
+      "e10-session-b"
+    ],
+    "beforeInProcessAuditKeys": [],
+    "afterInProcess": {
+      "sessionKeys": [
+        "e10-session-b"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [
+        "ts-e10-shared-audit-row"
+      ],
+      "auditCount": 1,
+      "records": {
+        "e10-session-b": {
+          "key": "e10-session-b",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 7,
+            "digest": "E10-DIGEST-B-t1",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective B-t1",
+            "facts": [
+              "E10 B-t1 durable fact one.",
+              "E10 B-t1 durable fact two."
+            ]
+          },
+          "recordSha256": "f825c64d88f02a1ae8436c7d950f4e8b2b7b44617ad66942de1764647d487380"
+        }
+      },
+      "audit": {
+        "ts-e10-shared-audit-row": {
+          "key": "ts-e10-shared-audit-row",
+          "schemaValid": true,
+          "requestId": "ts-e10-B-audit-t1",
+          "time": 1700000102000,
+          "lifecycleCreatedAt": 1700000000000,
+          "targetRevision": 2,
+          "baseRevision": null,
+          "baseCursor": null,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "outcome": "success",
+          "finishedRevision": 2,
+          "rowSha256": "6684e9e99c091038008f24387a0bd6195901ce0baabbb3c1aebef38760b103db"
+        }
+      },
+      "allRecordsSchemaValid": true,
+      "viewSha256": "33d45472187eec19e1b2d47a339cf77b76071999ca4ca8a1a40c2af84376ff23"
+    },
+    "beforeDiskSha256": "e91bdff1417e39633e6189a3472dc123ff1edeb75658e36eb09074aff3f26281",
+    "afterDiskSha256": "2649b337f9cc354bf245c4fd8ed516bf37b0a91d14a382b62e217813dfda4777",
+    "diskSizeAfter": 3187,
+    "diskMtimeAfter": 1789226297510.2861,
+    "diskSessionKeysAfter": [
+      "e10-session-b"
+    ],
+    "diskAuditKeysAfter": [
+      "ts-e10-shared-audit-row"
+    ],
+    "wrotePayloadSurvivesInOwnMemory": true
+  }
+}

@@ -15,7 +15,7 @@ import {
 /** One canonical committed stable that passes the durable schema. */
 function canonical(): TaskStateStable {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     revision: 2,
     filterVersion: 'filter-v1',
     sourceCursor: 7,
@@ -25,7 +25,9 @@ function canonical(): TaskStateStable {
     constraints: [],
     risks: [],
     evidence: [{ seq: 7, note: 'tool/result confirmed the fix' }],
-    todoReferences: [{ seq: 5, content: 'read the code' }],
+    todoReferences: [{ seq: 5, content: 'read the code [pending]' }],
+    goalView: { status: 'current', goalId: 'goal-1', goalRevision: 4, phase: 'active', objective: 'ship the fix' },
+    todoView: { status: 'current', sourceSeq: 5, items: [{ content: 'read the code', status: 'pending' }] },
     continuation: {
       currentObjective: 'ship the fix',
       currentFocus: 'running the gate',
@@ -44,6 +46,8 @@ function canonicalContent(): TaskStateStableContent {
     risks: canonical().risks,
     evidence: canonical().evidence,
     todoReferences: canonical().todoReferences,
+    goalView: canonical().goalView,
+    todoView: canonical().todoView,
     continuation: canonical().continuation,
   }
 }
@@ -177,5 +181,61 @@ describe('task-state durable schemas', () => {
     }
     expect(taskStateRecordSchema.safeParse(record).success).toBe(true)
     expect(taskStateRecordSchema.safeParse({ ...record, extra: true }).success).toBe(false)
+  })
+
+  it('requires the authoritative Goal and TODO views on a committed stable', () => {
+    const { goalView, todoView, ...withoutViews } = canonical()
+    expect(goalView.status).toBe('current')
+    expect(todoView.status).toBe('current')
+    expect(taskStateStableSchema.safeParse(withoutViews).success).toBe(false)
+    const contentWithoutViews = canonicalContent() as unknown as Record<string, unknown>
+    delete contentWithoutViews['goalView']
+    delete contentWithoutViews['todoView']
+    expect(taskStateStableContentSchema.safeParse(contentWithoutViews).success).toBe(false)
+  })
+
+  it('rejects a non-current view that still carries a value', () => {
+    expect(taskStateStableSchema.safeParse({
+      ...canonical(),
+      goalView: { status: 'cleared', goalId: 'goal-1' },
+    }).success).toBe(false)
+    expect(taskStateStableSchema.safeParse({
+      ...canonical(),
+      todoView: { status: 'cleared', items: [{ content: 'still here', status: 'pending' }] },
+    }).success).toBe(false)
+  })
+
+  it('accepts cleared views that keep only their clear provenance', () => {
+    expect(taskStateStableSchema.safeParse({
+      ...canonical(),
+      todoReferences: [],
+      goalView: { status: 'cleared' },
+      todoView: { status: 'cleared', sourceSeq: 9, items: [] },
+    }).success).toBe(true)
+    expect(taskStateStableSchema.safeParse({
+      ...canonical(),
+      todoReferences: [],
+      goalView: { status: 'none' },
+      todoView: { status: 'none', items: [] },
+    }).success).toBe(true)
+  })
+
+  it('rejects an authority view the auxiliary candidate may not propose', () => {
+    // The candidate schema has no Goal/TODO view fields at all: a model-proposed
+    // view is stripped by the strict candidate shape and never becomes
+    // authoritative content.
+    const parsed = taskStateCandidateSchema.safeParse({
+      facts: [],
+      decisions: [],
+      constraints: [],
+      risks: [],
+      evidence: [],
+      goalView: { status: 'current', objective: 'model-invented goal' },
+      todoView: { status: 'current', items: [{ content: 'model-invented item', status: 'pending' }] },
+      continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
+    })
+    expect(parsed.success).toBe(true)
+    expect(parsed.data).not.toHaveProperty('goalView')
+    expect(parsed.data).not.toHaveProperty('todoView')
   })
 })

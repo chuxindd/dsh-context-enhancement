@@ -34,6 +34,8 @@ function mockStable(revision = 1, sourceCursor = 10): TaskStateStable {
     },
     evidence: [{ seq: 5, note: 'evidence note' }],
     todoReferences: [{ seq: 6, content: 'todo content' }],
+    goalView: { status: 'none' },
+    todoView: { status: 'none', items: [] },
   }
 }
 

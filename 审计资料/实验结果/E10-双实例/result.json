@@ -1,0 +1,308 @@
+{
+  "experiment": "E10-dual-instance",
+  "title": "E10 · 双实例 storage 覆盖实验（两个独立 OS 进程同时使用同一个临时 storage domain）",
+  "question": "两个独立 DSH/storage host 实例同时使用同一个临时 storage domain 时，是否会发生整文档 last-write-wins 覆盖、revision 分叉、audit 丢失或外部变更不可见？",
+  "verdict": "reproduced",
+  "verdictRule": {
+    "reproduced": "一个实例提交后覆盖/静默丢失另一个实例的已提交数据，或同一 revision 出现分叉且无 CAS/冲突拒绝",
+    "not-reproduced": "以上两者都不成立",
+    "inconclusive": "无法安全启动两个独立进程 / 无法确证子进程访问实验目录 / runner 或子进程失败",
+    "design-confirmed": "只有静态设计证据"
+  },
+  "baseline": {
+    "pluginRepoHead": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "pluginRepoHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "pluginRepoHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCheckoutHead": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "baselineManifest": "审计资料/实验结果/E-baseline-hashes.json",
+    "baselineDeclared": 342,
+    "hashCheckBefore": { "declared": 342, "match": 342, "mismatch": 0, "missing": 0, "file": "hash-check-before.json" },
+    "hashCheckAfter": { "declared": 342, "match": 342, "mismatch": 0, "missing": 0, "file": "hash-check-after.json" },
+    "node": "v24.20.0",
+    "specUnderTest": "context_enhancement_task_state v1 layout=single tables=sessions,audit",
+    "domainSource": { "path": "src/internal/task-state/basic/domain.ts", "sha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7" },
+    "contractSource": { "path": "src/internal/task-state/contract/spec.ts", "sha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca" },
+    "preExistingGitStatusLines": 134,
+    "preExistingGitStatusNote": "运行前就存在的改动（lib/**、src/**、tests/**、CHANGELOG.md、tgz 等）；运行前后逐行完全相同。审计资料/ 在 git 中为未跟踪目录（?? 审计资料/），本实验新增产物不出现在改动清单中。"
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/E10-双实例/e10-dual-instance.spec.ts --reporter=verbose",
+  "testSummary": {
+    "runner": "vitest",
+    "config": "审计资料/实验结果/harness/vitest.experiment.config.ts",
+    "spec": "审计资料/实验结果/E10-双实例/e10-dual-instance.spec.ts",
+    "testFilesPassed": 1,
+    "testFilesFailed": 0,
+    "testsPassed": 1,
+    "testsFailed": 0,
+    "reportedByRunner": "Test Files 1 passed (1) / Tests 1 passed (1)",
+    "durationMs": 2810,
+    "testBodyMs": 2391,
+    "startedAt": "2026-09-12T23:18:16+08:00",
+    "rawOutputFile": "审计资料/实验结果/E10-双实例/vitest-output-run1.txt",
+    "workerProcesses": 6,
+    "workerExitCodes": [0, 0, 0, 0, 0, 0],
+    "commandCount": 37,
+    "errorCount": 0,
+    "globalDeadlineHit": false
+  },
+  "realOsMultiProcess": true,
+  "realOsMultiProcessEvidence": {
+    "isRealOsMultiProcess": true,
+    "launcher": "vitest 进程用 node:child_process.spawn 启动 6 个独立 node 进程；每个进程各自创建一个 Cordis Context 并挂载真实 Storage/StorageJson/StorageDomain",
+    "workerCount": 6,
+    "workers": [
+      { "label": "A", "gen": 1, "role": "实例 A（阶段 1）", "pid": 6340, "ppid": 51736, "startedAt": 1789226296826, "exitedAt": 1789226297610, "exitCode": 0, "aliveAtHarvest": false },
+      { "label": "B", "gen": 1, "role": "实例 B（阶段 1）", "pid": 54880, "ppid": 51736, "startedAt": 1789226297012, "exitedAt": 1789226297658, "exitCode": 0, "aliveAtHarvest": false },
+      { "label": "S", "gen": 2, "role": "播种者（写 SEED-r3 后退出）", "pid": 44740, "ppid": 51736, "startedAt": 1789226297684, "exitedAt": 1789226297982, "exitCode": 0, "aliveAtHarvest": false },
+      { "label": "A", "gen": 2, "role": "实例 A（阶段 2，全新进程）", "pid": 49260, "ppid": 51736, "startedAt": 1789226298008, "exitedAt": 1789226298754, "exitCode": 0, "aliveAtHarvest": false },
+      { "label": "B", "gen": 2, "role": "实例 B（阶段 2，全新进程）", "pid": 41956, "ppid": 51736, "startedAt": 1789226298209, "exitedAt": 1789226298829, "exitCode": 0, "aliveAtHarvest": false },
+      { "label": "C", "gen": 3, "role": "第三个全新进程（只读读回）", "pid": 61668, "ppid": 51736, "startedAt": 1789226298843, "exitedAt": 1789226299173, "exitCode": 0, "aliveAtHarvest": false }
+    ],
+    "phase2SimultaneousAlive": {
+      "aStartedAt": 1789226298008,
+      "bStartedAt": 1789226298209,
+      "aExitedAt": 1789226298754,
+      "bExitedAt": 1789226298829,
+      "overlapMs": 421,
+      "aAliveAtBarrierScheduling": true
+    },
+    "pidReuseNote": "Windows 快速回收 pid：6 个进程句柄只观测到 4 个不同 pid。可靠性依据不是\"pid 全不相同\"，而是每个句柄自报 process.pid + 各自 startedAt，且同一阶段内并发的两个进程 pid 一定不同（A/B 在阶段 1 与阶段 2 各得一组不同 pid）。",
+    "noPortsUsed": true,
+    "noSocketOrNamedPipe": true,
+    "notATwoContextDowngrade": true
+  },
+  "observations": {
+    "runId": "b85f8dd0",
+    "generatedAtLocal": "2026-09-12T23:18:19+08:00",
+    "generatedAtSourceNote": "本字段由外部命令从本轮 vitest 输出（Start at 23:18:16）与产物 mtime 换算；账本自身记录的 generatedAt 是运行机本地时间。",
+    "criteria": {
+      "C1_wholeDocumentLastWriteWinsOverwrite": true,
+      "C2_revisionForkWithoutCas": true,
+      "C3_committedDataSilentlyLostAtMedium": true,
+      "C4_externalChangeInvisibleToOpenInstance": true,
+      "C5_auditRowLostAcrossInstances": false,
+      "C6_conflictOrWarningEmitted": false
+    },
+    "overwriteEvidence": {
+      "summary": "整文档 last-write-wins 覆盖：写之前已经提交的 key 并集，减去该次写之后的磁盘 key 集合，得到非空差集。",
+      "phase1CoverageLossBeforeWipe": [
+        {
+          "instance": "B",
+          "window": "D-b-writes-after-a-committed",
+          "atPutOf": "e10-session-b",
+          "table": "sessions",
+          "committedKeysBeforeThisPut": ["e10-session-a", "e10-session-b"],
+          "diskKeysAfterThisPut": ["e10-session-b"],
+          "committedKeysErasedByThisPut": ["e10-session-a"],
+          "putSettledAt": 1789226297389
+        },
+        {
+          "instance": "A",
+          "window": "E-a-updates-from-stale-snapshot",
+          "atPutOf": "e10-session-a",
+          "table": "sessions",
+          "committedKeysBeforeThisPut": ["e10-session-a", "e10-session-b"],
+          "diskKeysAfterThisPut": ["e10-session-a"],
+          "committedKeysErasedByThisPut": ["e10-session-b"],
+          "putSettledAt": 1789226297451
+        }
+      ],
+      "phase2CoverageLossAfterWipe": [],
+      "phase2CoverageLossNote": "阶段 2 的介质只含一条记录（e10-session-fork），因此那一代的\"丢失\"表现为同 key payload 被取代（committedPayloadsAtFinalMedium：SEED-r3 与 A-r4-fork 的 payloadIsTheMediumValueForKey = false，B-r4-fork = true），不是 key 消失。两段结论按介质代际分开阅读。",
+      "stageD": {
+        "aKeySurvivedOnDiskAfterBWrite": false,
+        "diskSessionKeysAfter": ["e10-session-b"],
+        "putStartedAt": 1789226297385,
+        "putSettledAt": 1789226297389,
+        "diskSha256Before": "149b58dc57c3d39a499426c39b35d918d007747eba306c4f1d3a91b72cacb1d0",
+        "diskSha256After": "6685e84723bca49edea7fcc710aba606927bc6ca3dff64f26b259e274a6b8e7f"
+      },
+      "stageE": {
+        "bKeySurvivedOnDiskAfterAWrite": false,
+        "diskSessionKeysAfter": ["e10-session-a"],
+        "putStartedAt": 1789226297447,
+        "putSettledAt": 1789226297451,
+        "diskSha256After": "2cfe31eb2cae571494cacb0523b4863c18b96e3adc040618edf01ca72df564cd"
+      },
+      "phase1EndMediumSnapshot": {
+        "diskSha256": "2649b337f9cc354bf245c4fd8ed516bf37b0a91d14a382b62e217813dfda4777",
+        "sessionKeys": ["e10-session-b"],
+        "auditKeys": ["ts-e10-shared-audit-row"],
+        "aAliveAtSnapshot": true,
+        "bAliveAtSnapshot": true
+      }
+    },
+    "revisionForkEvidence": {
+      "key": "e10-session-fork",
+      "revision": 4,
+      "first": { "instance": "A", "marker": "A-r4-fork", "digest": "E10-DIGEST-A-r4-fork", "putSettledAt": 1789226298529, "conflictRejected": false },
+      "second": { "instance": "B", "marker": "B-r4-fork", "digest": "E10-DIGEST-B-r4-fork", "putSettledAt": 1789226298557, "conflictRejected": false },
+      "conflictSignal": "none — both puts resolved successfully; the storage layer never compares revisions across processes",
+      "aSeedRevision": 3,
+      "bSeedRevision": 3,
+      "sameSeedRecordHash": true,
+      "aAndBSawSameRevisionBeforeFork": true,
+      "payloadsDiffer": true,
+      "aReadsBackOwnPayloadAfterBWrite": true,
+      "bReadsBackOwnPayload": true,
+      "barrierArrivalDeltaMs": 1,
+      "mediumFinalValue": "E10-DIGEST-B-r4-fork"
+    },
+    "externalChangeInvisibilityEvidence": {
+      "stageC": {
+        "aCommittedKey": "e10-session-a",
+        "diskHasAKey": true,
+        "diskSha256": "149b58dc57c3d39a499426c39b35d918d007747eba306c4f1d3a91b72cacb1d0",
+        "bInProcessSessionKeys": [],
+        "bSeesAKeyInMemory": false,
+        "bGetAKeyResultPresent": false,
+        "bDiskReadSeesAKey": true,
+        "bMemoryEqualsDisk": false
+      },
+      "stageE": {
+        "aSeesBKeyInMemory": false,
+        "aDiskReadSeesBKey": true
+      }
+    },
+    "auditEvidence": {
+      "key": "ts-e10-shared-audit-row",
+      "aPutOk": true,
+      "bPutOk": true,
+      "aViewAfterBSameKeyRevision": 1,
+      "aRowSha256AfterBCommit": "392438be1c70b4354445d3abb116a86578a2dafef2117b6b6bf0dc394031d9ca",
+      "bRowSha256AfterOwnCommit": "6684e9e99c091038008f24387a0bd6195901ce0baabbb3c1aebef38760b103db",
+      "aPutDiskSha256": "e91bdff1417e39633e6189a3472dc123ff1edeb75658e36eb09074aff3f26281",
+      "bPutDiskSha256": "2649b337f9cc354bf245c4fd8ed516bf37b0a91d14a382b62e217813dfda4777",
+      "instancesDisagreeOnSameAuditRow": true,
+      "auditRowStillOnMediumAtPhase1End": true,
+      "C5_auditRowLostAcrossInstances": false,
+      "note": "介质上只有 1 个 audit key，因此\"audit 行是否被整文档覆盖丢掉\"只能看它是否还在（C5 = false）；但两个实例对同一行的读值互相不一致这一事实被单独记录。没有测\"多 key audit 表被覆盖后丢行\"，该点保持未验证。"
+    },
+    "finalMedium": {
+      "path": "审计资料/实验结果/E10-双实例/tmp-storage/run-b85f8dd0/context_enhancement_task_state.json",
+      "sha256": "c4b588d76122c30f952666ea25850ea466e10fa47cba2be1167eebf46f5b0142",
+      "size": 1956,
+      "sessionKeys": ["e10-session-fork"],
+      "auditKeys": [],
+      "unitHeader": { "name": "context_enhancement_task_state", "version": 1 },
+      "schemaValid": true
+    },
+    "readBackAfterAllClosed": {
+      "freshProcessC": {
+        "pid": 61668,
+        "seesSessionKeys": ["e10-session-fork"],
+        "seesForkKeyRevision": 4,
+        "seesForkKeyDigest": "E10-DIGEST-B-r4-fork",
+        "inspectDiskSha256": "c4b588d76122c30f952666ea25850ea466e10fa47cba2be1167eebf46f5b0142"
+      },
+      "specSideIndependentValidation": {
+        "domainFileSha256": "c4b588d76122c30f952666ea25850ea466e10fa47cba2be1167eebf46f5b0142",
+        "sessionsValid": [{ "key": "e10-session-fork", "valid": true }],
+        "auditValid": [],
+        "matchesLiveSpecIdentity": true
+      }
+    },
+    "interleaving": {
+      "method": "编排者在命令粒度串行发出并等待响应；worker 每次 claim 都写时间线，谁先写谁后写由实测时间戳（claim/putStartedAt/putSettledAt）证明。屏障场景用 waitBarrier：两个进程各写一个 .go 文件后阻塞轮询，编排者删掉两个文件后同时放行。",
+      "barrierArrivalDeltaMs": 1,
+      "phase2PutWindows": {
+        "A": { "putStartedAt": 1789226298522, "putSettledAt": 1789226298529 },
+        "B": { "putStartedAt": 1789226298553, "putSettledAt": 1789226298557 }
+      },
+      "subOperationInterleavingControlled": false,
+      "subOperationInterleavingNote": "单次 putRecord → writeAtomic 内部（临时文件 → fsync → rename）的子操作级交错无法通过 storage API 强制。本实验只保证命令级交错与落盘窗口重叠，并用实测时间戳证明重叠；介质内部更细的交错没有被断言，也没有被当作证据使用。"
+    },
+    "temporaryDirectories": {
+      "storageRoot": "审计资料/实验结果/E10-双实例/tmp-storage/run-b85f8dd0/",
+      "domainFile": "审计资料/实验结果/E10-双实例/tmp-storage/run-b85f8dd0/context_enhancement_task_state.json",
+      "controlDir": "审计资料/实验结果/E10-双实例/tmp-control/run-b85f8dd0/",
+      "timeline": "审计资料/实验结果/E10-双实例/worker-process.log",
+      "ledger": "审计资料/实验结果/E10-双实例/e10-ledger.json",
+      "containment": "所有 storage 根/命令目录都在本实验目录内；worker 侧 assertInsideE10() 越界即 exit 97，且校验 import 到的域规格名必须为 context_enhancement_task_state（否则 exit 96）。全程未访问真实 $HOME/.dsh、当前 8080 GUI、现有会话或当前 profile；未启动任何替代 GUI 的服务器。"
+    }
+  },
+  "matchedStaticFindings": [
+    {
+      "staticFinding": "storage-json 的 single 布局：内存状态权威，整文档通过 writeAtomic（临时文件 + fsync + rename）整体重发",
+      "runtimeCorrespondence": "每次 put 之后磁盘 key 集合被整体替换；阶段 1 的两条擦除记录（coverageLossBeforeWipe）",
+      "matched": true
+    },
+    {
+      "staticFinding": "storage-json/src/atomic.ts 注释：一个 unit 文件\"每进程恰好一个写者、last-write-wins 是正确的\"",
+      "runtimeCorrespondence": "两个进程各持一个写者身份时该前提失效 → C1 整文档覆盖",
+      "matched": true
+    },
+    {
+      "staticFinding": "single-unit.ts：写不做排队、内存状态权威",
+      "runtimeCorrespondence": "实例读的是自己的内存（C4），落盘以整文档为准（C1）",
+      "matched": true
+    },
+    {
+      "staticFinding": "storage-domain：读走内存、每域一条写链、没有跨进程 CAS/revision 比较",
+      "runtimeCorrespondence": "阶段 2 同 revision 分叉且 conflictRejected = false，存储层未给出任何冲突信号（C2、C6）",
+      "matched": true
+    },
+    {
+      "staticFinding": "真实域 context_enhancement_task_state v1 声明 layout: 'single'，sessions 与 audit 同属一个 unit",
+      "runtimeCorrespondence": "两个表在同一个文档里，因此一个表的写会重发整文档",
+      "matched": true
+    }
+  ],
+  "limitations": [
+    "子操作级交错不可控：只能保证命令级交错 + 落盘窗口重叠，并用实测时间戳证明；介质内部更细的交错未被断言。",
+    "没有任何 LLM/adapter/真实会话参与：本实验只覆盖存储介质行为，不覆盖模型层行为。",
+    "单机单文件系统：两个进程在同一台 Windows 机器、同一 NTFS 卷上；对网络文件系统/容器共享卷不作断言。",
+    "阶段 2 的介质只含一条记录，那一代的覆盖只能观测为同 key payload 取代，不能观测为 key 消失。",
+    "audit 只测了 1 个 key：\"audit 行是否被整文档覆盖丢掉\"只能看它是否还在（C5 = false）；\"多 key audit 表被覆盖后丢行\"未验证，不做推断。",
+    "本机 pid 复用导致 6 个句柄 4 个 pid；已用各自自报 process.pid + startedAt 替代，并保留 pidReuseNote。",
+    "测试时长极短（用例本体约 2.4s）：这是\"窗口重叠\"的实测事实，不构成对更长时间运行的统计断言。",
+    "verdict 的强度边界：reproduced 来自 C1/C2/C3/C4 的实测记录；C5=false、C6=false 也是实测结论，README 与 result.json 未把它们写成\"风险不存在\"。"
+  ],
+  "sourceDrift": {
+    "verdict": "no-drift-outside-audit-dir",
+    "driftOutsideAuditDir": false,
+    "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "gitHeadUnchanged": true,
+    "gitStatusBeforeLines": 134,
+    "gitStatusAfterLines": 134,
+    "gitStatusAddedLines": 0,
+    "gitStatusRemovedLines": 0,
+    "gitStatusUnchanged": true,
+    "gitStatusNote": "134 行改动是运行前就存在的既有工作区状态（lib/**、src/**、tests/**、scripts/**、docs/**、CHANGELOG.md、tgz 等），不是本实验造成的；审计资料/ 是未跟踪目录（?? 审计资料/），本实验新增产物不出现在改动清单里。",
+    "baselineDeclared": 342,
+    "baselineMatchBefore": 342,
+    "baselineMatchAfter": 342,
+    "baselineMismatchAfter": 0,
+    "baselineMissingAfter": 0,
+    "filesOutsideAuditDirModifiedWithinLast3h": 0,
+    "baselineFilesTouchedWithinLast3h": 0,
+    "method": "git HEAD/status 前后逐行比对 + 342 项基线哈希前后比对 + 仓库内（排除 node_modules/.git/审计资料）最近 3 小时 mtime 扫描",
+    "artifacts": {
+      "hashCheckBefore": "审计资料/实验结果/E10-双实例/hash-check-before.json",
+      "hashCheckAfter": "审计资料/实验结果/E10-双实例/hash-check-after.json",
+      "gitHeadBefore": "审计资料/实验结果/E10-双实例/git-head-before.txt",
+      "gitHeadAfter": "审计资料/实验结果/E10-双实例/git-head-after.txt",
+      "gitStatusBefore": "审计资料/实验结果/E10-双实例/git-status-before.txt",
+      "gitStatusAfter": "审计资料/实验结果/E10-双实例/git-status-after.txt",
+      "driftCheck": "审计资料/实验结果/E10-双实例/drift-check-after.json"
+    }
+  },
+  "artifacts": {
+    "readme": "审计资料/实验结果/E10-双实例/README.md",
+    "spec": "审计资料/实验结果/E10-双实例/e10-dual-instance.spec.ts",
+    "worker": "审计资料/实验结果/E10-双实例/e10-storage-worker.mts",
+    "ledger": "审计资料/实验结果/E10-双实例/e10-ledger.json",
+    "rawRunnerOutput": "审计资料/实验结果/E10-双实例/vitest-output-run1.txt",
+    "timeline": "审计资料/实验结果/E10-双实例/worker-process.log",
+    "artifactHashes": "审计资料/实验结果/E10-双实例/artifact-hashes.json",
+    "artifactHashesFileCount": 27,
+    "temporaryArtifacts": {
+      "storageRoot": "审计资料/实验结果/E10-双实例/tmp-storage/run-b85f8dd0/",
+      "controlDir": "审计资料/实验结果/E10-双实例/tmp-control/run-b85f8dd0/",
+      "controlChannelFiles": 46,
+      "retention": "保留为原始证据（README 引用了其中的域文档与哈希）；两个目录都在本实验目录内。"
+    }
+  },
+  "scopeNote": "本目录只执行 E10 双实例 storage 覆盖实验。E01–E09 的目录与结果只读引用，未修改；未改动生产源码、既有测试、既有 harness、package.json、vitest.config.ts、lib/、tgz 或其他实验目录。"
+}

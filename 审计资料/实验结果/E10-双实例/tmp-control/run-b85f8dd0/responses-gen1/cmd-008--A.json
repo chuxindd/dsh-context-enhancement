@@ -1,0 +1,72 @@
+{
+  "id": "cmd-008",
+  "worker": "A",
+  "op": "put",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 6340,
+  "ppid": 51736,
+  "workerStartedAt": 1789226296992,
+  "respondedAt": 1789226297451,
+  "result": {
+    "key": "e10-session-a",
+    "table": "sessions",
+    "marker": "A-t2",
+    "payloadSha256": "dad05807d2df2e610d4690bd4b07aac422f6db79ba4d03caf5191e86bc7ab3e3",
+    "payloadRevision": 2,
+    "payloadDigest": "E10-DIGEST-A-t2",
+    "payloadObjective": "E10 objective A-t2",
+    "putStartedAt": 1789226297447,
+    "putSettledAt": 1789226297451,
+    "putMs": 4,
+    "beforeInProcessKeys": [
+      "e10-session-a"
+    ],
+    "beforeInProcessAuditKeys": [],
+    "afterInProcess": {
+      "sessionKeys": [
+        "e10-session-a"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-a": {
+          "key": "e10-session-a",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0"
+          },
+          "stable": {
+            "revision": 2,
+            "sourceCursor": 11,
+            "digest": "E10-DIGEST-A-t2",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective A-t2",
+            "facts": [
+              "E10 A-t2 durable fact one.",
+              "E10 A-t2 durable fact two."
+            ]
+          },
+          "recordSha256": "dad05807d2df2e610d4690bd4b07aac422f6db79ba4d03caf5191e86bc7ab3e3"
+        }
+      },
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "107dd623f0d24686c1e4cfa3c40471c0155a75219fe0e1726532bf5d263b3a86"
+    },
+    "beforeDiskSha256": "6685e84723bca49edea7fcc710aba606927bc6ca3dff64f26b259e274a6b8e7f",
+    "afterDiskSha256": "2cfe31eb2cae571494cacb0523b4863c18b96e3adc040618edf01ca72df564cd",
+    "diskSizeAfter": 1873,
+    "diskMtimeAfter": 1789226297447.8213,
+    "diskSessionKeysAfter": [
+      "e10-session-a"
+    ],
+    "diskAuditKeysAfter": [],
+    "wrotePayloadSurvivesInOwnMemory": true
+  }
+}

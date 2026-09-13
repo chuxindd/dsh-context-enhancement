@@ -1,0 +1,299 @@
+{
+  "unit": {
+    "name": "context_enhancement_task_state",
+    "version": 1
+  },
+  "global": null,
+  "tables": {
+    "sessions": {
+      "e09-parent": {
+        "session": {
+          "createdAt": 1789224416645,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E09-ForkResume\\tmp-sessions"
+        },
+        "stable": {
+          "schemaVersion": 1,
+          "revision": 2,
+          "filterVersion": "task-state-basic/filter-v2",
+          "sourceCursor": 28,
+          "digest": "062e4393fc7ff69a876204c02fa8117b4e045db9ac5375ad12d0bfa1cdbdac49",
+          "facts": [
+            {
+              "id": "fact-9d084b70-0a4e-4636-b5c1-82567115966e",
+              "content": "E09 durable marker E09-CALL-1-THROUGH-SEQ-28 (folded window ended at session event 28)."
+            }
+          ],
+          "decisions": [],
+          "constraints": [],
+          "risks": [],
+          "evidence": [],
+          "todoReferences": [],
+          "continuation": {
+            "currentObjective": "E09 objective E09-CALL-1-THROUGH-SEQ-28",
+            "currentFocus": "E09 focus E09-CALL-1-THROUGH-SEQ-28",
+            "openWork": [],
+            "nextActions": []
+          }
+        }
+      },
+      "e09-parent-fork-child": {
+        "session": {
+          "createdAt": 1789224416770,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E09-ForkResume\\tmp-sessions"
+        },
+        "stable": {
+          "schemaVersion": 1,
+          "revision": 1,
+          "filterVersion": "task-state-basic/filter-v2",
+          "sourceCursor": 33,
+          "digest": "f81796283018c66902a67e805d45e807e473ca12d41c5f7feecb7fedfedcb280",
+          "facts": [
+            {
+              "id": "fact-caee0fe9-0f6c-4f49-a254-dad53b6693d7",
+              "content": "E09 durable marker E09-CALL-2-THROUGH-SEQ-33 (folded window ended at session event 33)."
+            }
+          ],
+          "decisions": [],
+          "constraints": [],
+          "risks": [],
+          "evidence": [],
+          "todoReferences": [],
+          "continuation": {
+            "currentObjective": "E09 objective E09-CALL-2-THROUGH-SEQ-33",
+            "currentFocus": "E09 focus E09-CALL-2-THROUGH-SEQ-33",
+            "openWork": [],
+            "nextActions": []
+          }
+        }
+      }
+    },
+    "audit": {
+      "ts-3d4bb104-e276-49b6-8ed3-e393ec2b8517": {
+        "requestId": "ts-3d4bb104-e276-49b6-8ed3-e393ec2b8517",
+        "time": 1789224416652,
+        "session": {
+          "createdAt": 1789224416645,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E09-ForkResume\\tmp-sessions"
+        },
+        "request": {
+          "requestId": "ts-3d4bb104-e276-49b6-8ed3-e393ec2b8517",
+          "revision": 1,
+          "base": null,
+          "includedSeqs": [
+            1,
+            2,
+            3,
+            5
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-3d4bb104-e276-49b6-8ed3-e393ec2b8517",
+          "revision": 1,
+          "sourceCursor": 5,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E09 durable marker E09-CALL-1-THROUGH-SEQ-5 (folded window ended at session event 5).\"}],\"decisions\":[],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E09 objective E09-CALL-1-THROUGH-SEQ-5\",\"currentFocus\":\"E09 focus E09-CALL-1-THROUGH-SEQ-5\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-26eaf674-ceb2-4bc5-94fa-655283de3577": {
+        "requestId": "ts-26eaf674-ceb2-4bc5-94fa-655283de3577",
+        "time": 1789224416730,
+        "session": {
+          "createdAt": 1789224416645,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E09-ForkResume\\tmp-sessions"
+        },
+        "request": {
+          "requestId": "ts-26eaf674-ceb2-4bc5-94fa-655283de3577",
+          "revision": 2,
+          "base": {
+            "facts": [
+              {
+                "id": "fact-1e5ffee9-8b9a-4c9c-ba2e-c04fede64591",
+                "content": "E09 durable marker E09-CALL-1-THROUGH-SEQ-5 (folded window ended at session event 5)."
+              }
+            ],
+            "decisions": [],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E09 objective E09-CALL-1-THROUGH-SEQ-5",
+              "currentFocus": "E09 focus E09-CALL-1-THROUGH-SEQ-5",
+              "openWork": [],
+              "nextActions": []
+            },
+            "schemaVersion": 1,
+            "revision": 1,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 5,
+            "digest": "6a2f981185c3d1ea2cdc1a5d9631531f12f4cdb168556874590681b371d16f4e"
+          },
+          "includedSeqs": [
+            11
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        }
+      },
+      "ts-93f8f29d-0961-4dd2-a306-e839be1bb407": {
+        "requestId": "ts-93f8f29d-0961-4dd2-a306-e839be1bb407",
+        "time": 1789224416751,
+        "session": {
+          "createdAt": 1789224416645,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E09-ForkResume\\tmp-sessions"
+        },
+        "request": {
+          "requestId": "ts-93f8f29d-0961-4dd2-a306-e839be1bb407",
+          "revision": 2,
+          "base": {
+            "facts": [
+              {
+                "id": "fact-1e5ffee9-8b9a-4c9c-ba2e-c04fede64591",
+                "content": "E09 durable marker E09-CALL-1-THROUGH-SEQ-5 (folded window ended at session event 5)."
+              }
+            ],
+            "decisions": [],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E09 objective E09-CALL-1-THROUGH-SEQ-5",
+              "currentFocus": "E09 focus E09-CALL-1-THROUGH-SEQ-5",
+              "openWork": [],
+              "nextActions": []
+            },
+            "schemaVersion": 1,
+            "revision": 1,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 5,
+            "digest": "6a2f981185c3d1ea2cdc1a5d9631531f12f4cdb168556874590681b371d16f4e"
+          },
+          "includedSeqs": [
+            11,
+            13,
+            19,
+            21,
+            24,
+            25,
+            26,
+            28
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-93f8f29d-0961-4dd2-a306-e839be1bb407",
+          "revision": 2,
+          "sourceCursor": 28,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E09 durable marker E09-CALL-1-THROUGH-SEQ-28 (folded window ended at session event 28).\"}],\"decisions\":[],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E09 objective E09-CALL-1-THROUGH-SEQ-28\",\"currentFocus\":\"E09 focus E09-CALL-1-THROUGH-SEQ-28\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-e937fe32-d0a5-4183-acc4-8cbb616e4c36": {
+        "requestId": "ts-e937fe32-d0a5-4183-acc4-8cbb616e4c36",
+        "time": 1789224416772,
+        "session": {
+          "createdAt": 1789224416770,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E09-ForkResume\\tmp-sessions"
+        },
+        "request": {
+          "requestId": "ts-e937fe32-d0a5-4183-acc4-8cbb616e4c36",
+          "revision": 1,
+          "base": null,
+          "includedSeqs": [
+            1,
+            2,
+            3,
+            5,
+            11,
+            13,
+            19,
+            21,
+            24,
+            25,
+            26,
+            28,
+            31,
+            32,
+            33
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-e937fe32-d0a5-4183-acc4-8cbb616e4c36",
+          "revision": 1,
+          "sourceCursor": 33,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E09 durable marker E09-CALL-2-THROUGH-SEQ-33 (folded window ended at session event 33).\"}],\"decisions\":[],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E09 objective E09-CALL-2-THROUGH-SEQ-33\",\"currentFocus\":\"E09 focus E09-CALL-2-THROUGH-SEQ-33\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      }
+    }
+  }
+}

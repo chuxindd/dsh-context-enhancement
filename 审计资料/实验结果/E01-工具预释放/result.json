@@ -1,0 +1,249 @@
+{
+  "experiment": "E01-tool-pre-release",
+  "title": "工具区预释放：真实 toolGroupAuditStore 下 40%–70% 档是否执行操作①，以及是否与操作②互斥",
+  "level": "L1（fake token meter + fake LLM + 临时 Session）+ 真实临时 dsh-storage domain（域位于 E01 目录内）",
+  "baseline": {
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "a66e4702",
+    "source": "workspace-src",
+    "sourceKind": "审计资料/实验结果/E01-工具预释放/e01-tool-pre-release.spec.ts（E01 局部 spec，未修改任何生产源码、现有 tests、harness、package.json、vitest.config.ts、lib、tgz）",
+    "harness": "审计资料/实验结果/harness/compaction-harness.ts（只读、未修改、未按原样复用；原因见 harnessPolicy）",
+    "invokedAs": "BasicCompactionEngine.prototype.compactIfNeeded(engineSeam, agent, 'pressure', signal)（engineSeam 携带真实 toolGroupAuditStore 与真实 prototype.summarizeToolGroups）"
+  },
+  "command": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/E01-工具预释放/e01-tool-pre-release.spec.ts --reporter=verbose",
+  "artifacts": {
+    "spec": "审计资料/实验结果/E01-工具预释放/e01-tool-pre-release.spec.ts",
+    "rawOutput": "审计资料/实验结果/E01-工具预释放/vitest-output.txt",
+    "ledger": "审计资料/实验结果/E01-工具预释放/e01-ledger.json",
+    "artifactHashes": "审计资料/实验结果/E01-工具预释放/artifact-hashes.json",
+    "tempStorage": "审计资料/实验结果/E01-工具预释放/tmp-storage/context_enhancement_tool_group_summary.json"
+  },
+  "verdict": "reproduced",
+  "verdictDefinition": "本 E01 协议对 reproduced 的定义（实验前固定）：操作① 针对真实 store 真实执行、提交了持久 replacement，且操作② 未处理同一成功组（同时操作②在工具区其他原始结果上确实处于活跃状态）。这与方案文档 §5 E01 的措辞方向相反，见 planSection5Verdict。",
+  "verdictBasis": "真实临时 storage domain 使 toolGroupAuditStore 可用；40%–70% 档（60 000/100 000 = 60.0%）下，操作① 对工具区内 2 个合格完整工具组各发 1 次摘要请求，落盘 4 个 replacement（seq 33/35/37/39），并在真实 audit 表写入 2 条 status=success 记录（sourceSeqs 11-14、16-19）。随后操作② 被调用且候选集恰为工具区内尚未摘要的第 3 组原始结果（seq 22/24），与操作① 的 shadowed 源（12/14/17/19）和 replacement（33/35/37/39）交集为空。",
+  "planSection5Verdict": {
+    "definition": "方案文档 §5 E01 的判定（缺陷口径）：工具区有合格候选却无 replacement，或候选越区、成功摘要又被裁剪，则 reproduced。",
+    "noReplacementDespiteCandidates": false,
+    "candidateGroupsOutOfZone": false,
+    "successfulSummaryPruned": false,
+    "verdict": "not-reproduced",
+    "note": "按方案文档的缺陷口径，本次没有复现缺陷。两个 verdict 字段并存，以免二次解释。"
+  },
+  "storage": {
+    "realTemporaryStorageDomain": true,
+    "mountOrder": [
+      "LlmRuntime",
+      "Storage",
+      "StorageJson(root=审计资料\\实验结果\\E01-工具预释放\\tmp-storage)",
+      "StorageDomain(backend=json)"
+    ],
+    "mounted": true,
+    "mountError": null,
+    "tempRootRelative": "审计资料\\实验结果\\E01-工具预释放\\tmp-storage",
+    "backend": "json",
+    "domain": "context_enhancement_tool_group_summary",
+    "domainVersion": 1,
+    "storeOpened": true,
+    "storeError": null,
+    "sessionId": "e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8（随机）",
+    "durableFile": {
+      "path": "审计资料/实验结果/E01-工具预释放/tmp-storage/context_enhancement_tool_group_summary.json",
+      "bytes": 6352
+    },
+    "auditRecordsReturned": 2,
+    "auditRecordStatuses": ["success", "success"],
+    "note": "store 由真实 openToolGroupAuditStore(ctx) 打开；未伪造、未旁路构造函数、未在本目录外写入。未使用真实 $HOME/.dsh、未访问现有会话、未占用 8080、未启动多进程。"
+  },
+  "fixture": {
+    "contextWindow": 100000,
+    "watermarks": {
+      "toolMaintenance40pct": 40000,
+      "forgetMaintenance70pct": 70000,
+      "pressure80pct": 80000,
+      "forgetBoundary50pct": 50000,
+      "retainTokens20pct": 20000,
+      "responseReserveTokens": 8192,
+      "safetyMarginTokens": 2048,
+      "summarizerInputCapTokens": 81117
+    },
+    "envelopeTokens": 0,
+    "totalBeforeTokens": 60000,
+    "totalBeforeRatio": 0.6,
+    "turnLayout": [
+      "turn 1 (completed) = 遗忘区: 5 x assistant/message x 2000 = 10000",
+      "turn 2 (completed) = 工具区: 3 个完整工具组 x 4110 + 4 个 spacer（2000/1000/1000/13670）= 30000",
+      "turn 3 (completed) = 近区: 1 x assistant/message x 12000",
+      "turn 4 (OPEN) = 近区: 1 x assistant/message x 8000"
+    ],
+    "groupShape": "每组合格完整工具组 = 2 x（assistant/tool-call 55 token + tool/result 2000 token）= 4110 token；toolResultTextLength = 16000 ≥ minGroupChars 12000；estimatedTokens 4110 ∈ [minGroupTokens 2000, maxGroupTokens 12000]；2 个 tool/result ≥ minGroupResults 2",
+    "zonesBefore": {
+      "forget": { "tokens": 10000, "surfaceIndexes": "0-4" },
+      "tool": { "tokens": 30000, "surfaceIndexes": "5-20", "seqs": "10-25" },
+      "recent": { "tokens": 20000, "surfaceIndexes": "21-30 起" },
+      "retainedTailTokens": 20000
+    },
+    "pricingRule": "fixture code points / 4（CHARS_PER_TOKEN = 4）— fixture token，非 provider token；E = 0",
+    "fakeLlm": "脚本 adapter 只回答工具组摘要请求，输出由请求自身 INPUT 载荷导出的结构化 ToolGroupSummary，facts 逐字取自来源文本",
+    "fakeMeter": "每个当前 surface 节点按其自身 message 计价（replacement 节点同样计价，不像共享 harness 那样计 0）"
+  },
+  "harnessPolicy": {
+    "sharedHarnessModified": false,
+    "sharedHarnessReusedAsIs": false,
+    "reason": "共享 harness 的 engine seam 硬编码 toolGroupAuditStore: undefined 与 no-op summarizeToolGroups，并且既不暴露 engine seam 也不接受 store 参数，因此在其下操作①永远无法执行（compaction-basic.ts 的门槛判断）。E00 阶段评审 §4.2 第 5 条/§6 第 5 条要求改用临时 storage。E01 因此只复用其 seam 模式（plain engine object + BasicCompactionEngine.prototype），把两个被打了桩的 seam 换成真实实现，全部封装在本 E01 spec 内。",
+    "prunerOptionReused": false,
+    "prunerOptionNote": "共享 harness 的 pruner 选项用 createToolResultMessage(...) 构造 replacement，而该工厂会铸造新的 message id（dsh-llm createMessage）。Session 对 tool/result surface replacement 的守卫只允许改变 content，因此该构造会被拒绝并抛 'tool/result surface replacement may change only content'（本次首次运行直接观测到该错误）。E01 的 fake pruner 因此按两条生产写入路径（src/tool-result-pruner.ts 与 src/internal/compaction/tool-group-replacement.ts）的方式构造 replacement：freezeMessage({ ...original, content: reduced })。"
+  },
+  "observations": [
+    {
+      "id": "O1-real-store-available",
+      "statement": "在 E01 目录内按 restart-recovery 的挂载顺序挂载真实 Storage + StorageJson + StorageDomain 后，真实 openToolGroupAuditStore(ctx) 成功打开域 context_enhancement_tool_group_summary，并在磁盘写入单文档 JSON。",
+      "evidence": "storage.mounted = true、storage.storeOpened = true、storeError = null；磁盘文件 tmp-storage/context_enhancement_tool_group_summary.json 6352 字节；ctx.fiber.dispose() 后仍可读出。",
+      "value": { "mountOrder": ["LlmRuntime", "Storage", "StorageJson", "StorageDomain(backend=json)"], "storeOpened": true, "durableBytes": 6352 }
+    },
+    {
+      "id": "O2-40-70-tier-executes-op1",
+      "statement": "60.0% 使用率（40%–70% 工具维护档）下，操作① 真实执行：对工具区合格完整工具组发出摘要请求并提交 replacement。",
+      "evidence": "2 次摘要请求（purpose=compaction、maxTokens=1200、输入 17733/17735 字符 ≈ 4434 fixture token、输出 705 字符 = 177 fixture token）；4 个 replacement（seq 33/35/37/39）；before 60000 → after 48568。",
+      "value": { "summaryRequests": 2, "replacementSeqs": [33, 35, 37, 39], "beforeTokens": 60000, "afterTokens": 48568, "netReleasedTokens": 11432, "netReleaseRatio": 0.1905 }
+    },
+    {
+      "id": "O3-durable-success-audit-records",
+      "statement": "两条真实 audit 记录以 status=success 落盘，sourceSeqs/replacementSeqs 与表面事实一致。",
+      "evidence": "store.recordsForSession(sessionId, createdAt) 返回 2 条：sourceSeqs [11,12,13,14] → replacementSeqs [33,35]；sourceSeqs [16,17,18,19] → replacementSeqs [37,39]；summaryItems 各 4；error 均为 null。",
+      "value": { "records": 2, "statuses": ["success", "success"] }
+    },
+    {
+      "id": "O4-tool-summary-provenance-from-real-store",
+      "statement": "4 个 replacement 被真实 store 的 servedReplacementSeqs 归类为 tool-summary（而非普通 tool-pruned），说明这条路径确实是操作① 而不是普通裁剪。",
+      "evidence": "indexAfter.entries 对这 4 个 seq 的 kind 全为 'tool-summary'；after.surfaceLabelCounts = { assistant/text: 11, assistant/tool-call: 6, tool/result:tool-summary: 4, tool/result:tool-pruned: 2 }。",
+      "value": { "toolSummaryNodes": 4, "toolPrunedNodes": 2 }
+    },
+    {
+      "id": "O5-candidates-only-from-tool-zone",
+      "statement": "操作① 的候选组全部完整落在工具区内，未越区、未被截断。",
+      "evidence": "actor 自建的 toolGroupSelectionOptions 选中组 A（seq 11-14，position 6-9，4110 token，callIds e01-A1/A2）与组 B（seq 16-19，position 11-14，4110 token，callIds e01-B1/B2）；fullyInsideToolZone 两者均为 true；工具区为 position 5-20。",
+      "value": { "candidateGroups": 2, "maxGroupsPerPass": 2, "groupsTotalInToolZone": 3 }
+    },
+    {
+      "id": "O6-op2-excludes-op1-success",
+      "statement": "操作② 被调用且活跃，但其候选集与操作① 成功的组完全不相交；它只处理工具区内尚未摘要的第 3 组。",
+      "evidence": "prunePass.calls[0].candidateSeqs = [22,24]（第 3 组 C 的原始 tool/result，candidateSourceKinds 均为 tool/result:original）；overlapCandidatesWithOp1Sources = []（对 12/14/17/19）；overlapCandidatesWithOp1Replacements = []（对 33/35/37/39）；该调用确实裁剪了 22/24 → replacement 41/43，charsRemoved 14400，之后这两点被归类为 tool-pruned。",
+      "value": { "prunerCallCount": 1, "candidateSeqs": [22, 24], "op1OverlapWithCandidates": [], "prunedOriginalSeqs": [22, 24] }
+    },
+    {
+      "id": "O7-op2-entry-geometry",
+      "statement": "操作② 被调用时（即操作① 落盘之后）工具压缩区仍非空，且包含第 3 组的原始结果，因此排除不是「因无候选而空转」。",
+      "evidence": "zonesAtEntry = { forget 2000, tool 30168, recent 20000 }，toolStartSeq 4 / toolEndSeq 25；prunerCandidates 非空。",
+      "value": { "toolZoneTokensAtOp2Entry": 30168, "toolZoneSeqs": "4-25" }
+    },
+    {
+      "id": "O8-40-70-tier-commits-no-history-compaction",
+      "statement": "本档只治理工具区：一次 compactIfNeeded 调用没有任何语义历史压缩跨度被提交，返回值 null。",
+      "evidence": "semanticCompactionSpansCommitted = 0；toolMaintenance.returned = 'null'；after 48568 仍 < 70% 水位 70000。",
+      "value": { "regionCalls": 0, "returned": null, "afterTokens": 48568, "forgetWatermarkTokens": 70000 }
+    },
+    {
+      "id": "O9-surface-source-kinds-after",
+      "statement": "运行后的表面来源类型混合反映了两个操作各自的产物：4 个 tool-summary、2 个 tool-pruned，其余为原始 assistant 节点。",
+      "evidence": "after.surface 中 seq 33/35/37/39 = tool/result:tool-summary（各 42 fixture token），seq 41/43 = tool/result:tool-pruned（各 200 fixture token），近区 turn 3/4 未被触及。",
+      "value": { "afterTotalTokens": 48568, "afterSurfaceTokens": 48568 }
+    }
+  ],
+  "matchedStaticFindings": [
+    {
+      "id": "TG-D1",
+      "kind": "需实验确认 → 本实验提供端到端动态证据",
+      "statement": "静态审计指出「操作① 失败后操作② 继续；操作① 成功集合与操作② 候选互斥」只有逐节点/逐组落盘证据，缺少端到端用例（现有引擎 harness 把 summarizeToolGroups 与 hasPendingToolIntermediateWork 打桩）。",
+      "matched": "本实验在同一次 compactIfNeeded 调用内真实串起操作① 与操作②，并直接断言候选集与操作① 成功组交集为空（O6/O7）。原静态缺口（无端到端用例）在 E01 内被补上，阈值/语义未变。"
+    },
+    {
+      "id": "TG-E7",
+      "kind": "等价实现 → 动态确认",
+      "statement": "操作① 落盘结果获得 audit/影子价格身份因而不是 original；未落盘节点保持 original 并仍进入裁剪候选（逐结果粒度）。",
+      "matched": "操作① 的 4 个 replacement 为 tool-summary（非 original），未被列入候选；第 3 组 C 的 2 个未摘要原始结果确实成为候选并被裁剪（O6）。逐结果粒度在本次观测中成立。"
+    },
+    {
+      "id": "TG-E9",
+      "kind": "等价实现 → 动态确认",
+      "statement": "裁剪候选集只取 isOriginalToolResult；unknown-replacement 在 canCompactHistory 中永不放开。",
+      "matched": "candidateSeqs 恰为 [22,24]，两者 candidateSourceKinds 均为 tool/result:original；操作① 的 replacement 与影子价格节点均未进入候选（O6）。"
+    },
+    {
+      "id": "TG-A2 / TG-A3",
+      "kind": "确认差异 → 机制动态确认（差异本身的危害未在本实验量化）",
+      "statement": "tool-summary 身份仅来自独立 audit 表（audit 成功 → 影子价格 → unknown 的判定顺序），audit 兼作类型权威且为 layout:'single' 单文档。",
+      "matched": "本次 replacement 之所以是 tool-summary，正是因为真实 store 的 servedReplacementSeqs 被注入 buildSurfaceSourceIndex；同一批 replacement 同时具备紧邻的 compaction/prune 影子价格事件（若 store 缺席会被判为 tool-pruned）。这动态确认了「类型权威落在 audit」这一静态结论，但没有测量 audit 丢失后的降级比例。"
+    },
+    {
+      "id": "TG-E5",
+      "kind": "等价实现 → 动态确认",
+      "statement": "模型输出按 result 结构化、调用 id 一一覆盖、事实只能来自输入。",
+      "matched": "parseToolGroupSummary 对 2 次请求各 4 项全部通过（sourceSeq 覆盖、callId 与输入一致）；assertFactsBelongToInput 真的执行了：facts 为逐字取自来源文本的 'RESULT-A1' / 'RESULT-A2' / 'RESULT-B1' / 'RESULT-B2' / 'bash'。"
+    },
+    {
+      "id": "TG-E6",
+      "kind": "等价实现 → 动态确认",
+      "statement": "每个 replacement 严格缩减（estimateTokens(message) >= shadowedTokens 即跳过）。",
+      "matched": "每组 4110 fixture token 被替换为 2 x 42 = 84 fixture token；4 个 replacement 全部落盘，净释放 11432。"
+    },
+    {
+      "id": "TG-E4 + TG-B4",
+      "kind": "等价实现/参数差异 → 动态确认",
+      "statement": "组预算被信封 inputCapTokens 收窄；字符按 Unicode 码点、token 用 estimateMessage。",
+      "matched": "本 fixture 的 summarizerInputCapTokens = 81117，组 estimatedTokens 4110 未被收窄；组字符数口径（码点，含嵌套 tool-result 文本）与 4110 的 token 口径一致，2 组均通过 isGroupFittable。"
+    },
+    {
+      "id": "TG-E2",
+      "kind": "等价实现 → 动态确认",
+      "statement": "组来源为 original；组内任一结果非 original 即跳过。",
+      "matched": "两组 4 个 tool/result 运行前均为 tool/result:original，均被选中并摘要（O5）。"
+    },
+    {
+      "id": "TG-D2 (跨界组「无人区」)",
+      "kind": "未覆盖",
+      "statement": "整组必须完全位于工具压缩区，跨界组既不属操作① 也不属操作②。",
+      "matched": "本 fixture 刻意把 3 个组都完整放在工具区内，因此没有对跨界组做定向观测；E01 不对 TG-D2 提供证据。"
+    },
+    {
+      "id": "TG-B3 (fallback 永久终态)",
+      "kind": "未覆盖",
+      "statement": "schema/source 类终态会永久拒绝同一指纹。",
+      "matched": "两次摘要均成功，未触发 failure/fallback，故 E01 不提供该路径证据。"
+    }
+  ],
+  "limitations": [
+    "token 是 fixture 计价（code points / 4），不是 provider token；E = 0，无真实 system prompt / 工具 schema / runtime envelope。可迁移的是比例与调度形状，不是绝对数字。",
+    "fake LLM 只验证结构、请求/输出体积与缩减关系，不验证摘要语义质量；facts 由 fixture 从源文本逐字复制以满足生产 provenance 断言。",
+    "摘要调用的 usage 未观测（fake adapter 不产生 usage），因此 provider token 与真实计费量不可得；方案 §4.1 账本中的 model/outputReserve/framingReserve 字段未采集。",
+    "触发口径为 trigger='pressure'：生产同一入口同时承载 40%/70% 与 80% 两档，本 fixture 只构造 40%–70% 档，因此断言的是「该档不提交语义历史压缩」而不是「pressure 档不会压缩」。",
+    "真实 DSH 会话中工具组的形状、大小分布、以及真实会话是否/多久达到 40%–70% 档，从未被本实验测量；本实验构造的是「合格完整工具组位于工具区」这一条件本身。",
+    "单进程、单 Session、单次维护调用：不代表真实调度下的触发频率、并发、重启或跨实例行为。",
+    "toolGroupAuditStore 由 E01 目录内的临时 JSON storage domain 提供（真实 dsh-storage 组件 + 真实 openToolGroupAuditStore + 真实域规范），但不是生产 $DSH_HOME 下的实例，也未验证多实例/单文档覆盖。",
+    "操作② 由 fixture 的 fake pruner 实现：它按生产的候选集构造方式与 onReplacement 协议被调用，用于观测互斥性，但字节不是生产 ToolResultPruner 的实现；其裁剪比例（保留 10%）是 fixture 取值。",
+    "E01 的 engine 是 harness 的 seam 模式（plain object + BasicCompactionEngine.prototype），不是通过 ctx.plugin 挂载的真实 BasicCompactionEngine 实例；真实的是操作①/② 方法体、zones/envelope 预算、真实 Session 与真实 storage domain。",
+    "「candidateGroupsOutOfZone = false」只说明本 fixture 的 3 个组都在区内，不能推断真实会话里不会出现跨界组（TG-D2 仍未解决）。",
+    "本实验通过不代表理想方案通过，也不代表用户观察到的现象不存在；它只回答「真实 store 可用时 40%–70% 档会执行操作① 且与操作② 互斥」这一个问题。"
+  ],
+  "sourceDrift": {
+    "drift": false,
+    "hashesBefore": "342/342 与 审计资料/实验结果/E-baseline-hashes.json 一致（mismatch 0）",
+    "hashesAfter": "342/342 一致（mismatch 0）",
+    "gitStatusBeforeLines": 134,
+    "gitStatusAfterLines": 134,
+    "gitStatusIdentical": true,
+    "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "filesWritten": "全部位于 审计资料/实验结果/E01-工具预释放/（审计资料 整体为未跟踪目录，故 git status 行数未变化）",
+    "untouched": "未修改生产源码、现有 tests、harness、package.json、vitest.config.ts、lib、tgz、E00/E02/E03/E04/E05/E06 任何文件；未构建、未安装、未启动 DSH/GUI；未访问真实 $HOME/.dsh 或任何现有会话；未占用 127.0.0.1:8080；未启动多进程。"
+  },
+  "testSummary": {
+    "runner": "vitest 4.1.11（实验专用 config，未污染工作区 vitest.config.ts）",
+    "testFiles": { "total": 1, "passed": 1, "failed": 0 },
+    "tests": { "total": 1, "passed": 1, "failed": 0 },
+    "duration": "726ms（tests 59ms）",
+    "exitCode": 0,
+    "runCount": 1,
+    "rawOutput": "审计资料/实验结果/E01-工具预释放/vitest-output.txt",
+    "note": "本次交付的 vitest-output.txt 来自最后一次成功运行（exit 0）。此前两次失败的运行是 E01 spec 自身的 seam/构造缺陷（缺少 commitToolGroupSuccess 绑定；fake pruner 用 createToolResultMessage 铸造新 message id 被 Session 守卫拒绝），均在 E01 目录内修正，未涉及任何生产文件。"
+  }
+}

@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ × 审计资料/实验结果/X4-Stable槽位压缩回收/x4.spec.ts > X4 · Stable 固定槽位压缩遮蔽回收 > 连续 4 轮压缩遮蔽→重建：可见 slot 恒≤1、generation 严格递增、source-index 分类正确 410ms
+   → expected 0 to be greater than or equal to 3
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  审计资料/实验结果/X4-Stable槽位压缩回收/x4.spec.ts > X4 · Stable 固定槽位压缩遮蔽回收 > 连续 4 轮压缩遮蔽→重建：可见 slot 恒≤1、generation 严格递增、source-index 分类正确
+AssertionError: expected 0 to be greater than or equal to 3
+ ❯ 审计资料/实验结果/X4-Stable槽位压缩回收/x4.spec.ts:829:29
+    827|     expect(agentLoopModule.imported, agentLoopModule.mountError ?? 'Ag…
+    828|     expect(errors).toEqual([])
+    829|     expect(complete.length).toBeGreaterThanOrEqual(3)
+       |                             ^
+    830|     expect(allOneVisibleSlot).toBe(true)
+    831|     expect(generationsStrictlyIncreasing).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  15:13:32
+   Duration  1.34s (transform 463ms, setup 0ms, import 754ms, tests 411ms, environment 0ms)
+

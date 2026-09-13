@@ -46,6 +46,16 @@ export declare class ToolResultPruner extends Service {
      */
     measureContent(blocks: readonly ContentBlock[]): number;
     /**
+     * Measure one tool-result MESSAGE's content the way {@link pruneSession}
+     * reduces it: Unicode code points across EVERY text block — message-level
+     * text blocks and the text blocks nested in each tool-result block alike —
+     * so a pending-work probe that asks this metric can never call a multi-block
+     * result small when the deterministic pass would still reduce it.
+     * @param blocks - message-level content blocks of one tool result.
+     * @returns total Unicode code points across every text block.
+     */
+    measureMessageText(blocks: readonly ContentBlock[]): number;
+    /**
      * Replace an over-budget text middle while retaining rich-block order. Text
      * slicing is by Unicode code point, not UTF-16 code unit, so a retained
      * boundary cannot split a surrogate pair. Grapheme clusters may still split.
@@ -63,6 +73,32 @@ export declare class ToolResultPruner extends Service {
      * @returns the bounded replacement, or `null` when reduction does not apply.
      */
     pruneRecentContent(blocks: readonly ContentBlock[]): ContentBlock[] | null;
+    /**
+     * Reduce one whole tool-result MESSAGE below the ordinary threshold while
+     * preserving its message-level block structure: every original content block
+     * survives (rich and message-level text blocks ride along in place), and the
+     * shared removed window spans every text block of the message. Returns null
+     * for a message whose total text is within budget.
+     */
+    private pruneMessageContent;
+    /** The recent-result hard limit applied to a whole message's content. */
+    private pruneRecentMessageContent;
+    /**
+     * Message-level twin of {@link reduceContent}: the measured total and the
+     * removed span cover EVERY text block of the message (message-level text and
+     * the text nested inside tool-result blocks alike), while all other blocks —
+     * including the tool-result blocks that carry them — keep their positions.
+     * An empty content array measures zero and never reduces.
+     */
+    private reduceMessageContent;
+    /**
+     * Walk one message-level (or nested tool-result) block list, sharing the
+     * removed window across every text unit in surface order. Non-text blocks
+     * pass through untouched; a tool-result block recurses so its own text joins
+     * the same measured stream. Slicing is by Unicode code point, so a retained
+     * boundary cannot split a surrogate pair.
+     */
+    private reduceMessageBlocks;
     /**
      * Reduce text whose total exceeds `triggerChars` to the configured head,
      * marker, and tail budget while preserving rich-block order. The measured
@@ -91,7 +127,8 @@ export declare class ToolResultPruner extends Service {
      * node through the injected token meter, so pure consumers can subtract it
      * without per-node state.
      * @param session - session whose current surface is rewritten.
-     * @param options - optional eligible older span for region-aware passes.
+     * @param options - optional eligible older span for region-aware passes, plus
+     * the per-replacement landing callback a partial pass reports through.
      * @returns landed replacements and aggregate Unicode-code-point savings.
      * @throws when the session rejects a replacement, or an `olderRange` names a
      * seq absent from the current surface; replacements committed earlier in the

@@ -1,0 +1,12 @@
+{
+  "baselineFile": "审计资料/实验结果/E-baseline-hashes.json",
+  "filesChecked": 342,
+  "mismatchCount": 0,
+  "mismatches": [],
+  "checkedAt": "2026-09-12T21:50:55.5558733+08:00",
+  "scope": "post-run (final, after all E01 artifacts were written)",
+  "gitHeadBefore": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+  "gitHeadAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+  "gitStatusIdentical": true,
+  "gitStatusLines": 134
+}

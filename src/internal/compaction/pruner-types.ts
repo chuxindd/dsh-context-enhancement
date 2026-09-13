@@ -85,6 +85,15 @@ export interface ToolResultPruneOptions {
    * scanning or re-pruning tool-summary/tool-pruned replacements.
    */
   readonly candidateSeqs?: readonly SessionSeq[]
+  /**
+   * Invoked synchronously the moment one replacement lands, before the pass
+   * continues to the next candidate. A pass that throws partway (a rejected
+   * append, or a caller range that stops resolving) has already landed every
+   * replacement reported here, so the caller can exclude them from the same
+   * invocation's later passes even though the returned {@link PruneResult}
+   * never arrives.
+   */
+  readonly onReplacement?: (entry: PrunedEntry) => void
 }
 
 /** Cited source event and size accounting for one landed surface replacement. */

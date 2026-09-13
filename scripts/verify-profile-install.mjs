@@ -26,15 +26,21 @@
  * and reports its exit code.
  *
  * Usage: node scripts/verify-profile-install.mjs [path-to-tarball]
- * The tarball defaults to `dsh-context-enhancement-0.1.10.tgz` beside this
+ * The tarball defaults to `dsh-context-enhancement-0.1.11.tgz` beside this
  * repo. Requires a real DSH rc.1 deployment (its CLI and closure under
  * `~/.dsh/profiles/node_modules`) — this script only READS that deployment.
+ *
+ * It reports the artifact it installs by path and SHA-256, and the installed
+ * `lib/client.js` by path, hash and Loader id, so the bytes a profile runs are
+ * a recorded fact rather than an assumption (R-P2-9 / B8, plan §10 item 4).
  */
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync, readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join, resolve, dirname } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
+import { PUBLISHED_CLIENT_ID } from './client-bundle-ids.mjs'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const userClosure = join(process.env.USERPROFILE ?? process.env.HOME ?? '', '.dsh', 'profiles', 'node_modules')
@@ -42,6 +48,40 @@ const cliBin = join(userClosure, '@deepseek-ai', 'dsh', 'lib', 'bin.js')
 
 function ok(msg) { console.log(`ok - ${msg}`) }
 function bad(msg) { console.log(`not ok - ${msg}`); process.exitCode = 1 }
+
+/** SHA-256 of a file, upper-case hex. */
+function sha256(path) {
+  return createHash('sha256').update(readFileSync(path)).digest('hex').toUpperCase()
+}
+
+/**
+ * Report which exact bytes the isolated profile installed from the tarball, so
+ * "the harness loads artifact X" is a recorded fact (path + hash + Loader id)
+ * rather than an assumption. Compares against the workspace build when present:
+ * a divergence means the packed artifact is not what the repository builds.
+ */
+function reportInstalledArtifact(tarball, iso) {
+  console.log(`note - artifact under test: ${tarball}`)
+  console.log(`note - artifact sha256: ${sha256(tarball)}`)
+  const installedClient = join(iso, 'profiles', 'web', 'node_modules', 'dsh-context-enhancement', 'lib', 'client.js')
+  if (!existsSync(installedClient)) {
+    bad(`the isolated profile installed no client bundle at ${installedClient}`)
+    return
+  }
+  const installedHash = sha256(installedClient)
+  const match = /\bid:\s*("(?:[^"\\]|\\.)*")/.exec(readFileSync(installedClient, 'utf8'))
+  const loaderId = match === null ? undefined : JSON.parse(match[1])
+  console.log(`note - installed copy: ${installedClient}`)
+  console.log(`note - installed lib/client.js sha256: ${installedHash}`)
+  if (loaderId !== PUBLISHED_CLIENT_ID) bad(`installed Loader id is ${JSON.stringify(loaderId)}, expected ${JSON.stringify(PUBLISHED_CLIENT_ID)}`)
+  else ok(`installed client bundle registers Loader id ${JSON.stringify(PUBLISHED_CLIENT_ID)}`)
+  const workspaceClient = join(repoRoot, 'lib', 'client.js')
+  if (existsSync(workspaceClient)) {
+    const workspaceHash = sha256(workspaceClient)
+    if (workspaceHash !== installedHash) bad(`installed client bundle differs from the workspace build (${installedHash} vs ${workspaceHash})`)
+    else ok('installed client bundle is byte-identical to the workspace build')
+  }
+}
 
 const PROBE = `
 // Boot the isolated web profile through the closure's app-boot and validate
@@ -118,7 +158,7 @@ process.exit(0)
 `
 
 async function main() {
-  const tarball = resolve(process.argv[2] ?? join(repoRoot, 'dsh-context-enhancement-0.1.10.tgz'))
+  const tarball = resolve(process.argv[2] ?? join(repoRoot, 'dsh-context-enhancement-0.1.11.tgz'))
   if (!existsSync(cliBin)) { bad(`cannot find the DSH rc.1 CLI at ${cliBin}`); return }
   if (!existsSync(tarball)) { bad(`cannot find the tarball at ${tarball}`); return }
 
@@ -130,6 +170,7 @@ async function main() {
       cwd: repoRoot, stdio: 'inherit',
     })
     if (add.error !== undefined || add.status !== 0) { bad(`dsh plugin add failed (${add.error?.message ?? add.status})`); return }
+    reportInstalledArtifact(tarball, iso)
     // Heal the isolated closure by booting the real profile once (boot heals
     // the module fallback, then --help exits without serving).
     const heal = spawnSync(process.execPath, [cliBin, '--profile', 'web', '--help'], {

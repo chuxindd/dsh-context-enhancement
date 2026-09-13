@@ -1,0 +1,27 @@
+[
+  {
+    "file": "e01-tool-pre-release.spec.ts",
+    "bytes": 59024,
+    "sha256": "BC71591489CCA2077C3385BDED6485413617B4C049317773B8CDC41246B0A700"
+  },
+  {
+    "file": "e01-ledger.json",
+    "bytes": 18635,
+    "sha256": "2C8B4CF1C7975F22CA811E40C8C8E8D7BC46B1AF3EB30A88C7E52CA928B543A2"
+  },
+  {
+    "file": "vitest-output.txt",
+    "bytes": 504,
+    "sha256": "18AEFB6089B97958433895FB4824754A95D66159E208CE0B26761E722B6CC498"
+  },
+  {
+    "file": "README.md",
+    "bytes": 16415,
+    "sha256": "7ACAC248E297C09DEFE2CE093A86D25C9F100F9959FF0CC2CBA41A424321ED2D"
+  },
+  {
+    "file": "result.json",
+    "bytes": 20910,
+    "sha256": "72310E25DBD812286E747DFC95D26FFA84295BF191CF52F24CA4D6288B1B54B9"
+  }
+]

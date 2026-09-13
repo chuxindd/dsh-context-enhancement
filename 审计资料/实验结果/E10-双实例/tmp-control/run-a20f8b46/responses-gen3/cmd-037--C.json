@@ -1,0 +1,15 @@
+{
+  "id": "cmd-037",
+  "worker": "C",
+  "op": "exit",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 41916,
+  "ppid": 22700,
+  "workerStartedAt": 1789263250358,
+  "respondedAt": 1789263250491,
+  "result": {
+    "exiting": true
+  }
+}

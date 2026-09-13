@@ -44,14 +44,14 @@ export declare const zh: {
     readonly 'empty.nonContextual.activateIntro': "只需一步，即可开启完整上下文优化体验：";
     readonly 'empty.nonContextual.activateStep': "新建会话时选择：点击新建会话，在模式下拉菜单中选择「上下文增强」";
     readonly 'empty.nonContextual.featuresTitle': "核心能力与优势";
-    readonly 'empty.nonContextual.featuresIntro': "专为长程编程与复杂对话设计，解决上下文丢失与 Token 暴涨痛点";
+    readonly 'empty.nonContextual.featuresIntro': "专为长程编程与复杂对话设计，保障会话在长程任务中跨窗口跨轮次持续可用";
     readonly 'empty.nonContextual.featMemory': "任务状态持久记忆";
     readonly 'empty.nonContextual.featMemoryDesc': "自动提炼当前目标、焦点与待办，长对话全程不跑偏。";
     readonly 'empty.nonContextual.featAnchor': "核心记忆防遗忘注入";
     readonly 'empty.nonContextual.featAnchorDesc': "将任务状态锚定在核心提示中，即使历史被压缩记忆依然完好。";
-    readonly 'empty.nonContextual.featPrune': "工具操作智能归纳";
+    readonly 'empty.nonContextual.featPrune': "工具操作分组归纳";
     readonly 'empty.nonContextual.featPruneDesc': "自动合并冗长的搜索与读写输出，大幅削减 Token 消耗。";
-    readonly 'empty.nonContextual.featCompact': "早期对话无损压缩";
+    readonly 'empty.nonContextual.featCompact': "早期对话渐进遗忘";
     readonly 'empty.nonContextual.featCompactDesc': "结构化提炼较早会话，消除冗余占用，保障长对话流畅高效。";
     readonly 'empty.noStable.title': "还没有可用的上下文摘要";
     readonly 'empty.noStable.body': "会话进行中会自动归纳任务状态，并在此处展示。";

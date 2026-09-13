@@ -1,0 +1,51 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ tests/task-state-infeasible-progress.spec.ts (8 tests) 5375ms
+     ✓ quarantines exactly the measured culprit sequence with durable terminal provenance  680ms
+     ✓ restores the verdict across a restart without re-paying, and new facts open a new generation  703ms
+     ✓ never quarantines an oversized todo/write and leaves the committed TODO view intact  983ms
+     ✓ never quarantines an oversized goal/change and keeps the committed Goal view  563ms
+     ✓ records a transient infrastructure failure as retryable and never as a terminal verdict  369ms
+     ✓ fails closed when the committed stable itself exceeds the input budget  1081ms
+     ✓ continues through several measured culprits and stops when the backlog is clean  609ms
+     ✓ records a quarantine for an infeasible window before the first commit without inventing a stable  386ms
+ ✓ tests/task-state-goal-authority.spec.ts (16 tests) 4770ms
+     ✓ gives an authority fact that arrives during a running wave one urgent follow-up  396ms
+     ✓ folds one eligible authority sequence at most once, however often its urgent request repeats  411ms
+     ✓ collapses two authority facts observed in one tick into one urgent wave  398ms
+     ✓ commits nothing for a failed urgent wave and folds the fact in a later legal wave  336ms
+     ✓ fails closed on a durable record that carries no authoritative views  519ms
+     ✓ folds an inherited Goal change as a startup wave  580ms
+     ✓ carries the authoritative Goal view across a durable restart without refolding it  474ms
+     ✓ records no authority change for an unchanged Goal snapshot  456ms
+ ✓ tests/task-state-todo-authority.spec.ts (13 tests) 4201ms
+     ✓ commits nothing for a failed clear wave and folds the clear in a later legal wave  345ms
+     ✓ folds one write sequence at most once, however often its urgent request repeats  425ms
+     ✓ collapses two writes observed in one tick into one urgent wave, and a write+clear ends cleared  705ms
+     ✓ gives a clear appended during a running wave one urgent follow-up  388ms
+     ✓ folds an inherited clear as a startup wave  587ms
+     ✓ keeps the cleared list durable across a restart with its own digest  533ms
+ ✓ tests/task-state-startup-backlog.spec.ts (8 tests) 2958ms
+     ✓ folds an inherited eligible tail after a restart with no new Session event  422ms
+     ✓ admits one startup wave per runtime when hydration is offered repeatedly  403ms
+     ✓ starts nothing for a sub-threshold backlog, and an arriving event crosses the threshold instead  505ms
+     ✓ starts nothing for a hydrated Session whose backlog is empty  388ms
+     ✓ starts nothing for a Session whose lifecycle does not match the stored record  393ms
+     ✓ starts nothing when the authoritative domain fails to open  370ms
+ ✓ tests/task-state-recovery-provenance.spec.ts (4 tests) 2297ms
+     ✓ leaves exactly an OPEN audit row for an in-flight exit, commits nothing, and refolds the tail  407ms
+     ✓ never repairs an un-settled attempt into a commit for a revision no stable holds  582ms
+     ✓ repairs a lost finished audit and keeps the coexisting terminal verdict untouched  967ms
+     ✓ distinguishes the paid, the retryable and the quarantined attempt on one durable ledger  340ms
+ ✓ tests/task-state-worker.spec.ts (8 tests) 877ms
+     ✓ runs one trailing batch for events arriving during a request, then stops  302ms
+ ✓ tests/task-state-restart-recovery.spec.ts (10 tests) 717ms
+ ✓ tests/task-state-update.spec.ts (22 tests) 135ms
+ ✓ tests/task-state-filter.spec.ts (41 tests) 13ms
+
+ Test Files  9 passed (9)
+      Tests  130 passed (130)
+   Start at  17:53:32
+   Duration  24.66s (transform 423ms, setup 0ms, import 1.75s, tests 21.34s, environment 1ms)
+

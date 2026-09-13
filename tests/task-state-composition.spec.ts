@@ -227,7 +227,7 @@ describe('task-state-basic real composition', () => {
         facts: ['x'.repeat(2_001)], decisions: [], constraints: [], risks: [],
       },
     })).resolves.toMatchObject({ ok: false, code: 'invalid' })
-    const stored = JSON.parse(await readFile(join(root, 'storage', 'context_enhancement_task_state.json'), 'utf8')) as {
+    const stored = JSON.parse(await readFile(join(root, 'storage', 'context_enhancement_task_state_v2.json'), 'utf8')) as {
       tables: { audit: Record<string, { finished?: { outcome?: string } }> }
     }
     expect(Object.values(stored.tables.audit).some(row => row.finished?.outcome === 'manual')).toBe(true)
@@ -282,13 +282,13 @@ describe('task-state-basic real composition', () => {
     expect(stable?.facts[0]?.content).toBe('the provider commits durably through the real composition')
 
     // The authoritative single-layout JSON document holds both tables.
-    const text = await readFile(join(root, 'storage', 'context_enhancement_task_state.json'), 'utf8')
+    const text = await readFile(join(root, 'storage', 'context_enhancement_task_state_v2.json'), 'utf8')
     const document = JSON.parse(text) as {
       unit: { name: string; version: number }
       tables: { sessions: Record<string, unknown>; audit: Record<string, unknown> }
     }
     expect(document.unit.name).toBe(taskStateDomainSpec.name)
-    expect(document.unit.version).toBe(1)
+    expect(document.unit.version).toBe(taskStateDomainSpec.version)
     expect(Object.keys(document.tables.sessions)).toContain(String(session.id))
     expect(Object.keys(document.tables.audit)).toHaveLength(1)
   })
@@ -326,7 +326,7 @@ describe('task-state-basic real composition', () => {
     // The storage backend creates its root lazily, so the directory must
     // exist before the corrupt file can be planted.
     await mkdir(join(root, 'storage'), { recursive: true })
-    await writeFile(join(root, 'storage', 'context_enhancement_task_state.json'), '{not json')
+    await writeFile(join(root, 'storage', 'context_enhancement_task_state_v2.json'), '{not json')
 
     const ctx = await mountComposition()
     expect(ctx.taskState.getStable(SessionId('any'))).toBeUndefined()
@@ -375,7 +375,7 @@ describe('task-state-basic real composition', () => {
     await ctx.fiber.dispose()
     contexts.splice(contexts.indexOf(ctx), 1)
 
-    const domainPath = join(root, 'storage', 'context_enhancement_task_state.json')
+    const domainPath = join(root, 'storage', 'context_enhancement_task_state_v2.json')
     const crashed = JSON.parse(await readFile(domainPath, 'utf8')) as {
       tables: { sessions: Record<string, unknown>; audit: Record<string, { finished?: unknown }> }
     }

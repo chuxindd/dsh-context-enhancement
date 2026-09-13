@@ -1,0 +1,11 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ tests/artifact-parity.spec.ts (6 tests) 503ms
+     ✓ verifies BasicCompactionEngine runtime exports and schema in lib/compaction-basic.js  303ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  18:00:53
+   Duration  754ms (transform 285ms, setup 0ms, import 75ms, tests 503ms, environment 0ms)
+

@@ -1,0 +1,1169 @@
+{
+  "unit": {
+    "name": "context_enhancement_task_state",
+    "version": 1
+  },
+  "global": null,
+  "tables": {
+    "sessions": {
+      "e08-stable-injection": {
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "stable": {
+          "schemaVersion": 1,
+          "revision": 12,
+          "filterVersion": "task-state-basic/filter-v2",
+          "sourceCursor": 384,
+          "digest": "cedac4f46f05575f9aec2c115061c14b7cea74a893e1dfe89e239d996401bba3",
+          "facts": [
+            {
+              "id": "fact-902d6ef1-b5d0-43f2-98a0-83806272a596",
+              "content": "E08 durable marker E08-CALL-12-THROUGH-SEQ-384: the folded window ended at session event 384."
+            },
+            {
+              "id": "fact-d5d98cb0-4acd-4d12-812f-30a1d232da24",
+              "content": "E08 padding E08-CALL-12-THROUGH-SEQ-384: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+            }
+          ],
+          "decisions": [
+            {
+              "id": "decision-ce02dc2e-8b51-4096-9d24-e24ae61d602f",
+              "content": "E08 decision E08-CALL-12-THROUGH-SEQ-384"
+            }
+          ],
+          "constraints": [],
+          "risks": [],
+          "evidence": [],
+          "todoReferences": [],
+          "continuation": {
+            "currentObjective": "E08 objective E08-CALL-12-THROUGH-SEQ-384",
+            "currentFocus": "E08 focus E08-CALL-12-THROUGH-SEQ-384",
+            "openWork": [],
+            "nextActions": []
+          }
+        }
+      }
+    },
+    "audit": {
+      "ts-08c5b65b-8df4-4ab3-ad81-7a6c245fd217": {
+        "requestId": "ts-08c5b65b-8df4-4ab3-ad81-7a6c245fd217",
+        "time": 1789223051567,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-08c5b65b-8df4-4ab3-ad81-7a6c245fd217",
+          "revision": 1,
+          "base": null,
+          "includedSeqs": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-08c5b65b-8df4-4ab3-ad81-7a6c245fd217",
+          "revision": 1,
+          "sourceCursor": 19,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-1-THROUGH-SEQ-19: the folded window ended at session event 19.\"},{\"content\":\"E08 padding E08-CALL-1-THROUGH-SEQ-19: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-1-THROUGH-SEQ-19\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-1-THROUGH-SEQ-19\",\"currentFocus\":\"E08 focus E08-CALL-1-THROUGH-SEQ-19\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-28b117a7-c843-47e4-aeec-1052f369f26a": {
+        "requestId": "ts-28b117a7-c843-47e4-aeec-1052f369f26a",
+        "time": 1789223051598,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-28b117a7-c843-47e4-aeec-1052f369f26a",
+          "revision": 2,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 1,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 19,
+            "digest": "af445590ef25c1ad74a7577dd6e938fb51abe4a0d55a41bfe4b690e1705a1e53",
+            "facts": [
+              {
+                "id": "fact-adcdc479-ebd0-4847-817f-cd0b22af4252",
+                "content": "E08 durable marker E08-CALL-1-THROUGH-SEQ-19: the folded window ended at session event 19."
+              },
+              {
+                "id": "fact-160d4749-91b0-471b-9a01-518b1b2b8940",
+                "content": "E08 padding E08-CALL-1-THROUGH-SEQ-19: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-66311762-ada3-4660-9a49-c8a9a56c1554",
+                "content": "E08 decision E08-CALL-1-THROUGH-SEQ-19"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-1-THROUGH-SEQ-19",
+              "currentFocus": "E08 focus E08-CALL-1-THROUGH-SEQ-19",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            24,
+            26,
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-28b117a7-c843-47e4-aeec-1052f369f26a",
+          "revision": 2,
+          "sourceCursor": 54,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-2-THROUGH-SEQ-54: the folded window ended at session event 54.\"},{\"content\":\"E08 padding E08-CALL-2-THROUGH-SEQ-54: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-2-THROUGH-SEQ-54\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-2-THROUGH-SEQ-54\",\"currentFocus\":\"E08 focus E08-CALL-2-THROUGH-SEQ-54\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-9a3bd946-c65c-40a4-b4a0-d1692769a312": {
+        "requestId": "ts-9a3bd946-c65c-40a4-b4a0-d1692769a312",
+        "time": 1789223051618,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-9a3bd946-c65c-40a4-b4a0-d1692769a312",
+          "revision": 3,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 2,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 54,
+            "digest": "54590c58ffcc341ad68c1aa571a55fb1d93d07584a5ac5223c9fb0a470d71a63",
+            "facts": [
+              {
+                "id": "fact-8910c541-1e67-4630-ade6-9fa92718b3d7",
+                "content": "E08 durable marker E08-CALL-2-THROUGH-SEQ-54: the folded window ended at session event 54."
+              },
+              {
+                "id": "fact-0161e0e2-efa4-4432-a65b-9026cfb8459b",
+                "content": "E08 padding E08-CALL-2-THROUGH-SEQ-54: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-6ff33877-b4a8-420e-811a-4ac8cbba8ac5",
+                "content": "E08 decision E08-CALL-2-THROUGH-SEQ-54"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-2-THROUGH-SEQ-54",
+              "currentFocus": "E08 focus E08-CALL-2-THROUGH-SEQ-54",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            59,
+            65,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-9a3bd946-c65c-40a4-b4a0-d1692769a312",
+          "revision": 3,
+          "sourceCursor": 87,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-3-THROUGH-SEQ-87: the folded window ended at session event 87.\"},{\"content\":\"E08 padding E08-CALL-3-THROUGH-SEQ-87: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-3-THROUGH-SEQ-87\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-3-THROUGH-SEQ-87\",\"currentFocus\":\"E08 focus E08-CALL-3-THROUGH-SEQ-87\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-0904a5b2-948d-497f-b1d1-3b31e08fc525": {
+        "requestId": "ts-0904a5b2-948d-497f-b1d1-3b31e08fc525",
+        "time": 1789223051635,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-0904a5b2-948d-497f-b1d1-3b31e08fc525",
+          "revision": 4,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 3,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 87,
+            "digest": "123a7d12ed40273def424c93f1aa90483e34e6e4660b546c0de099b8e74bac60",
+            "facts": [
+              {
+                "id": "fact-504eadad-a91a-4ed7-9098-1aa6735b5ef0",
+                "content": "E08 durable marker E08-CALL-3-THROUGH-SEQ-87: the folded window ended at session event 87."
+              },
+              {
+                "id": "fact-22798a08-3ce7-4520-981b-504dfdc94002",
+                "content": "E08 padding E08-CALL-3-THROUGH-SEQ-87: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-c3950e02-f8c8-43cd-9270-6434fc1c79c9",
+                "content": "E08 decision E08-CALL-3-THROUGH-SEQ-87"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-3-THROUGH-SEQ-87",
+              "currentFocus": "E08 focus E08-CALL-3-THROUGH-SEQ-87",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            92,
+            98,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            118,
+            119,
+            120
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-0904a5b2-948d-497f-b1d1-3b31e08fc525",
+          "revision": 4,
+          "sourceCursor": 120,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-4-THROUGH-SEQ-120: the folded window ended at session event 120.\"},{\"content\":\"E08 padding E08-CALL-4-THROUGH-SEQ-120: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-4-THROUGH-SEQ-120\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-4-THROUGH-SEQ-120\",\"currentFocus\":\"E08 focus E08-CALL-4-THROUGH-SEQ-120\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-179010da-9045-4f82-a03f-9618969244dc": {
+        "requestId": "ts-179010da-9045-4f82-a03f-9618969244dc",
+        "time": 1789223051659,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-179010da-9045-4f82-a03f-9618969244dc",
+          "revision": 5,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 4,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 120,
+            "digest": "f653199758a7568d47874eaa31735b2e717cb521058af87127a96e68093417e6",
+            "facts": [
+              {
+                "id": "fact-d212b3a3-8793-46d1-82c1-5aa0faf6a507",
+                "content": "E08 durable marker E08-CALL-4-THROUGH-SEQ-120: the folded window ended at session event 120."
+              },
+              {
+                "id": "fact-ff4109a7-39b7-491a-8da3-46cb696811d4",
+                "content": "E08 padding E08-CALL-4-THROUGH-SEQ-120: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-810a043e-6a23-4553-b75b-b717483cb056",
+                "content": "E08 decision E08-CALL-4-THROUGH-SEQ-120"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-4-THROUGH-SEQ-120",
+              "currentFocus": "E08 focus E08-CALL-4-THROUGH-SEQ-120",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            125,
+            131,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            139,
+            140,
+            141,
+            142,
+            143,
+            144,
+            145,
+            146,
+            147,
+            148,
+            149,
+            150,
+            151,
+            152,
+            153
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-179010da-9045-4f82-a03f-9618969244dc",
+          "revision": 5,
+          "sourceCursor": 153,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-5-THROUGH-SEQ-153: the folded window ended at session event 153.\"},{\"content\":\"E08 padding E08-CALL-5-THROUGH-SEQ-153: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-5-THROUGH-SEQ-153\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-5-THROUGH-SEQ-153\",\"currentFocus\":\"E08 focus E08-CALL-5-THROUGH-SEQ-153\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-8ea262b8-232e-4233-b255-9df176d51844": {
+        "requestId": "ts-8ea262b8-232e-4233-b255-9df176d51844",
+        "time": 1789223051685,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-8ea262b8-232e-4233-b255-9df176d51844",
+          "revision": 6,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 5,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 153,
+            "digest": "2c2a3248cea830637362defef8e721f8099f8729cc73a2db5279614ead86e45e",
+            "facts": [
+              {
+                "id": "fact-cf96d7b6-6222-42dc-8f47-8ae0c6d97b71",
+                "content": "E08 durable marker E08-CALL-5-THROUGH-SEQ-153: the folded window ended at session event 153."
+              },
+              {
+                "id": "fact-8362cad9-adb5-4160-8e91-af8c19494681",
+                "content": "E08 padding E08-CALL-5-THROUGH-SEQ-153: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-c0b87687-6a76-4173-86f4-878c868c6977",
+                "content": "E08 decision E08-CALL-5-THROUGH-SEQ-153"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-5-THROUGH-SEQ-153",
+              "currentFocus": "E08 focus E08-CALL-5-THROUGH-SEQ-153",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            158,
+            164,
+            166,
+            167,
+            168,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            175,
+            176,
+            177,
+            178,
+            179,
+            180,
+            181,
+            182,
+            183,
+            184,
+            185,
+            186
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-8ea262b8-232e-4233-b255-9df176d51844",
+          "revision": 6,
+          "sourceCursor": 186,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-6-THROUGH-SEQ-186: the folded window ended at session event 186.\"},{\"content\":\"E08 padding E08-CALL-6-THROUGH-SEQ-186: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-6-THROUGH-SEQ-186\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-6-THROUGH-SEQ-186\",\"currentFocus\":\"E08 focus E08-CALL-6-THROUGH-SEQ-186\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-710bc32a-1384-4c70-a7b3-8d60ce199553": {
+        "requestId": "ts-710bc32a-1384-4c70-a7b3-8d60ce199553",
+        "time": 1789223051711,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-710bc32a-1384-4c70-a7b3-8d60ce199553",
+          "revision": 7,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 6,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 186,
+            "digest": "df6a4171fada8ebf06a54032437ea864940c14e2bae8b454193c766aefc59690",
+            "facts": [
+              {
+                "id": "fact-517eefbf-6d4a-4730-9fe5-5d0d397c1fdc",
+                "content": "E08 durable marker E08-CALL-6-THROUGH-SEQ-186: the folded window ended at session event 186."
+              },
+              {
+                "id": "fact-9b557dbe-e4f7-4487-babe-23a41d4e2370",
+                "content": "E08 padding E08-CALL-6-THROUGH-SEQ-186: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-db32566b-ef18-4520-af74-de9ce530f03f",
+                "content": "E08 decision E08-CALL-6-THROUGH-SEQ-186"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-6-THROUGH-SEQ-186",
+              "currentFocus": "E08 focus E08-CALL-6-THROUGH-SEQ-186",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            191,
+            197,
+            199,
+            200,
+            201,
+            202,
+            203,
+            204,
+            205,
+            206,
+            207,
+            208,
+            209,
+            210,
+            211,
+            212,
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            219
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-710bc32a-1384-4c70-a7b3-8d60ce199553",
+          "revision": 7,
+          "sourceCursor": 219,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-7-THROUGH-SEQ-219: the folded window ended at session event 219.\"},{\"content\":\"E08 padding E08-CALL-7-THROUGH-SEQ-219: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-7-THROUGH-SEQ-219\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-7-THROUGH-SEQ-219\",\"currentFocus\":\"E08 focus E08-CALL-7-THROUGH-SEQ-219\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-71f6b602-d27a-4583-b122-eb5a0824ef5e": {
+        "requestId": "ts-71f6b602-d27a-4583-b122-eb5a0824ef5e",
+        "time": 1789223051739,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-71f6b602-d27a-4583-b122-eb5a0824ef5e",
+          "revision": 8,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 7,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 219,
+            "digest": "a74fdd89796ed780df2477908f8850538df3f6386a4a9704074242245e7de0ad",
+            "facts": [
+              {
+                "id": "fact-885b80bc-7943-42f1-a3c4-f4450e5ed718",
+                "content": "E08 durable marker E08-CALL-7-THROUGH-SEQ-219: the folded window ended at session event 219."
+              },
+              {
+                "id": "fact-556f13b7-1767-4fbc-8ff1-0b6f750f3ed6",
+                "content": "E08 padding E08-CALL-7-THROUGH-SEQ-219: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-b853bb08-8da1-44cf-8f17-cc0a51fc2c69",
+                "content": "E08 decision E08-CALL-7-THROUGH-SEQ-219"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-7-THROUGH-SEQ-219",
+              "currentFocus": "E08 focus E08-CALL-7-THROUGH-SEQ-219",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            224,
+            230,
+            232,
+            233,
+            234,
+            235,
+            236,
+            237,
+            238,
+            239,
+            240,
+            241,
+            242,
+            243,
+            244,
+            245,
+            246,
+            247,
+            248,
+            249,
+            250,
+            251,
+            252
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-71f6b602-d27a-4583-b122-eb5a0824ef5e",
+          "revision": 8,
+          "sourceCursor": 252,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-8-THROUGH-SEQ-252: the folded window ended at session event 252.\"},{\"content\":\"E08 padding E08-CALL-8-THROUGH-SEQ-252: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-8-THROUGH-SEQ-252\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-8-THROUGH-SEQ-252\",\"currentFocus\":\"E08 focus E08-CALL-8-THROUGH-SEQ-252\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-0b70e262-64b6-4917-87c6-1240b9c36fff": {
+        "requestId": "ts-0b70e262-64b6-4917-87c6-1240b9c36fff",
+        "time": 1789223051772,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-0b70e262-64b6-4917-87c6-1240b9c36fff",
+          "revision": 9,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 8,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 252,
+            "digest": "33725055d4bdf6dc637d2e29325bc75d5156c47484620299234c8658f7cd9ea2",
+            "facts": [
+              {
+                "id": "fact-1d382b08-ccbf-48f1-a66f-35e770ca15d8",
+                "content": "E08 durable marker E08-CALL-8-THROUGH-SEQ-252: the folded window ended at session event 252."
+              },
+              {
+                "id": "fact-f1dda5d8-70f1-4e5f-9690-b0751fda5595",
+                "content": "E08 padding E08-CALL-8-THROUGH-SEQ-252: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-bcbefc04-38f8-4fae-9e68-8bcae2573287",
+                "content": "E08 decision E08-CALL-8-THROUGH-SEQ-252"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-8-THROUGH-SEQ-252",
+              "currentFocus": "E08 focus E08-CALL-8-THROUGH-SEQ-252",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            257,
+            263,
+            265,
+            266,
+            267,
+            268,
+            269,
+            270,
+            271,
+            272,
+            273,
+            274,
+            275,
+            276,
+            277,
+            278,
+            279,
+            280,
+            281,
+            282,
+            283,
+            284,
+            285
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-0b70e262-64b6-4917-87c6-1240b9c36fff",
+          "revision": 9,
+          "sourceCursor": 285,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-9-THROUGH-SEQ-285: the folded window ended at session event 285.\"},{\"content\":\"E08 padding E08-CALL-9-THROUGH-SEQ-285: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-9-THROUGH-SEQ-285\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-9-THROUGH-SEQ-285\",\"currentFocus\":\"E08 focus E08-CALL-9-THROUGH-SEQ-285\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-03fb07e0-a43a-4171-9db1-c22884595140": {
+        "requestId": "ts-03fb07e0-a43a-4171-9db1-c22884595140",
+        "time": 1789223051792,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-03fb07e0-a43a-4171-9db1-c22884595140",
+          "revision": 10,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 9,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 285,
+            "digest": "7dcf6aaadf62320145767d7651ff43356909b14505e9f5f5169f106841ab06a3",
+            "facts": [
+              {
+                "id": "fact-10948256-eb67-4980-a000-9c99582dcc5b",
+                "content": "E08 durable marker E08-CALL-9-THROUGH-SEQ-285: the folded window ended at session event 285."
+              },
+              {
+                "id": "fact-da6bbccd-5a2a-46c0-9c54-8e46cb2420a5",
+                "content": "E08 padding E08-CALL-9-THROUGH-SEQ-285: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-7aa74e19-d168-42c7-874d-205a4282a076",
+                "content": "E08 decision E08-CALL-9-THROUGH-SEQ-285"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-9-THROUGH-SEQ-285",
+              "currentFocus": "E08 focus E08-CALL-9-THROUGH-SEQ-285",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            290,
+            296,
+            298,
+            299,
+            300,
+            301,
+            302,
+            303,
+            304,
+            305,
+            306,
+            307,
+            308,
+            309,
+            310,
+            311,
+            312,
+            313,
+            314,
+            315,
+            316,
+            317,
+            318
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-03fb07e0-a43a-4171-9db1-c22884595140",
+          "revision": 10,
+          "sourceCursor": 318,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-10-THROUGH-SEQ-318: the folded window ended at session event 318.\"},{\"content\":\"E08 padding E08-CALL-10-THROUGH-SEQ-318: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-10-THROUGH-SEQ-318\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-10-THROUGH-SEQ-318\",\"currentFocus\":\"E08 focus E08-CALL-10-THROUGH-SEQ-318\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-02fc041a-70a9-4ba6-9929-2798bc437ad1": {
+        "requestId": "ts-02fc041a-70a9-4ba6-9929-2798bc437ad1",
+        "time": 1789223051812,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-02fc041a-70a9-4ba6-9929-2798bc437ad1",
+          "revision": 11,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 10,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 318,
+            "digest": "e58c6c36a0ea6231b6f5423234c225b5a53c2b84b2bfb35fcec4422bb1b68e93",
+            "facts": [
+              {
+                "id": "fact-b88ceffb-095d-4d06-8247-268e59c85df5",
+                "content": "E08 durable marker E08-CALL-10-THROUGH-SEQ-318: the folded window ended at session event 318."
+              },
+              {
+                "id": "fact-d35ceb62-8607-423e-a8b1-2a47c79c74c3",
+                "content": "E08 padding E08-CALL-10-THROUGH-SEQ-318: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-ada0e091-9578-41a2-b7a8-b39fa8e83cd4",
+                "content": "E08 decision E08-CALL-10-THROUGH-SEQ-318"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-10-THROUGH-SEQ-318",
+              "currentFocus": "E08 focus E08-CALL-10-THROUGH-SEQ-318",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            323,
+            329,
+            331,
+            332,
+            333,
+            334,
+            335,
+            336,
+            337,
+            338,
+            339,
+            340,
+            341,
+            342,
+            343,
+            344,
+            345,
+            346,
+            347,
+            348,
+            349,
+            350,
+            351
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-02fc041a-70a9-4ba6-9929-2798bc437ad1",
+          "revision": 11,
+          "sourceCursor": 351,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-11-THROUGH-SEQ-351: the folded window ended at session event 351.\"},{\"content\":\"E08 padding E08-CALL-11-THROUGH-SEQ-351: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-11-THROUGH-SEQ-351\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-11-THROUGH-SEQ-351\",\"currentFocus\":\"E08 focus E08-CALL-11-THROUGH-SEQ-351\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      },
+      "ts-2a3b6cd1-efe2-4b6a-a116-e337e50cbd97": {
+        "requestId": "ts-2a3b6cd1-efe2-4b6a-a116-e337e50cbd97",
+        "time": 1789223051831,
+        "session": {
+          "createdAt": 1789223051557
+        },
+        "request": {
+          "requestId": "ts-2a3b6cd1-efe2-4b6a-a116-e337e50cbd97",
+          "revision": 12,
+          "base": {
+            "schemaVersion": 1,
+            "revision": 11,
+            "filterVersion": "task-state-basic/filter-v2",
+            "sourceCursor": 351,
+            "digest": "178f6e30910b98285786129ea68046827fd2fb2c7096bb367ce8c54064938dfe",
+            "facts": [
+              {
+                "id": "fact-54efe02a-bd1f-4738-9450-04385a924b8f",
+                "content": "E08 durable marker E08-CALL-11-THROUGH-SEQ-351: the folded window ended at session event 351."
+              },
+              {
+                "id": "fact-cb1c9036-153a-4af6-b11d-54bff6c4d459",
+                "content": "E08 padding E08-CALL-11-THROUGH-SEQ-351: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"
+              }
+            ],
+            "decisions": [
+              {
+                "id": "decision-d4b8a481-5f9d-4980-a2f0-862c601bfe08",
+                "content": "E08 decision E08-CALL-11-THROUGH-SEQ-351"
+              }
+            ],
+            "constraints": [],
+            "risks": [],
+            "evidence": [],
+            "todoReferences": [],
+            "continuation": {
+              "currentObjective": "E08 objective E08-CALL-11-THROUGH-SEQ-351",
+              "currentFocus": "E08 focus E08-CALL-11-THROUGH-SEQ-351",
+              "openWork": [],
+              "nextActions": []
+            }
+          },
+          "includedSeqs": [
+            356,
+            362,
+            364,
+            365,
+            366,
+            367,
+            368,
+            369,
+            370,
+            371,
+            372,
+            373,
+            374,
+            375,
+            376,
+            377,
+            378,
+            379,
+            380,
+            381,
+            382,
+            383,
+            384
+          ],
+          "filterVersion": "task-state-basic/filter-v2",
+          "system": "You are the durable task-state updater for one AI coding-assistant session. Update the previous durable task state from the supplied projection of recent session events.\n\nReturn ONLY one JSON object with EXACTLY these fields:\n{\n  \"facts\": [{ \"content\": \"string\" } | { \"id\": \"fact-<uuid>\", \"content\": \"string\" }],\n  \"decisions\": [{ \"content\": \"string\" } | { \"id\": \"decision-<uuid>\", \"content\": \"string\" }],\n  \"constraints\": [{ \"content\": \"string\" } | { \"id\": \"constraint-<uuid>\", \"content\": \"string\" }],\n  \"risks\": [{ \"content\": \"string\" } | { \"id\": \"risk-<uuid>\", \"content\": \"string\" }],\n  \"evidence\": [{ \"seq\": <number>, \"note\": \"string\" }],\n  \"todoReferences\": [{ \"seq\": <number>, \"content\": \"string\" }],\n  \"continuation\": {\n    \"currentObjective\": \"string\",\n    \"currentFocus\": \"string\",\n    \"openWork\": [\"string\"],\n    \"nextActions\": [\"string\"]\n  }\n}\n\nRules:\n- A NEW fact, decision, constraint, or risk OMITS the id: the Host mints one with the matching prefix.\n- An entry CARRIED FORWARD from the previous state ECHOES its exact existing id verbatim. Do not invent, rename, or change any id prefix.\n- An entry you remove entirely disappears; never edit the content of an entry whose id you echo — drop it and add a new entry without an id when the content changes materially.\n- Keep the four kinded lists authoritative and deduplicated: same fact in several lists is wrong.\n- `evidence` references the exact `seq` values listed as eligible in the projection; every note explains what the reference supports in one short sentence. Never reference a seq the projection did not list.\n- `todoReferences` records only durable todo lists already shown in the projection, by their exact `seq`, with bounded readable content.\n- `continuation.currentObjective` is the human task objective in force; `currentFocus` what is being worked on; `openWork` concrete unfinished work; `nextActions` concrete next steps. TODO stays separate and is only referenced, never merged into these fields.\n- Empty lists are `[]`. Preserve exact file paths, commands, queries, error strings, identifiers, and numeric values.\n- Keep every string short enough that the total output fits the reported byte budget. Output ONLY the JSON object: no Markdown fence, no commentary, no tool call.",
+          "route": {
+            "provider": "deepseek-official",
+            "model": "deepseek-v4-flash"
+          },
+          "maxTokens": 4000,
+          "schema": {
+            "version": 1
+          },
+          "truncation": []
+        },
+        "finished": {
+          "outcome": "success",
+          "requestId": "ts-2a3b6cd1-efe2-4b6a-a116-e337e50cbd97",
+          "revision": 12,
+          "sourceCursor": 384,
+          "llmStreamCall": true,
+          "rawOutput": [
+            {
+              "type": "text",
+              "text": "{\"facts\":[{\"content\":\"E08 durable marker E08-CALL-12-THROUGH-SEQ-384: the folded window ended at session event 384.\"},{\"content\":\"E08 padding E08-CALL-12-THROUGH-SEQ-384: pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}],\"decisions\":[{\"content\":\"E08 decision E08-CALL-12-THROUGH-SEQ-384\"}],\"constraints\":[],\"risks\":[],\"evidence\":[],\"todoReferences\":[],\"continuation\":{\"currentObjective\":\"E08 objective E08-CALL-12-THROUGH-SEQ-384\",\"currentFocus\":\"E08 focus E08-CALL-12-THROUGH-SEQ-384\",\"openWork\":[],\"nextActions\":[]}}"
+            }
+          ],
+          "finish": {
+            "kind": "stop"
+          }
+        }
+      }
+    }
+  }
+}

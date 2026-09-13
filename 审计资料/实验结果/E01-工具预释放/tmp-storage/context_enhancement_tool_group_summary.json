@@ -1,0 +1,177 @@
+{
+  "unit": {
+    "name": "context_enhancement_tool_group_summary",
+    "version": 1
+  },
+  "global": null,
+  "tables": {
+    "audit": {
+      "tg-eda2e3b8-cdd4-4412-a50b-ae5899d12d46": {
+        "requestId": "tg-eda2e3b8-cdd4-4412-a50b-ae5899d12d46",
+        "sessionId": "e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8",
+        "lifecycle": {
+          "createdAt": 1700000000000
+        },
+        "fingerprint": "adba13bddf1ebc2a920dedfd536e2cca2fb3e3458822c6db209992c689016b73",
+        "sourceSeqs": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "surfaceGeneration": 0,
+        "provider": "mock-route",
+        "model": "mock-model",
+        "schemaVersion": 1,
+        "status": "success",
+        "rawOutput": [
+          {
+            "type": "text",
+            "text": "{\"version\":1,\"groupSummary\":\"tool group of 4 nodes reduced before the history pass\",\"items\":[{\"sourceSeq\":11,\"summary\":\"distilled tool-call at seq 11\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":12,\"callId\":\"e01-A1\",\"summary\":\"distilled tool-result at seq 12\",\"facts\":[\"RESULT-A1\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":13,\"summary\":\"distilled tool-call at seq 13\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":14,\"callId\":\"e01-A2\",\"summary\":\"distilled tool-result at seq 14\",\"facts\":[\"RESULT-A2\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]}],\"groupErrors\":[],\"unresolved\":[]}"
+          }
+        ],
+        "summary": {
+          "version": 1,
+          "groupSummary": "tool group of 4 nodes reduced before the history pass",
+          "items": [
+            {
+              "sourceSeq": 11,
+              "summary": "distilled tool-call at seq 11",
+              "facts": [
+                "bash"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            },
+            {
+              "sourceSeq": 12,
+              "callId": "e01-A1",
+              "summary": "distilled tool-result at seq 12",
+              "facts": [
+                "RESULT-A1"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            },
+            {
+              "sourceSeq": 13,
+              "summary": "distilled tool-call at seq 13",
+              "facts": [
+                "bash"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            },
+            {
+              "sourceSeq": 14,
+              "callId": "e01-A2",
+              "summary": "distilled tool-result at seq 14",
+              "facts": [
+                "RESULT-A2"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            }
+          ],
+          "groupErrors": [],
+          "unresolved": []
+        },
+        "replacementSeqs": [
+          33,
+          35
+        ]
+      },
+      "tg-a30d3b31-2ba7-4732-8f13-7dbc82345225": {
+        "requestId": "tg-a30d3b31-2ba7-4732-8f13-7dbc82345225",
+        "sessionId": "e01-tool-pre-release-193e4fb5-7f9d-43fc-ae70-21cdfd0887b8",
+        "lifecycle": {
+          "createdAt": 1700000000000
+        },
+        "fingerprint": "0b495f3d24b8c299ae75cf41b715e5327c5b7aed1445304826ee76ee726f7f0a",
+        "sourceSeqs": [
+          16,
+          17,
+          18,
+          19
+        ],
+        "surfaceGeneration": 2,
+        "provider": "mock-route",
+        "model": "mock-model",
+        "schemaVersion": 1,
+        "status": "success",
+        "rawOutput": [
+          {
+            "type": "text",
+            "text": "{\"version\":1,\"groupSummary\":\"tool group of 4 nodes reduced before the history pass\",\"items\":[{\"sourceSeq\":16,\"summary\":\"distilled tool-call at seq 16\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":17,\"callId\":\"e01-B1\",\"summary\":\"distilled tool-result at seq 17\",\"facts\":[\"RESULT-B1\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":18,\"summary\":\"distilled tool-call at seq 18\",\"facts\":[\"bash\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]},{\"sourceSeq\":19,\"callId\":\"e01-B2\",\"summary\":\"distilled tool-result at seq 19\",\"facts\":[\"RESULT-B2\"],\"files\":[],\"identifiers\":[],\"errors\":[],\"unresolved\":[]}],\"groupErrors\":[],\"unresolved\":[]}"
+          }
+        ],
+        "summary": {
+          "version": 1,
+          "groupSummary": "tool group of 4 nodes reduced before the history pass",
+          "items": [
+            {
+              "sourceSeq": 16,
+              "summary": "distilled tool-call at seq 16",
+              "facts": [
+                "bash"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            },
+            {
+              "sourceSeq": 17,
+              "callId": "e01-B1",
+              "summary": "distilled tool-result at seq 17",
+              "facts": [
+                "RESULT-B1"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            },
+            {
+              "sourceSeq": 18,
+              "summary": "distilled tool-call at seq 18",
+              "facts": [
+                "bash"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            },
+            {
+              "sourceSeq": 19,
+              "callId": "e01-B2",
+              "summary": "distilled tool-result at seq 19",
+              "facts": [
+                "RESULT-B2"
+              ],
+              "files": [],
+              "identifiers": [],
+              "errors": [],
+              "unresolved": []
+            }
+          ],
+          "groupErrors": [],
+          "unresolved": []
+        },
+        "replacementSeqs": [
+          37,
+          39
+        ]
+      }
+    }
+  }
+}

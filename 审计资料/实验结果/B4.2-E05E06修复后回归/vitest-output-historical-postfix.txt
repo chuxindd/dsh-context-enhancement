@@ -1,0 +1,192 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts > E05 · a large Goal change does not refresh the injected narrative > Case A: goal/change counts 1 projectable event and the goal snapshot is projected verbatim 2ms
+ × 审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts > E05 · a large Goal change does not refresh the injected narrative > Case B: Goal A → Goal B does not trigger an update, and A keeps being injected 230ms
+   → expected { Object (schemaVersion, revision, ...) } to not have property "goalView"
+ × 审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts > E05 · a large Goal change does not refresh the injected narrative > Case C: goal/change alone never launches a wave, even with minEvents = 1 above an empty cursor 41ms
+   → expected { Object (schemaVersion, revision, ...) } to not have property "goalView"
+ × 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case A: the production filter drops a legal empty todo/write 7ms
+   → expected { event: { seq: 7, …(2) }, …(1) } to be null
+ × 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case B: at the deployment threshold a clear changes nothing observable 41ms
+   → expected [ { seq: 20, …(1) } ] to deeply equal [ { seq: 20, …(1) } ]
+ × 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case C: even with minEvents = 1 the clear launches nothing, while a non-empty write does 13ms
+   → expected [ { seq: +0, …(1) } ] to deeply equal [ { seq: +0, content: 'only item' } ]
+ × 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case D: the empty write is not merely unprojectable — it is not even a stable INPUT 158ms
+   → expected 1 to be +0 // Object.is equality
+ × 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case E: the renderer cannot express "cleared" — the stale list looks live 17ms
+   → expected 'Durable task state (revision 1, sourc…' to contain 'TODO references:'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts > E05 · a large Goal change does not refresh the injected narrative > Case B: Goal A → Goal B does not trigger an update, and A keeps being injected
+AssertionError: expected { Object (schemaVersion, revision, ...) } to not have property "goalView"
+
+- Expected:
+undefined
+
++ Received:
+{
+  "status": "none",
+}
+
+ ❯ 审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts:126:31
+    124|       expect(fixture.renderInjection()).not.toContain(GOAL_B.objective)
+    125|       // No goal identity is carried by the committed stable at all.
+    126|       expect(afterChange).not.toHaveProperty('goalView')
+       |                               ^
+    127|       expect(fixture.renderInjection()).not.toContain(GOAL_B.id)
+    128|       expect(fixture.renderInjection()).not.toContain('Goal')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts > E05 · a large Goal change does not refresh the injected narrative > Case C: goal/change alone never launches a wave, even with minEvents = 1 above an empty cursor
+AssertionError: expected { Object (schemaVersion, revision, ...) } to not have property "goalView"
+
+- Expected:
+undefined
+
++ Received:
+{
+  "status": "cleared",
+}
+
+ ❯ 审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts:195:36
+    193|       // the goal is gone.
+    194|       expect(cleared.objectiveAfter).toBe(GOAL_B.objective)
+    195|       expect(fixture.latest()).not.toHaveProperty('goalView')
+       |                                    ^
+    196|       expect(cleared.injectedText).not.toContain('cleared')
+    197|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case A: the production filter drops a legal empty todo/write
+AssertionError: expected { event: { seq: 7, …(2) }, …(1) } to be null
+
+- Expected:
+null
+
++ Received:
+{
+  "event": {
+    "fields": {
+      "kind": "todo/write",
+      "status": "cleared",
+      "todos": [],
+    },
+    "seq": 7,
+    "type": "todo/write",
+  },
+  "truncation": [],
+}
+
+ ❯ 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts:39:19
+     37|       data: { todos: [] },
+     38|     })
+     39|     expect(empty).toBeNull()
+       |                   ^
+     40|
+     41|     const nonEmpty = filterEvent({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case B: at the deployment threshold a clear changes nothing observable
+AssertionError: expected [ { seq: 20, …(1) } ] to deeply equal [ { seq: 20, …(1) } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "content": "first durable item; second durable item",
++     "content": "first durable item [pending]; second durable item [in_progress]",
+      "seq": 20,
+    },
+  ]
+
+ ❯ 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts:88:42
+     86|       expect(second.todoSeq).toBe(todoSeq)
+     87|       expect(second.stableRevisionAfter).toBe(2)
+     88|       expect(second.todoReferencesAfter).toEqual([
+       |                                          ^
+     89|         { seq: todoSeq, content: 'first durable item; second durable i…
+     90|       ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case C: even with minEvents = 1 the clear launches nothing, while a non-empty write does
+AssertionError: expected [ { seq: +0, …(1) } ] to deeply equal [ { seq: +0, content: 'only item' } ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "content": "only item",
++     "content": "only item [pending]",
+      "seq": 0,
+    },
+  ]
+
+ ❯ 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts:154:61
+    152|       fixture.schedule()
+    153|       await fixture.waitUntil(() => fixture.ledger.cycles.length === 1…
+    154|       expect(fixture.ledger.cycles[0]!.todoReferencesAfter).toEqual([
+       |                                                             ^
+    155|         { seq: todoSeq, content: 'only item' },
+    156|       ])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case D: the empty write is not merely unprojectable — it is not even a stable INPUT
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts:203:47
+    201|       fixture.schedule()
+    202|       await delay(150)
+    203|       expect(fixture.adapter.requests.length).toBe(requestsBefore)
+       |                                               ^
+    204|       expect(fixture.ledger.cycles.length).toBe(0)
+    205|       expect(fixture.latest()).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts > E06 · TODO clear is invisible to Stable Task State > Case E: the renderer cannot express "cleared" — the stale list looks live
+AssertionError: expected 'Durable task state (revision 1, sourc…' to contain 'TODO references:'
+
+- Expected
++ Received
+
+- TODO references:
++ Durable task state (revision 1, source event 1, digest 5254e5dc04d5a13fee0b8ffc386b6e2c781c0b9c7e8d106ce05935d948710070).
++ TODO list (session event 0):
++ - [pending] stale item
++ Current objective: keep the durable task state aligned with the live TODO list
++ Current focus: observing the worker
++
++ Facts:
++ - the harness echoed a durable window
+
+ ❯ 审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts:233:25
+    231|       // cleared/none status, no sourceSeq authority pointer.
+    232|       expect(injection).toMatch(/Durable task state \(revision \d+, so…
+    233|       expect(injection).toContain('TODO references:')
+       |                         ^
+    234|       expect(injection).toContain('stale item')
+    235|       expect(injection).not.toContain('staleness')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  7 failed | 1 passed (8)
+   Start at  12:05:53
+   Duration  1.45s (transform 158ms, setup 0ms, import 541ms, tests 512ms, environment 0ms)
+

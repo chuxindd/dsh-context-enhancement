@@ -1,0 +1,525 @@
+{
+  "experiment": "B4.2 · E05/E06 修复后同 fixture 对照",
+  "question": [
+    "E05：Goal A → 语义不同的 Goal B（goal revision 3）时，是否会在 minEvents 之外触发独立更新，并让注入叙事跟随新 Goal？",
+    "E06：合法空 todo/write({todos: []}) 是否被 filter 投影、是否触发更新、是否让已清空列表从提交态与注入中消失？"
+  ],
+  "verdictRule": "每个 phase 的 criteria 全部为 true 才记 verdict = \"fixed\"；任一条为 false 记 \"still-broken\" 并保留原始数字（包括对本修复不利的数字）。",
+  "measurement": "只对照代码版本；fixture / 配置 / 采样 / 候选 JSON / 环境全部沿用 E05/E06 harness",
+  "invokedAs": "pnpm exec vitest run --config 审计资料/实验结果/harness/vitest.experiment.config.ts 审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts --reporter=verbose",
+  "productionPathSimulated": {
+    "what": "urgent 请求（worker.maybeScheduleUrgent）在生产由 service.ts 的 session/event observer 在 microtask 上发出；harness 不挂载 provider，因此本 spec 补上这一步",
+    "shim": "requestUrgentLikeProduction(fixture, seq) → queueMicrotask(() => fixture.worker.maybeScheduleUrgent(seq))",
+    "notSimulated": "observe(seq) 由 harness 的 appendGoal/appendTodo 同步完成；真 provider 的 durable audit / storage / 同步栈语义由 tests/task-state-goal-authority.spec.ts 与 tests/task-state-todo-authority.spec.ts 覆盖",
+    "howTriggerRead": "harness ledger 的 trigger 字段被硬编码为 threshold，本 spec 从 worker 自己的 performBatch(trigger, window) 调用点包一层转发来记录真实 trigger（不改生产代码、不改 harness）"
+  },
+  "historicalPreFixVerdict": {
+    "source": "审计资料/实验结果/E00-首轮实验阶段评审.md（修复前基线 cf034b4）",
+    "e05": {
+      "passed": 3,
+      "total": 3,
+      "note": "E05 Goal 大改：3/3 通过 — 确认 Goal 大改不走独立 urgent 更新、旧叙事可继续注入"
+    },
+    "e06": {
+      "passed": 5,
+      "total": 5,
+      "note": "E06 TODO 清空：5/5 通过 — 确认合法空 TODO 不可观察、stable/cursor/注入不因该事件单独更新"
+    }
+  },
+  "historicalPostFixVerdict": {
+    "source": "vitest-output-historical-postfix.txt（本次运行，历史 spec 未被修改）",
+    "e05": {
+      "passed": 1,
+      "failed": 2,
+      "total": 3
+    },
+    "e06": {
+      "passed": 0,
+      "failed": 5,
+      "total": 5
+    },
+    "perTest": [
+      {
+        "file": "E05",
+        "case": "Case A: goal/change counts 1 projectable event and the goal snapshot is projected verbatim",
+        "status": "passed"
+      },
+      {
+        "file": "E05",
+        "case": "Case B: Goal A → Goal B does not trigger an update, and A keeps being injected",
+        "status": "failed"
+      },
+      {
+        "file": "E05",
+        "case": "Case C: goal/change alone never launches a wave, even with minEvents = 1 above an empty cursor",
+        "status": "failed"
+      },
+      {
+        "file": "E06",
+        "case": "Case A: the production filter drops a legal empty todo/write",
+        "status": "failed"
+      },
+      {
+        "file": "E06",
+        "case": "Case B: at the deployment threshold a clear changes nothing observable",
+        "status": "failed"
+      },
+      {
+        "file": "E06",
+        "case": "Case C: even with minEvents = 1 the clear launches nothing, while a non-empty write does",
+        "status": "failed"
+      },
+      {
+        "file": "E06",
+        "case": "Case D: the empty write is not merely unprojectable — it is not even a stable INPUT",
+        "status": "failed"
+      },
+      {
+        "file": "E06",
+        "case": "Case E: the renderer cannot express \"cleared\" — the stale list looks live",
+        "status": "failed"
+      }
+    ],
+    "note": "历史 spec 断言的是缺陷本身（\"没有 urgent 触发 / 空列表被丢弃 / 渲染无法表达 cleared\"），因此修复后它们必须失败：verdict 翻转就是本对照的前后差量。E05 Case A 只断言 projection，故仍通过。"
+  },
+  "config": {
+    "minEvents": 20,
+    "maxEvents": 200,
+    "maxInputBytes": 60000,
+    "maxListItems": 8,
+    "overridden": "Phase 2 (E05 Case C) 与 Phase 4 (E06 Case C/E) 使用 minEvents = 1，与历史 case 逐字一致"
+  },
+  "phases": [
+    {
+      "id": "e05-replacement",
+      "historicalQuestion": "Goal A → Goal B 是否触发独立更新，注入是否跟随？",
+      "historicalSpec": "审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts · Case B",
+      "config": {
+        "minEvents": 20,
+        "maxEvents": 200
+      },
+      "fixtureSteps": [
+        "20 × user/message（progress i）→ schedule()",
+        "appendGoal(GOAL_B, revision 3)",
+        "对照：schedule() only（= 历史 E05 路径）",
+        "requestUrgentLikeProduction(changeSeq)"
+      ],
+      "controlWithoutUrgent": {
+        "waveRan": false,
+        "requests": 1,
+        "stableRevision": 1,
+        "injectionContainsGoalA": true,
+        "injectionContainsGoalB": false
+      },
+      "afterAuthorityFact": {
+        "cycles": 2,
+        "launches": 2,
+        "requests": 2,
+        "stableRevision": 2,
+        "sourceCursor": 20,
+        "eligibleAboveCursor": 0,
+        "goalViewStatus": "current",
+        "goalId": "goal-b",
+        "goalRevision": 3,
+        "goalObjective": "Abandon the font work entirely and migrate the billing service to Postgres.",
+        "todoViewStatus": "none",
+        "todoSourceSeq": null,
+        "todoItems": [],
+        "todoReferences": [],
+        "objectiveAfter": "Abandon the font work entirely and migrate the billing service to Postgres.",
+        "injection": "Durable task state (revision 2, source event 20, digest 58b60a8ded95af0b6aa5cc00523ccac4066b888351ef0f1cfefd5003105545c2).\nCurrent goal: Abandon the font work entirely and migrate the billing service to Postgres.\nGoal identity: goal goal-b, revision 3, phase active\nCurrent focus: working on goal B\n\nFacts:\n- the harness echoed a durable window",
+        "injectionHash": "f3b7cf29",
+        "staleByEligibleEvents": 0,
+        "includedSeqs": [
+          20
+        ],
+        "trigger": "urgent",
+        "goalRevisionInWindow": 3,
+        "replacementFoldBelowThreshold": true
+      },
+      "triggers": [
+        "threshold",
+        "urgent"
+      ],
+      "criteria": {
+        "goalFactCountsOneEligibleEvent": true,
+        "waveRanOnlyAfterTheUrgentRequest": true,
+        "triggerIsUrgent": true,
+        "goalViewIsGoalB": true,
+        "injectionShowsGoalB": true,
+        "injectionNoLongerShowsGoalA": true,
+        "noStaleTail": true
+      },
+      "verdict": "fixed"
+    },
+    {
+      "id": "e05-clear",
+      "historicalQuestion": "Goal clear 之后，旧 Goal 是否还作为\"当前目标\"被注入？",
+      "historicalSpec": "审计资料/实验结果/E05-Goal大改/e05-goal-change.spec.ts · Case C",
+      "config": {
+        "minEvents": 1,
+        "maxEvents": 200
+      },
+      "fixtureSteps": [
+        "1 × user/message（bootstrap）→ schedule()",
+        "appendGoal(GOAL_B, revision 3) → requestUrgentLikeProduction",
+        "appendGoalClear() → requestUrgentLikeProduction"
+      ],
+      "controlWithoutUrgent": {
+        "waveRan": false,
+        "note": "历史 Case C 的路径（只 schedule()）在修复前观测到叙事仍为 B；本 phase 用同一 fixture 的 urgent 路径对照"
+      },
+      "afterAuthorityFact": {
+        "cycles": 3,
+        "launches": 3,
+        "requests": 3,
+        "stableRevision": 3,
+        "sourceCursor": 2,
+        "eligibleAboveCursor": 0,
+        "goalViewStatus": "cleared",
+        "goalId": null,
+        "goalRevision": null,
+        "goalObjective": null,
+        "todoViewStatus": "none",
+        "todoSourceSeq": null,
+        "todoItems": [],
+        "todoReferences": [],
+        "objectiveAfter": "Abandon the font work entirely and migrate the billing service to Postgres.",
+        "injection": "Durable task state (revision 3, source event 2, digest 32a54a450901789de0a149d001fe5a30d277220e5adc2bf250a430eb44d35e4f).\nCurrent goal: cleared (no authoritative goal is set).\nCurrent focus: still goal B\n\nFacts:\n- the harness echoed a durable window",
+        "injectionHash": "cf15e7d4",
+        "staleByEligibleEvents": 0,
+        "includedSeqs": [
+          2
+        ],
+        "trigger": "urgent",
+        "narrativeStillSaysGoalB": true
+      },
+      "triggers": [
+        "threshold",
+        "urgent",
+        "urgent"
+      ],
+      "criteria": {
+        "goalClearProjected": true,
+        "waveRanForTheClear": true,
+        "triggerIsUrgent": true,
+        "goalViewIsCleared": true,
+        "injectionSaysCleared": true,
+        "injectionDoesNotReviveGoalB": true,
+        "noStaleTail": true
+      },
+      "verdict": "fixed"
+    },
+    {
+      "id": "e06-write-clear",
+      "historicalQuestion": "合法空 TODO 是否可观察、是否触发更新、清空后是否还注入旧列表？",
+      "historicalSpec": "审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts · Case A/B/D",
+      "config": {
+        "minEvents": 20,
+        "maxEvents": 200
+      },
+      "fixtureSteps": [
+        "filterEvent(todo/write {todos: []}) 直接投影",
+        "20 × user/message（progress i）→ schedule()",
+        "appendTodo(LIST_A) → requestUrgentLikeProduction",
+        "appendTodo([]) → 对照 schedule() only（= 历史 E06 路径）",
+        "requestUrgentLikeProduction(clearSeq)"
+      ],
+      "controlWithoutUrgent": {
+        "waveRan": false,
+        "requests": 2,
+        "todoViewStatus": "current",
+        "injectionContainsStaleItem": true
+      },
+      "afterAuthorityFact": {
+        "cycles": 3,
+        "launches": 3,
+        "requests": 3,
+        "stableRevision": 3,
+        "sourceCursor": 21,
+        "eligibleAboveCursor": 0,
+        "goalViewStatus": "none",
+        "goalId": null,
+        "goalRevision": null,
+        "goalObjective": null,
+        "todoViewStatus": "cleared",
+        "todoSourceSeq": null,
+        "todoItems": [],
+        "todoReferences": [],
+        "objectiveAfter": "keep the durable task state aligned with the live TODO list",
+        "injection": "Durable task state (revision 3, source event 21, digest db65663257b39868d490506bf3520c31f8688e943a790569a12f6f835b5cb11c).\nTODO list: cleared (the authoritative list is empty).\nCurrent objective: keep the durable task state aligned with the live TODO list\nCurrent focus: observing the worker\n\nFacts:\n- the harness echoed a durable window",
+        "injectionHash": "85e4f3bb",
+        "staleByEligibleEvents": 0,
+        "includedSeqs": [
+          21
+        ],
+        "trigger": "urgent",
+        "previousTodoReferences": [
+          "20:first durable item [pending]; second durable item [in_progress]"
+        ]
+      },
+      "triggers": [
+        "threshold",
+        "urgent",
+        "urgent"
+      ],
+      "criteria": {
+        "emptyWriteProjectedAsClear": true,
+        "nonEmptyWriteIsCurrent": true,
+        "writeFoldedBelowThreshold": true,
+        "clearCountsOneEligibleEvent": true,
+        "clearWaveTriggerIsUrgent": true,
+        "todoViewIsCleared": true,
+        "clearedListLeavesNoReference": true,
+        "injectionSaysCleared": true,
+        "injectionDropsTheOldItems": true,
+        "noTodoReferencesSection": true,
+        "noStaleTail": true
+      },
+      "verdict": "fixed"
+    },
+    {
+      "id": "e06-clear-only",
+      "historicalQuestion": "渲染层能否表达 cleared（历史 Case E：旧列表看起来仍然有效）？",
+      "historicalSpec": "审计资料/实验结果/E06-Todo清空/e06-todo-clear.spec.ts · Case C/E",
+      "config": {
+        "minEvents": 1,
+        "maxEvents": 200
+      },
+      "fixtureSteps": [
+        "appendTodo([{stale item}]) → requestUrgentLikeProduction",
+        "appendTodo([]) → requestUrgentLikeProduction"
+      ],
+      "controlWithoutUrgent": {
+        "waveRan": false,
+        "note": "历史 Case C 的路径（只 schedule()）在修复前观测到清空不启动任何波次"
+      },
+      "afterAuthorityFact": {
+        "cycles": 2,
+        "launches": 2,
+        "requests": 2,
+        "stableRevision": 2,
+        "sourceCursor": 1,
+        "eligibleAboveCursor": 0,
+        "goalViewStatus": "none",
+        "goalId": null,
+        "goalRevision": null,
+        "goalObjective": null,
+        "todoViewStatus": "cleared",
+        "todoSourceSeq": null,
+        "todoItems": [],
+        "todoReferences": [],
+        "objectiveAfter": "keep the durable task state aligned with the live TODO list",
+        "injection": "Durable task state (revision 2, source event 1, digest 4994dfcb36b5ad3005710bcd6740a3b2214384f9761a352d936979a468877d4a).\nTODO list: cleared (the authoritative list is empty).\nCurrent objective: keep the durable task state aligned with the live TODO list\nCurrent focus: observing the worker\n\nFacts:\n- the harness echoed a durable window",
+        "injectionHash": "95683545",
+        "staleByEligibleEvents": 0,
+        "includedSeqs": [
+          1
+        ],
+        "trigger": "urgent",
+        "injectionBeforeClear": "Durable task state (revision 1, source event 0, digest 0de68fbedb108ca13b1b1d5060639972cc8c231424753ebde18e64f0c2658064).\nTODO list (session event 0):\n- [pending] stale item\nCurrent objective: keep the durable task state aligned with the live TODO list\nCurrent focus: observing the worker\n\nFacts:\n- the harness echoed a durable window"
+      },
+      "triggers": [
+        "urgent",
+        "urgent"
+      ],
+      "criteria": {
+        "writeWaveIsUrgent": true,
+        "clearWaveIsUrgent": true,
+        "rendererCanExpressCleared": true,
+        "staleListNoLongerLive": true,
+        "clearedStateIsDurableInStable": true,
+        "digestedListStateChanged": true
+      },
+      "verdict": "fixed"
+    }
+  ],
+  "criteria": {
+    "allPhasesFixed": true,
+    "noWaveWithoutTheUrgentRequest": true,
+    "historicalFixturesUntouched": true,
+    "perPhase": {
+      "e05-replacement": {
+        "goalFactCountsOneEligibleEvent": true,
+        "waveRanOnlyAfterTheUrgentRequest": true,
+        "triggerIsUrgent": true,
+        "goalViewIsGoalB": true,
+        "injectionShowsGoalB": true,
+        "injectionNoLongerShowsGoalA": true,
+        "noStaleTail": true
+      },
+      "e05-clear": {
+        "goalClearProjected": true,
+        "waveRanForTheClear": true,
+        "triggerIsUrgent": true,
+        "goalViewIsCleared": true,
+        "injectionSaysCleared": true,
+        "injectionDoesNotReviveGoalB": true,
+        "noStaleTail": true
+      },
+      "e06-write-clear": {
+        "emptyWriteProjectedAsClear": true,
+        "nonEmptyWriteIsCurrent": true,
+        "writeFoldedBelowThreshold": true,
+        "clearCountsOneEligibleEvent": true,
+        "clearWaveTriggerIsUrgent": true,
+        "todoViewIsCleared": true,
+        "clearedListLeavesNoReference": true,
+        "injectionSaysCleared": true,
+        "injectionDropsTheOldItems": true,
+        "noTodoReferencesSection": true,
+        "noStaleTail": true
+      },
+      "e06-clear-only": {
+        "writeWaveIsUrgent": true,
+        "clearWaveIsUrgent": true,
+        "rendererCanExpressCleared": true,
+        "staleListNoLongerLive": true,
+        "clearedStateIsDurableInStable": true,
+        "digestedListStateChanged": true
+      }
+    }
+  },
+  "verdict": "fixed",
+  "errors": [],
+  "sourceDrift": {
+    "preFixBaseline": "cf034b4",
+    "note": "preFixSha256 由 `git show HEAD:<path>` 逐字重算（对未改动文件已验证与工作区一致）；postFixSha256 为本次运行时的真实文件字节。新增文件在修复前不存在。",
+    "sourceFiles": [
+      "src/internal/task-state/contract/types.ts",
+      "src/internal/task-state/contract/spec.ts",
+      "src/internal/task-state/contract/audit.ts",
+      "src/internal/task-state/basic/authority.ts",
+      "src/internal/task-state/basic/filter.ts",
+      "src/internal/task-state/basic/types.ts",
+      "src/internal/task-state/basic/prompt.ts",
+      "src/internal/task-state/basic/host.ts",
+      "src/internal/task-state/basic/update.ts",
+      "src/internal/task-state/basic/worker.ts",
+      "src/internal/task-state/basic/service.ts",
+      "src/internal/task-state/prompt/render.ts",
+      "src/internal/task-state/index.ts",
+      "src/task-state.ts"
+    ],
+    "preFixSha256": {
+      "src/internal/task-state/contract/types.ts": "bb7fe3a6bede6ae93b6e1a856da88cf417dfad4f3087cbbeea5cb104089f028b",
+      "src/internal/task-state/contract/spec.ts": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca",
+      "src/internal/task-state/contract/audit.ts": "84ae100818d05722b2f56bf8537d100a7c7b894c1ee72a3306fce3f3d143262d",
+      "src/internal/task-state/basic/authority.ts": "(absent before B4.2)",
+      "src/internal/task-state/basic/filter.ts": "a047e842369fb2c4dec5c9cfee9f273e9cae0d8e305ab2b85e8fcebf40ac4918",
+      "src/internal/task-state/basic/types.ts": "c8527a504b6b70582f428506f12107d004441a3a22b3757ac18c853f659ced55",
+      "src/internal/task-state/basic/prompt.ts": "eddbcff8289d2925644588f62f0e527b2d71670e7303d15185d1eabb2d940649",
+      "src/internal/task-state/basic/host.ts": "7951e55749bc1e0463a84ae27fe67a0d2697823b40d2254600fd8eaa66aff75d",
+      "src/internal/task-state/basic/update.ts": "0ce5a2d5f892798bc1a73d0b64bca04bc2b6f32b4eb0457b833c97f780b24128",
+      "src/internal/task-state/basic/worker.ts": "28d7437fd9ea4d86004d1fdea84a18adf8da6dd825eabc04808b26d91306f626",
+      "src/internal/task-state/basic/service.ts": "c26c1afcbd83a5a6b8d7e84e349e7c5d049eb1b8e625ca91c6fcbdd203138b5a",
+      "src/internal/task-state/prompt/render.ts": "0c5f332ed8c2ee431a343e764a8d7115ec8e69f43a67a750325d1283fc8be46b",
+      "src/internal/task-state/index.ts": "3baa0ba0605a5d5c4771ffe0fe65991be69f4704f4947c9d83d395e73215a843",
+      "src/task-state.ts": "dcc10c9a12aef4538ff477ae2c3872781e95faef894e2674c66268e858fc62a3"
+    },
+    "postFixSha256": {
+      "src/internal/task-state/contract/types.ts": "5db66febd8967fbbf758632c4b7a5ae29ba6f70fd1b6c0130877af37fb4fdf80",
+      "src/internal/task-state/contract/spec.ts": "b6977ae7cfdb66fc3bfc62414985a134148fd1e7e79e3f965c7540bf3eaf5260",
+      "src/internal/task-state/contract/audit.ts": "ba8e97e931973f77805a0702153e7b1cbc17ae7a2f7e69484ef713bbef3b1237",
+      "src/internal/task-state/basic/authority.ts": "edde4755cd03d7fd3a73eb91d618292ef819a97b44de2885d8dec57509c45e09",
+      "src/internal/task-state/basic/filter.ts": "5ae4261cf64f571bd15ff9773ab85d9d8f7b773d5a086e61b2c74e5a425b91d8",
+      "src/internal/task-state/basic/types.ts": "02482f0ff7fdcf199b469f04a0c201ca90f38d070c9b09af1cbb8793795565db",
+      "src/internal/task-state/basic/prompt.ts": "9cbece8f75c88f2032c6aed69141e9743964b98a2b83401d4f910ae6ee0a8f61",
+      "src/internal/task-state/basic/host.ts": "e7b82cc1f336458ac9854bf0e37439f578031788ed4da5f8d208fb47cd9f126d",
+      "src/internal/task-state/basic/update.ts": "27ee522a0785190d0b3a9d077eb777cd759f26673a7347f9f5e453350e1b3d34",
+      "src/internal/task-state/basic/worker.ts": "97fbd222876d4ead7a5234de7539c11a66492686bbc72d5e7f0f5450197aa81b",
+      "src/internal/task-state/basic/service.ts": "81c25732915f4db5cc181295a222281a8a09aff5c30dd0754d462cc7889ced4e",
+      "src/internal/task-state/prompt/render.ts": "2d5f066aa4932a8ff2b92706245b9775937ee4e298e2f8683a34584ad5539e96",
+      "src/internal/task-state/index.ts": "57696da07ff5a9e731841669ec73a1a53c382c1ed5d567f520030d0eea9f25ff",
+      "src/task-state.ts": "124432815311312fb00027bb4e654e67e94a5e559996cc46b7e1f335af52d821"
+    },
+    "postFixFileFacts": {
+      "src/internal/task-state/contract/types.ts": {
+        "bytes": 19291,
+        "mtimeMs": 1789271118109.3176
+      },
+      "src/internal/task-state/contract/spec.ts": {
+        "bytes": 9140,
+        "mtimeMs": 1789271135250.199
+      },
+      "src/internal/task-state/contract/audit.ts": {
+        "bytes": 11284,
+        "mtimeMs": 1789271139770.045
+      },
+      "src/internal/task-state/basic/authority.ts": {
+        "bytes": 13486,
+        "mtimeMs": 1789271176886.108
+      },
+      "src/internal/task-state/basic/filter.ts": {
+        "bytes": 24163,
+        "mtimeMs": 1789271196920.693
+      },
+      "src/internal/task-state/basic/types.ts": {
+        "bytes": 6859,
+        "mtimeMs": 1789271208488.2212
+      },
+      "src/internal/task-state/basic/prompt.ts": {
+        "bytes": 8107,
+        "mtimeMs": 1789271913138.2322
+      },
+      "src/internal/task-state/basic/host.ts": {
+        "bytes": 11388,
+        "mtimeMs": 1789271250504.9822
+      },
+      "src/internal/task-state/basic/update.ts": {
+        "bytes": 22456,
+        "mtimeMs": 1789271301615.24
+      },
+      "src/internal/task-state/basic/worker.ts": {
+        "bytes": 28773,
+        "mtimeMs": 1789272039755.1917
+      },
+      "src/internal/task-state/basic/service.ts": {
+        "bytes": 39847,
+        "mtimeMs": 1789271350951.8892
+      },
+      "src/internal/task-state/prompt/render.ts": {
+        "bytes": 7505,
+        "mtimeMs": 1789271363991.0862
+      },
+      "src/internal/task-state/index.ts": {
+        "bytes": 2174,
+        "mtimeMs": 1789271368362.0447
+      },
+      "src/task-state.ts": {
+        "bytes": 2613,
+        "mtimeMs": 1789271373831.151
+      }
+    },
+    "newTests": [
+      "tests/task-state-goal-authority.spec.ts",
+      "tests/task-state-todo-authority.spec.ts",
+      "审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts"
+    ],
+    "historicalFixturesUntouched": {
+      "e05Spec": "1d6db9d88c22c7b240ff239551fa8209e6f7d882b5c92cd337af6fcfcb1a33a2",
+      "e06Spec": "bcc324ef9889db3c6094ce5f406575c0e94d698f496df79054be4ad81008ae18",
+      "harness": "0c4d6c253075fd9f794e9c145ff0027d99279cc9db13b7e4691feef3423e6121",
+      "note": "E05/E06 历史目录与共享 harness 本次只被读取（import）与哈希，未被写入"
+    }
+  },
+  "artifacts": {
+    "spec": "b42-e05e06-regression.spec.ts",
+    "ledger": "b42-ledger.json",
+    "historicalPostFixOutput": "vitest-output-historical-postfix.txt",
+    "sameFixtureRegressionOutput": "vitest-output.txt",
+    "readme": "README.md",
+    "productionEvidence": [
+      "tests/task-state-goal-authority.spec.ts（16 tests）",
+      "tests/task-state-todo-authority.spec.ts（13 tests）"
+    ]
+  },
+  "limitations": [
+    "LLM 为 fake adapter：不测模型质量、token、真实时延，只测\"是否发生波次、波次折叠了什么、提交态与注入是什么\"。",
+    "harness 不挂载 provider：本 spec 用 requestUrgentLikeProduction 补上 observer 的 urgent 一步；harness ledger 的 trigger 字段不可用，故 trigger 从 performContract 调用点旁路记录。真 provider 的 durable audit 证据在 tests/ 的两个新 spec。",
+    "harness 的 fake worker 环境把 stable 存在内存里；durable storage/domain 语义（含 fail-closed）由 tests/ 的两个新 spec 覆盖。",
+    "candidateEchoing 仍会写出 todoReferences，但修复后该字段已不是候选契约的一部分（被 schema 丢弃）；本 spec 断言的是 Host 自行推导的引用，这本身就是差量之一。",
+    "verdict = fixed 只表示该 fixture 的判据全部成立，不代表理想方案整体达成，也不代表用户侧现象消失。",
+    "本次未构建、未安装、未启动 DSH/GUI；未访问真实 $HOME/.dsh、任何既有会话或 8080；未修改 lib/、tgz、package.json、vitest.config.ts 或任何历史实验目录。"
+  ]
+}

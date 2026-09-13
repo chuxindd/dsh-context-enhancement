@@ -1,0 +1,31 @@
+=== scaffold id search over tracked-ish tree (excluding node_modules/.git/lib/binaries) ===
+scripts\client-bundle-ids.mjs:33: export const SCAFFOLD_CLIENT_ID = '@deepseek-ai/dsh-client-ui-jobs'
+tests\artifact-parity.spec.ts:139: assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'), 'unpatched package id must not remain')
+tests\artifact-parity.spec.ts:231: assert.ok(!clientJs.includes('@deepseek-ai/dsh-client-ui-jobs'), 'tarball client.js must not retain placeholder id')
+审计资料\01-插件装配与配置生效链.md:16: 3. **当前工作区 `lib/client.js` 的模块 id 是脚手架 id `"@deepseek-ai/dsh-client-ui-jobs"`**（`patch-client-id.mjs` 那一步的结果没落盘），而 HEAD 提交版与 `$DSH_HOME` 安装副本都是 `"dsh-context-enhancement"`。【已证实】这是第一批里最直接的一处静态装配事实。
+审计资料\01-插件装配与配置生效链.md:53: - 工作区 `lib/client.js:2` → `id: "@deepseek-ai/dsh-client-ui-jobs"`
+审计资料\01-插件装配与配置生效链.md:56: - `scripts/patch-client-id.mjs:5-8` 正是把 `@deepseek-ai/dsh-client-ui-jobs` 改写为 `dsh-context-enhancement` 的那一步；工作区当前产物中该改写未生效（`dsh-...-jobs` 出现 1 次，`dsh-context-enhancement` 另有 9 处，来自远程名与文案，不是 loader id）。
+审计资料\01-插件装配与配置生效链.md:356: 6. **client plugin 是否真的被 Web 装载**：浏览器侧 `__ModuleLoader__` 是否注册了 `dsh-context-enhancement`（工作区产物当前 id 错误，若装载该产物会以 `@deepseek-ai/dsh-client-ui-jobs` 注册）。
+审计资料\41-缺陷与风险清单.md:455: - **标题**：`tests/artifact-parity.spec.ts` 失败——工作区 `lib/client.js` 的 loader id 仍是脚手架 id `"@deepseek-ai/dsh-client-ui-jobs"`
+审计资料\41-缺陷与风险清单.md:457: - **当前证据（静态）**：`审计资料/01-插件装配与配置生效链.md` §7「工作区 `lib/client.js` loader id 残留」——工作区 `lib/client.js:2` → `id: "@deepseek-ai/dsh-client-ui-jobs"`，而 `git show HEAD:lib/client.js:2` 与 `$DSH_HOME/profiles/web/node_modules/dsh-context-enhancement/lib/client.js:2` 均为 `id: "dsh-context-enhancement"`；`scripts/patch-client-id.mjs:5-8` 正是把该 id 改写的那一步，工作区当前产物中该改写**未生效**；`审计资料/12-遗忘批次与压力释放差异.md`:49 #19（三份 lib 不一致）；`审计资料/22-长期状态存储恢复与多实例差异.md`:123 F14（含构建产物差异）；`审计资料/23-长期状态Worker与注入差异.md` B1/B2（工作区 `lib/` 与当前 `src` 同构；tgz 过期；宿主实际装配的是 `$DSH_HOME` 安装副本（旧构建）⇒ **静态审计不保证等于宿主执行字节**）。
+审计资料\B3.2-实施记录.md:183: assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'))
+审计资料\B4.1-实施记录.md:93: - 原因：**工作树里的 `lib/client.js` 是任务开始前就存在的未提交旧构建**（mtime 2026-09-11，`git status` = ` M`），仍含未修补包 id `@deepseek-ai/dsh-client-ui-jobs`。
+审计资料\B4.2-实施记录.md:137: `tests/artifact-parity.spec.ts`：工作树里的 `lib/**` 是**任务开始前就存在的旧构建**（`lib/client.js` mtime `2026-09-11 09:49`，本次会话未触碰；tgz mtime `2026-09-10 20:51`），仍含未修补包 id `@deepseek-ai/dsh-client-ui-jobs`。B4.1 已用 `git worktree add --detach HEAD` 反证过"HEAD 工件无该问题"，判定为预置工件漂移、与源码改动无关，按范围要求**不修**（artifact parity 明确排除）。**artifact parity 结果单独报告，不计入 B4.2 结论。**
+审计资料\B4.3-实施记录.md:185: lib/client.js 仍包含 '@deepseek-ai/dsh-client-ui-jobs'
+审计资料\B4.4-实施记录.md:232: lib/client.js 仍包含 '@deepseek-ai/dsh-client-ui-jobs'
+审计资料\B5.1-实施记录.md:228: 1. **`tests/artifact-parity.spec.ts` 第 128 行失败（既存）**：断言 `lib/client.js` 不含未打补丁的 `@deepseek-ai/dsh-client-ui-jobs`。只读核对：`git show HEAD:lib/client.js` **不含**该 id，而工作区 `lib/client.js`（`git status` 显示为 `M`）**含**该 id —— 即产物在 B5.1 之前的一次重建后没有重跑 `scripts/patch-client-id.mjs`。B5.1 未触碰任何 `lib/` 文件，且重建 `lib/`+tgz 不在允许范围，故本批**不修**，如实登记为既存产物漂移。
+审计资料\B6.1-实施记录.md:171: `verifies lib/client.js contains patched module id`（`tests/artifact-parity.spec.ts:128` 断言 `lib/client.js` 不含 `@deepseek-ai/dsh-client-ui-jobs`）。
+审计资料\B6.1-实施记录.md:175: - `lib/client.js` mtime = **2026-09-11T01:49:09Z**，早于本批次任何一次编辑（2026-09-13T08:27Z 起），sha256 `092384a0471281947960499787ea0ca438c9ea12b2c9524bf722d14d7033e231`，属前序批次留下的 lib 陈旧产物（`src/client/**` 已不再引用 `dsh-client-ui-jobs`）；
+审计资料\B6.2-实施记录.md:188: `tests/artifact-parity.spec.ts` 5 例中 1 例失败：`verifies lib/client.js contains patched module id`（断言 `lib/client.js` 不含 `@deepseek-ai/dsh-client-ui-jobs`）。与本批次无关的证据：该 spec **完全不读 `src/`**；`lib/client.js` mtime `2026-09-11T01:49:09.908Z`、sha256 `092384a0…3e231`，`.tgz` mtime `2026-09-10T12:51:02Z`，`package.json` mtime `2026-09-08T02:48:36Z`，**均早于本批次任何编辑**（2026-09-13T08:27Z 起）；本批次按约束**未重建** `lib/`/`.tgz`。
+审计资料\B7-实施记录.md:148: `pnpm test` 唯一失败项 = `tests/artifact-parity.spec.ts > verifies lib/client.js contains patched module id`：`lib/client.js` 仍含未打补丁的 `@deepseek-ai/dsh-client-ui-jobs`。这是 **B8（artifact parity / `lib`+`.tgz` 重建）** 的范围，本批次明确不做，因此这里只记录事实：**未修复**，且 B7 未触碰 `lib/`、`package.json`、`vitest.config.ts`。
+审计资料\B7-full-suite.txt:126: 128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+审计资料\实验结果\B5.1-E08修复后回归\full-suite-output.txt:123: 128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+审计资料\实验结果\B6.2-E01修复后回归\README.md:54: 断言 `lib/client.js` 不含 `@deepseek-ai/dsh-client-ui-jobs`。实测：
+审计资料\实验结果\B6.2-E01修复后回归\evidence\artifact-parity.txt:25: 128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+审计资料\实验结果\B6.2-E01修复后回归\evidence\vitest-full-suite.txt:124: 128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+审计资料\实验结果\E00-第一轮现有测试\vitest-output-rerun.txt:226: 128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+审计资料\实验结果\X4-Stable槽位压缩回收\tmp\workspace-tests.txt:122: 128|     assert.ok(!clientSource.includes('@deepseek-ai/dsh-client-ui-jobs'…
+=== lib/**/tgz byte search ===
+lib/ hits: 0
+tarball bytes containing scaffold id: false
+tarball bytes containing published id: true

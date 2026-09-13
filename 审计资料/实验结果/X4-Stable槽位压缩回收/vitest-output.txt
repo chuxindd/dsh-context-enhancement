@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/X4-Stable槽位压缩回收/x4.spec.ts > X4 · Stable 固定槽位压缩遮蔽回收 > 连续 4 轮真实压缩遮蔽→真实 pre-step 重建：可见 slot 恒=1、generation 严格递增、source-index 分类正确 4629ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:33:54
+   Duration  5.61s (transform 543ms, setup 0ms, import 812ms, tests 4.63s, environment 0ms)
+

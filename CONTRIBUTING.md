@@ -91,7 +91,7 @@ also build and verify the tarball:
 
 ```powershell
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.10.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.11.tgz
 ```
 
 `verify:install` uses a temporary `DSH_HOME`, installs the package into a fresh Web

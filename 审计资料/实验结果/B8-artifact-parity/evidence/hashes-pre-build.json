@@ -1,0 +1,1501 @@
+{
+  "label": "pre-build",
+  "repoRoot": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+  "fileCount": 249,
+  "files": [
+    {
+      "path": "cordis.patch.yml",
+      "bytes": 3385,
+      "sha256": "95E8C9C0F115C41D8DE67B79E46285D61D31B00E7C26F0CFCEFA0FA8D12268FE",
+      "mtime": "2026-09-07T23:13:32.619Z"
+    },
+    {
+      "path": "dsh-context-enhancement-0.1.10.tgz",
+      "bytes": 1321348,
+      "sha256": "BE9DE3DE1F560E65B6E68E4A9B1647CA8CC042F98A8D58112C6961E6665A7E40",
+      "mtime": "2026-09-10T12:51:02.868Z"
+    },
+    {
+      "path": "lib/client.js",
+      "bytes": 211941,
+      "sha256": "092384A0471281947960499787EA0CA438C9EA12B2C9524BF722D14D7033E231",
+      "mtime": "2026-09-11T01:49:09.908Z"
+    },
+    {
+      "path": "lib/client.js.map",
+      "bytes": 496258,
+      "sha256": "088E84E1175A544998443C394807B28A890F02202D10ED898DAA4194E0F20451",
+      "mtime": "2026-09-11T01:49:09.908Z"
+    },
+    {
+      "path": "lib/compaction-basic.js",
+      "bytes": 391933,
+      "sha256": "4718F3AD7AC59FE89BC0D3ADC53BA41A163674D6F15B18DCC9A8BA2F0CBBC0D1",
+      "mtime": "2026-09-11T01:49:09.932Z"
+    },
+    {
+      "path": "lib/contract-BuVHI3zF.js",
+      "bytes": 17055,
+      "sha256": "45552DD68E44B8C56FAB486DC2717B3A0BA075748797AC453303532809AB83DC",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/index.js",
+      "bytes": 1506,
+      "sha256": "921F8F660FADB12747BDC694C9D7144CCBEDB6C43ADA08A122FE5F0B24A20510",
+      "mtime": "2026-09-11T01:49:09.932Z"
+    },
+    {
+      "path": "lib/lib-Bj3jGSND.js",
+      "bytes": 29652,
+      "sha256": "E000B4B894E6FB3DE7F4DAD07CE5EE6C0F99FCCDB5DAEB375BA132585C001422",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/lib-DXy8Ramy.js",
+      "bytes": 61429,
+      "sha256": "A02CA4AA91BD44A24085C3BE5EFA9E0FB5628A56E0CA53CAEA96A538979C6C49",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/lib-DkAdRvjl.js",
+      "bytes": 6763,
+      "sha256": "6141D26CFBD0F287CAF2573211EB70824DACD452E84656C9BB0E8F137D4F6312",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/lib-biAw7Hvg.js",
+      "bytes": 3900,
+      "sha256": "12733943CE19B63042BA655FA5F1153BA1C338DAE4B7BA50DE08620CD22CBC3F",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/rolldown-runtime-8H4AJuhK.js",
+      "bytes": 382,
+      "sha256": "DFDDC72A879E6389656773415CC7E6D1A7FEF5C52AD800A61AC1156A3A66B2F6",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/schemas-B9RBVgB9.js",
+      "bytes": 218391,
+      "sha256": "4CBCF8D8E47AEA27411228A02DAC80E14C7CD6DC31654DC87ABF2C31D69B92C8",
+      "mtime": "2026-09-11T01:49:09.934Z"
+    },
+    {
+      "path": "lib/task-state-basic.js",
+      "bytes": 92090,
+      "sha256": "6BF1AD7171DC93FE8E764CE5C092C4C76E5F0507296155D7D510ABE7C060825A",
+      "mtime": "2026-09-11T01:49:09.932Z"
+    },
+    {
+      "path": "lib/task-state-control.js",
+      "bytes": 6552,
+      "sha256": "BFBF32F658FD3286871FA820EC1E413A90E538469AAF2846DFA63E70B105C218",
+      "mtime": "2026-09-11T01:49:09.932Z"
+    },
+    {
+      "path": "lib/task-state-prompt.js",
+      "bytes": 6907,
+      "sha256": "BF3FF7A2B81C666AD1440872CCE51A90D8A41E6329496967586E14BAAAA9EA74",
+      "mtime": "2026-09-11T01:49:09.933Z"
+    },
+    {
+      "path": "lib/task-state.js",
+      "bytes": 1286,
+      "sha256": "B96EC3FD25AB2DFD40219F8703048A741ABAA499303CCA743AD204AAF0CE139F",
+      "mtime": "2026-09-11T01:49:09.933Z"
+    },
+    {
+      "path": "lib/tool-groups-CJkqYVVc.js",
+      "bytes": 25437,
+      "sha256": "C38BD3C4C2D8F52C2246D9784B1A70D933A586734555A926E402669F0A7FF5C4",
+      "mtime": "2026-09-11T01:49:09.935Z"
+    },
+    {
+      "path": "lib/tool-groups-l8pJ_H0h.js",
+      "bytes": 25231,
+      "sha256": "14ED336A75C933A9A5E88ED74885742D66A89B67DE152AFBB7A49E6E760CFAF6",
+      "mtime": "2026-09-10T14:30:03.521Z"
+    },
+    {
+      "path": "lib/tool-result-pruner.js",
+      "bytes": 14096,
+      "sha256": "5E8D5CB5CF6DAB3A2990DD4B6CBDCF8E4269CE9AAA27B8F7D9A769592CA1F1C9",
+      "mtime": "2026-09-11T01:49:09.933Z"
+    },
+    {
+      "path": "lib/types/client/ContextEnhancementView.d.ts",
+      "bytes": 3301,
+      "sha256": "3A5246DEBC049995F5B6F4FDF66B538AE36E6015B286D53CBBCC05F78189EE30",
+      "mtime": "2026-09-11T01:48:59.745Z"
+    },
+    {
+      "path": "lib/types/client/ContextEnhancementView.d.ts.map",
+      "bytes": 1032,
+      "sha256": "81FCF1AA46F79F4319CAEDF81863396C5592CF3277E8BBAE51BC8CF7A71ADF20",
+      "mtime": "2026-09-11T01:48:59.744Z"
+    },
+    {
+      "path": "lib/types/client/ContextEnhancementView.js",
+      "bytes": 29025,
+      "sha256": "9B81BC24E1A643D320C5169AE7C63DAB782694027E14FA5F07ADAF6BEF472169",
+      "mtime": "2026-09-09T12:18:31.834Z"
+    },
+    {
+      "path": "lib/types/client/ContextEnhancementView.js.map",
+      "bytes": 24300,
+      "sha256": "9CFCE8581697566F26440DDBC26158D81607C7A6E6431B8C85ED43C52EEEE4A8",
+      "mtime": "2026-09-09T12:18:31.832Z"
+    },
+    {
+      "path": "lib/types/client/index.d.ts",
+      "bytes": 405,
+      "sha256": "AB14E7254B6217A56E4309A90F77B66B7F3BEC0AB1367F433841B6BA50945D9A",
+      "mtime": "2026-09-11T01:48:59.746Z"
+    },
+    {
+      "path": "lib/types/client/index.d.ts.map",
+      "bytes": 393,
+      "sha256": "52A0AFEDDF512A729E5958C23FC8749CC278374E14844A3E7431A81DCD54AA9A",
+      "mtime": "2026-09-11T01:48:59.746Z"
+    },
+    {
+      "path": "lib/types/client/index.js",
+      "bytes": 3671,
+      "sha256": "BCD7F73A5BDA620F18AA9FD11F52E5C4FEC2AF29EA23014E55AADFC54BCAD457",
+      "mtime": "2026-09-10T12:44:58.058Z"
+    },
+    {
+      "path": "lib/types/client/index.js.map",
+      "bytes": 3399,
+      "sha256": "ECA3465F196AE542A97769FE8FB6FF13C72E1EE1CCDBE796A2277D28239DD266",
+      "mtime": "2026-09-10T12:44:58.057Z"
+    },
+    {
+      "path": "lib/types/client/locales.d.ts",
+      "bytes": 5369,
+      "sha256": "DA4BD3C7A2F484A47491F617BF6E6A856D562B169B5F65DD9F2397D6FA3BCA66",
+      "mtime": "2026-09-09T12:18:31.886Z"
+    },
+    {
+      "path": "lib/types/client/locales.d.ts.map",
+      "bytes": 424,
+      "sha256": "9BF2D52EBD86BE7E95DA46A50B496184B283DD523532901A08125D8B4DFDC20F",
+      "mtime": "2026-09-09T12:18:31.886Z"
+    },
+    {
+      "path": "lib/types/client/locales.js",
+      "bytes": 9161,
+      "sha256": "A7ED0C66BE0C33C8F0DC806A1171F2ADE237FB1471C5699AC3B4B5AB3451AC20",
+      "mtime": "2026-09-09T12:18:31.883Z"
+    },
+    {
+      "path": "lib/types/client/locales.js.map",
+      "bytes": 3264,
+      "sha256": "D80B4B4F8E959AE29D9D860DEEA2B1AA0A4D3C5DA323A6075DD76AE297E39059",
+      "mtime": "2026-09-09T12:18:31.882Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control-store.d.ts",
+      "bytes": 11171,
+      "sha256": "9CB7D5FD04B7B4B4B77AE9DAA905527E9CC2814AE28580AA3222CB6F0EBD81F1",
+      "mtime": "2026-09-11T01:48:59.742Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control-store.d.ts.map",
+      "bytes": 2720,
+      "sha256": "E2FE7F0F29157617C45B2B359179945C51F4E5E97BABC854714A962138EFFCB3",
+      "mtime": "2026-09-11T01:48:59.742Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control-store.js",
+      "bytes": 14844,
+      "sha256": "3EE84CB9E7EDED45139F6D6AD84F06A8E6D4AEA2D1874E11DA8B79B82D0EABEF",
+      "mtime": "2026-09-08T03:03:56.592Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control-store.js.map",
+      "bytes": 7803,
+      "sha256": "2C056E613EF22A99BA2A13A7B0E30FC0D880C39C7F2D71765A0951F83FEEC38F",
+      "mtime": "2026-09-08T03:03:56.592Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control.d.ts",
+      "bytes": 5095,
+      "sha256": "8EF928B381A60BBBA6C633C05D93A5429F87ED76147F488E3F5D715453BC86A9",
+      "mtime": "2026-09-11T01:48:59.777Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control.d.ts.map",
+      "bytes": 1539,
+      "sha256": "CDE4C14471D898820DE11E254B08291158C8FF23D9D23E46C397EEE424EB0A5F",
+      "mtime": "2026-09-11T01:48:59.777Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control.js",
+      "bytes": 5006,
+      "sha256": "DBACAC6D1A20EF5A81B0BF109BF4CF6F24F7EA2AE8BC1A57DB1EA0141009960D",
+      "mtime": "2026-09-08T03:03:56.667Z"
+    },
+    {
+      "path": "lib/types/client/task-state-control.js.map",
+      "bytes": 2260,
+      "sha256": "0958BC49D6C8295A4807CA8A83E3F5242AA6729D85C633FA9C6C75FA19E0250B",
+      "mtime": "2026-09-08T03:03:56.667Z"
+    },
+    {
+      "path": "lib/types/client/task-state-remote.d.ts",
+      "bytes": 790,
+      "sha256": "2C92F3A4311490C262BC9809A78DEF9845945853C6C9F4EF458BD2B0F9B003F2",
+      "mtime": "2026-09-11T01:48:59.773Z"
+    },
+    {
+      "path": "lib/types/client/task-state-remote.d.ts.map",
+      "bytes": 650,
+      "sha256": "2E26C0A2EEA3F4DEAE27EE31D1F329C2781541D876F3999EB9A49DCE91083DBB",
+      "mtime": "2026-09-11T01:48:59.773Z"
+    },
+    {
+      "path": "lib/types/client/task-state-remote.js",
+      "bytes": 2733,
+      "sha256": "2E9C09824457FF538141D72EC34E75EF95E884F364A52A4351F49D6BD4FB2748",
+      "mtime": "2026-09-08T03:35:21.271Z"
+    },
+    {
+      "path": "lib/types/client/task-state-remote.js.map",
+      "bytes": 2766,
+      "sha256": "6A411782A057ED4D23A38C113C845E8A61CBBEED4ED7F5944D3C77AFBE124379",
+      "mtime": "2026-09-08T03:35:21.270Z"
+    },
+    {
+      "path": "lib/types/compaction-basic.d.ts",
+      "bytes": 15321,
+      "sha256": "3F51060CA78FACD4909A67AAB88F30F887B2CAEA4173C54E0306BF7CEDE8BCE6",
+      "mtime": "2026-09-11T01:48:59.815Z"
+    },
+    {
+      "path": "lib/types/compaction-basic.d.ts.map",
+      "bytes": 2712,
+      "sha256": "096F18E1E266AFC5AEB840F0768E6CF0FACF1496591D8147366C44C2A92A47F6",
+      "mtime": "2026-09-11T01:48:59.815Z"
+    },
+    {
+      "path": "lib/types/compaction-basic.js",
+      "bytes": 67128,
+      "sha256": "5844BA3C74F0503C2E9B630384C769C34E17DE445920C6C3CAFDCDC6B74C886B",
+      "mtime": "2026-09-11T01:48:59.813Z"
+    },
+    {
+      "path": "lib/types/compaction-basic.js.map",
+      "bytes": 39640,
+      "sha256": "17B16905590AEDED0001634C4E7F94E88F19F12ECD5775D303D276A024322900",
+      "mtime": "2026-09-11T01:48:59.812Z"
+    },
+    {
+      "path": "lib/types/effect-projection.d.ts",
+      "bytes": 2276,
+      "sha256": "A09FC0D682E60E123F049306E5DD34510BF9156F1C0A95F6621656C337D74886",
+      "mtime": "2026-09-11T01:48:59.709Z"
+    },
+    {
+      "path": "lib/types/effect-projection.d.ts.map",
+      "bytes": 607,
+      "sha256": "E3CA2E22879CC49EFF19168EFAA2729E1082B1ED2690BB5345E250CEB112C6F4",
+      "mtime": "2026-09-11T01:48:59.708Z"
+    },
+    {
+      "path": "lib/types/effect-projection.js",
+      "bytes": 1283,
+      "sha256": "15AF1D4F3177F394CC90CD0C5E214033A0B55BB538256D334B2487F4A960E9AB",
+      "mtime": "2026-09-09T12:18:31.764Z"
+    },
+    {
+      "path": "lib/types/effect-projection.js.map",
+      "bytes": 1397,
+      "sha256": "6676B7F4982C19B70DB8234393AB7A3F719129F2FF745CDDC6FAA28C4A73C717",
+      "mtime": "2026-09-09T12:18:31.762Z"
+    },
+    {
+      "path": "lib/types/index.d.ts",
+      "bytes": 257,
+      "sha256": "A46A587162A749FE6B1721D217302AC49B9850935BC332E38451D25B6CBF2BD2",
+      "mtime": "2026-09-11T01:48:59.710Z"
+    },
+    {
+      "path": "lib/types/index.d.ts.map",
+      "bytes": 252,
+      "sha256": "B55089FF5DD8EAE3F12DA16F97FE8C4F60C74360675A4D40D1D3C4DD5E6ABB6B",
+      "mtime": "2026-09-11T01:48:59.710Z"
+    },
+    {
+      "path": "lib/types/index.js",
+      "bytes": 348,
+      "sha256": "BC045745ADA84F0BB121FC49CAFAD856D1508CCA2B2F3CD8A1F13AF14B7A8A46",
+      "mtime": "2026-09-10T12:44:57.995Z"
+    },
+    {
+      "path": "lib/types/index.js.map",
+      "bytes": 311,
+      "sha256": "E92AC8954B7B7358A7A163EEEC867006BCBEBE8ABE2C5EAC60F2D915CF9E4B2E",
+      "mtime": "2026-09-10T12:44:57.995Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/config.d.ts",
+      "bytes": 792,
+      "sha256": "83DC166A901348A60A58E1C5BE83147E82C42CCE359208FD9AB17B55A39F4936",
+      "mtime": "2026-09-11T01:48:59.780Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/config.d.ts.map",
+      "bytes": 639,
+      "sha256": "BD438104B636C7CCDE51F3C22780D289A18AC4761853905D224B06B1EE976286",
+      "mtime": "2026-09-11T01:48:59.780Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/config.js",
+      "bytes": 16353,
+      "sha256": "BF0395B5526754DC0CBAB4480D4DF08A04735FB5C2C68ECC1E84A8C76A684C46",
+      "mtime": "2026-09-10T12:44:58.172Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/config.js.map",
+      "bytes": 13055,
+      "sha256": "C835FF72649A61BD7E9246515C7AB34B6879E5A9674EC363395FA6A3E3EC7757",
+      "mtime": "2026-09-10T12:44:58.172Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/envelope-budget.d.ts",
+      "bytes": 7716,
+      "sha256": "5A13966BA1EFBCB10DD7923BF56B30F080210FCAE52884336DFD887981995722",
+      "mtime": "2026-09-11T01:48:59.844Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/envelope-budget.d.ts.map",
+      "bytes": 2061,
+      "sha256": "DBAE82D78578F7AFE07E9D83BFEE9E91680D0C625D6C45F7C30947B5CC8179CF",
+      "mtime": "2026-09-11T01:48:59.843Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/envelope-budget.js",
+      "bytes": 8139,
+      "sha256": "CBABE982D4686FE3F322B375DEA8FBC1E171E888FC9F1171CBD3849E1A2496C8",
+      "mtime": "2026-09-11T01:48:59.843Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/envelope-budget.js.map",
+      "bytes": 4658,
+      "sha256": "2E388740F94AE1ABD5F555C33CFEA02C4F76849AFE5C3214A63954DE00D05DC8",
+      "mtime": "2026-09-11T01:48:59.842Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-config.d.ts",
+      "bytes": 1465,
+      "sha256": "40EC83D5E86050A37AFFD1C21E5287DFA59229768E33E5A30D4E41F3942B594C",
+      "mtime": "2026-09-11T01:48:59.749Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-config.d.ts.map",
+      "bytes": 459,
+      "sha256": "1E075C76081A5DC1637940623BD2BCD0207FEE9DFE495DEBF1ABCE5484224099",
+      "mtime": "2026-09-11T01:48:59.748Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-config.js",
+      "bytes": 3528,
+      "sha256": "2D4AE03FB0C9A85E544BEEAC54B972132E17328D8C87548B77D8FDF834DFFCC5",
+      "mtime": "2026-09-09T23:06:52.350Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-config.js.map",
+      "bytes": 2225,
+      "sha256": "C9764E9B418E0570FCBBBA282498BAE54975963307423FC1531AE8A867810048",
+      "mtime": "2026-09-09T23:06:52.350Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-types.d.ts",
+      "bytes": 5605,
+      "sha256": "B814C37463E156C456294412B3DFFE80D8ABB2AFAF6DBC4F522CF68CE4BEEF85",
+      "mtime": "2026-09-11T01:48:59.747Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-types.d.ts.map",
+      "bytes": 1524,
+      "sha256": "59AAA41D1E90931F21F5F749B873C1EAD2A266C76A26858848EF2617F2AC8B44",
+      "mtime": "2026-09-11T01:48:59.747Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-types.js",
+      "bytes": 686,
+      "sha256": "37AA724ED883FB633871497C96534E92CC4439A367941F85ADEB305C2AE2EAF7",
+      "mtime": "2026-09-09T23:06:52.181Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/pruner-types.js.map",
+      "bytes": 165,
+      "sha256": "2F98E686E828C64E8876CDDB61BF0FF8A070AFFB40E4F0CEF62A9C1B46766DC1",
+      "mtime": "2026-09-09T23:06:52.181Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/region.d.ts",
+      "bytes": 6586,
+      "sha256": "B3D851A573C2F65A49C3EE2F5A50842255AAA0C74CD29DC0DCCF27F182D64A19",
+      "mtime": "2026-09-11T01:48:59.663Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/region.d.ts.map",
+      "bytes": 1884,
+      "sha256": "B779186B73A87DF7B443E19C4475461F1F07FCFCA41C28F0D505CF9EF962B6C2",
+      "mtime": "2026-09-11T01:48:59.663Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/region.js",
+      "bytes": 21831,
+      "sha256": "8E2B1BDDCDE874FF1E4302D26EFDF17CF4EC99927EAFA5394A08D60CBE5A1023",
+      "mtime": "2026-09-09T23:06:52.208Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/region.js.map",
+      "bytes": 14013,
+      "sha256": "8FCF31B85F89EE7193ECE955E0182FD492EAD309D4D1FBB813C6C5240A0E3DBE",
+      "mtime": "2026-09-09T23:06:52.206Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/selection-guard.d.ts",
+      "bytes": 3275,
+      "sha256": "91779D6048D171DEA6C46C7EFFEA41FDF2818DDF18A11A426B421DE6E4BB99C1",
+      "mtime": "2026-09-11T01:48:59.660Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/selection-guard.d.ts.map",
+      "bytes": 407,
+      "sha256": "FE8CF4F2E3F50EABC10363634F79CA64310B7F8ACD706D4B1E5A2C4216D4D8D7",
+      "mtime": "2026-09-11T01:48:59.659Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/selection-guard.js",
+      "bytes": 5699,
+      "sha256": "C387D700906C297864F2C3939A9921FA807012645FF29A2A3AC29D80723B3B6C",
+      "mtime": "2026-09-05T18:59:59.473Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/selection-guard.js.map",
+      "bytes": 1840,
+      "sha256": "50D613ABD76240C17BA2B880A838F080AC677B1490D9F9D5A59414D79B7D3228",
+      "mtime": "2026-09-05T18:59:59.473Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/source-index.d.ts",
+      "bytes": 2678,
+      "sha256": "B9171F10D040E9D8A49886F64581FCEC811FA501E8A41C376115400142B2BAE9",
+      "mtime": "2026-09-11T01:48:59.666Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/source-index.d.ts.map",
+      "bytes": 916,
+      "sha256": "9D11B13AD3A849B8DFEE369B2A9B30EA90495E056F764358A8AA149F4F0B628F",
+      "mtime": "2026-09-11T01:48:59.666Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/source-index.js",
+      "bytes": 4302,
+      "sha256": "8F48745509ACF070693505DD527C95C80A49EE7E9A78050FE5E99EF979DD2E6C",
+      "mtime": "2026-09-09T12:18:31.759Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/source-index.js.map",
+      "bytes": 3470,
+      "sha256": "6231C463818E63E1016F88A444370CB4FB2DFD569FDE55EC03A88B22748F12B2",
+      "mtime": "2026-09-09T12:18:31.758Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/summarizer.d.ts",
+      "bytes": 4569,
+      "sha256": "1E6F443465724AA9B18FF79E7FA93C6FC950DF5ABD8BBC1F0686B2A2C848BD7C",
+      "mtime": "2026-09-11T01:48:59.689Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/summarizer.d.ts.map",
+      "bytes": 1555,
+      "sha256": "98A9F39042286726FED1107AFDE76E7662B73A2112771AB32C6BC746100652E1",
+      "mtime": "2026-09-11T01:48:59.688Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/summarizer.js",
+      "bytes": 9191,
+      "sha256": "EF17B28066DA06932CAE7CF2192263BEDAB867EF0F00A4675E317F70528E436D",
+      "mtime": "2026-09-10T12:44:57.979Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/summarizer.js.map",
+      "bytes": 4623,
+      "sha256": "52114B23892C050039E968A7C5C703C7D7E7E4BDAB65880A2B142EAB76B1689C",
+      "mtime": "2026-09-10T12:44:57.979Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit-store.d.ts",
+      "bytes": 645,
+      "sha256": "DF6652E8B240D5C8EDA725DA9C027D977245A7A1B409F19D406DC655F886162F",
+      "mtime": "2026-09-11T01:48:59.687Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit-store.d.ts.map",
+      "bytes": 723,
+      "sha256": "C01DC67A044F2D4D926749714322DA55F79C7B24FC26015730410E46BE6923D0",
+      "mtime": "2026-09-11T01:48:59.687Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit-store.js",
+      "bytes": 743,
+      "sha256": "24C60489EFD1B30FE8E0E0D002AE039017ECE4B36BACD97812DF0805D55B0C59",
+      "mtime": "2026-09-11T01:48:59.685Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit-store.js.map",
+      "bytes": 947,
+      "sha256": "5D321BC45F7A4A65E05E08FC33F2F1B1D03E20E7CF9E6633F9A6C700BAA46216",
+      "mtime": "2026-09-11T01:48:59.685Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit.d.ts",
+      "bytes": 3697,
+      "sha256": "2E04F21D1B9F36CBDE236225EBEDD54DC135F1AE954274C6D9ED5B7385A0E870",
+      "mtime": "2026-09-11T01:48:59.822Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit.d.ts.map",
+      "bytes": 2681,
+      "sha256": "80C668F406C46765951C86926A53D8246DD6074E6922CBB76E0737EEFC775FE4",
+      "mtime": "2026-09-11T01:48:59.821Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit.js",
+      "bytes": 4318,
+      "sha256": "937B49D7694E67255E77EEF4A0BF2BA3AD57C8D7B3879A434D7D4FA64BB9708A",
+      "mtime": "2026-09-11T01:48:59.819Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-audit.js.map",
+      "bytes": 3490,
+      "sha256": "803C63E6A4A363BD69C99DD9FF9C0D64AB3A4335A6393F6455F96278E0EE1A14",
+      "mtime": "2026-09-11T01:48:59.818Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-domain.d.ts",
+      "bytes": 758,
+      "sha256": "EA7D05D2885D959F20892A2C0654151DEA0A4E86B3BDB95181AADDDF17F56FED",
+      "mtime": "2026-09-11T01:48:59.759Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-domain.d.ts.map",
+      "bytes": 579,
+      "sha256": "BD09EF6A86921D1B72729E556E301F922496B13B3BA881563AC7FE52C33C5D08",
+      "mtime": "2026-09-11T01:48:59.759Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-domain.js",
+      "bytes": 1426,
+      "sha256": "33D5AFFAD3400E03321AC851BA6A832EB0E4B6207E15654652ABA70334F68827",
+      "mtime": "2026-09-11T01:48:59.757Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-domain.js.map",
+      "bytes": 1660,
+      "sha256": "52506DB5F212EE89066F7C2AC28245235E0A8972B4F46563EE512FCE08E740D1",
+      "mtime": "2026-09-11T01:48:59.756Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-replacement.d.ts",
+      "bytes": 2833,
+      "sha256": "DFCD54878DCAFCC399A88F24643FAF48BBE6E78BACB071492883542FF67FD446",
+      "mtime": "2026-09-11T01:48:59.826Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-replacement.d.ts.map",
+      "bytes": 850,
+      "sha256": "EC0352C38F74D798923C5938A34F6AEB40FF261276F261BF52B40AFB98B3F1C9",
+      "mtime": "2026-09-11T01:48:59.825Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-replacement.js",
+      "bytes": 6667,
+      "sha256": "FD137C5A932BB9B1FAA2122913DCAF49F7837D2FE9E975623D780C02752711BC",
+      "mtime": "2026-09-11T01:48:59.824Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-replacement.js.map",
+      "bytes": 3734,
+      "sha256": "584E7720FD9E0C8B4FA85FF3247F4FEDE98A55F3426A1A1CC9837254118BA04C",
+      "mtime": "2026-09-11T01:48:59.824Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summarizer.d.ts",
+      "bytes": 1615,
+      "sha256": "7D93B2AFDE7469EA3F8AB104963134EC903F92404434D1B544F6CB81AA1E38DF",
+      "mtime": "2026-09-11T01:48:59.831Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summarizer.d.ts.map",
+      "bytes": 1491,
+      "sha256": "7C3B45E9A52C14CD6F2161595E66A6615B32A55D7BE9ACA6796175AFA7234851",
+      "mtime": "2026-09-11T01:48:59.830Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summarizer.js",
+      "bytes": 4636,
+      "sha256": "3EE326D56963C3C891AC134D7E20543475945E8789433BF9A42825C83CEA1A25",
+      "mtime": "2026-09-11T01:48:59.829Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summarizer.js.map",
+      "bytes": 3885,
+      "sha256": "2ADF0EC9358412E2D9334E4217C61F575B4EC936D116C6679367A4128A8587D1",
+      "mtime": "2026-09-11T01:48:59.829Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summary.d.ts",
+      "bytes": 1490,
+      "sha256": "0998C43B88823B691D5C8BD2161D5D8AA3F72EE410FED3C120416AAE30D9F061",
+      "mtime": "2026-09-11T01:48:59.753Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summary.d.ts.map",
+      "bytes": 1457,
+      "sha256": "24349BB5100228CBA972285A8D6A51601B9D7F3673F7DDE75ACB94E7F86E2C18",
+      "mtime": "2026-09-11T01:48:59.753Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summary.js",
+      "bytes": 5063,
+      "sha256": "A0EC9F81FEF4FB7484B34DA01C41C02E93825955DB9F122C64F4F970A6600845",
+      "mtime": "2026-09-11T01:48:59.752Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-group-summary.js.map",
+      "bytes": 5247,
+      "sha256": "C37940B93C37D32F52C42D97A7F4769D23B48DB3FD7985A796302CC011A6B5D6",
+      "mtime": "2026-09-11T01:48:59.752Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-groups.d.ts",
+      "bytes": 3006,
+      "sha256": "838DB32EA95E49971797D9D24B7289CE105A9C0105264C03D355708C67672306",
+      "mtime": "2026-09-11T01:48:59.658Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-groups.d.ts.map",
+      "bytes": 1559,
+      "sha256": "1F708455BFDBD4E15D14058D67E43147A1BCF4585183DB0C26CBFBD8825BFDC8",
+      "mtime": "2026-09-11T01:48:59.657Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-groups.js",
+      "bytes": 14772,
+      "sha256": "0F20EAF71C4D16205919A018614F3574461CEE8019E4F694F09F112FBCF35989",
+      "mtime": "2026-09-11T01:48:59.654Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-groups.js.map",
+      "bytes": 10666,
+      "sha256": "ACEDE4C32A83BF899E181DB8C62A5B1644EC06986AB1DA41256A7FDCACB778AB",
+      "mtime": "2026-09-11T01:48:59.654Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-pairing.d.ts",
+      "bytes": 3465,
+      "sha256": "D7EF7C4A3B83A391A6459A57B94DD9A28B12FC5F1A5AE11630174A3F6F8548D1",
+      "mtime": "2026-09-11T01:48:59.760Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-pairing.d.ts.map",
+      "bytes": 688,
+      "sha256": "7D44D361507A34FA035EFE6FA909917CD259B4265DD04386484B54FF9C4E2800",
+      "mtime": "2026-09-11T01:48:59.760Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-pairing.js",
+      "bytes": 5249,
+      "sha256": "C83C93B80E038878783B10722377A828305DD0025E531F09AC737E0EA99DC0F9",
+      "mtime": "2026-09-05T18:59:59.468Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-pairing.js.map",
+      "bytes": 3046,
+      "sha256": "9C8740A3EB26B5DD9CFB63EF4BE55FF56015BA58766D713AB7D11F41BAAB6E0D",
+      "mtime": "2026-09-05T18:59:59.468Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-segments.d.ts",
+      "bytes": 3703,
+      "sha256": "1D8230CBA60DC2C71C527296A13CFF6B2B15165DE2ACF4E5C3B8FE9B0B47CDB2",
+      "mtime": "2026-09-11T01:48:59.763Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-segments.d.ts.map",
+      "bytes": 709,
+      "sha256": "570FC212760C733F950B4A7F11904A971F86F7C0C8FB2690E196558210569A7B",
+      "mtime": "2026-09-11T01:48:59.762Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-segments.js",
+      "bytes": 7391,
+      "sha256": "B64A513BF70B9BFEA7DD0F78FC3D78E759E2E599B06DEC4A393E12293F9A3E93",
+      "mtime": "2026-09-05T18:59:59.596Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/tool-segments.js.map",
+      "bytes": 3105,
+      "sha256": "5A88B495308556A9B4075395EFDD167EC470D568465AC4C943B7E561560C0D21",
+      "mtime": "2026-09-05T18:59:59.596Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/types.d.ts",
+      "bytes": 6626,
+      "sha256": "76DCE36973BA8908BDEEA2399E8875B894F7E58CEDA772C5C29E894B40EE771E",
+      "mtime": "2026-09-11T01:48:59.779Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/types.d.ts.map",
+      "bytes": 3265,
+      "sha256": "5E50FBE5EA8576D1D7C881D3E1CB366D812780B6BAB59E9A1A57C02C597F4D92",
+      "mtime": "2026-09-11T01:48:59.779Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/types.js",
+      "bytes": 766,
+      "sha256": "A2B99DF3E4F2EF62A35C58906F586F3FCEF6ECD6654BA09CD7C94F959DA80C3A",
+      "mtime": "2026-09-10T12:44:58.162Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/types.js.map",
+      "bytes": 152,
+      "sha256": "E2130E007FFD397C2CBCD7E67453255AC17F2E1C33BCDA416ABAC234819BF711",
+      "mtime": "2026-09-10T12:44:58.162Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/zones.d.ts",
+      "bytes": 9125,
+      "sha256": "057392E6BAEE59FFD37C6C5B5C45FC2C324321F7B4846783ECF473FEA0925DBF",
+      "mtime": "2026-09-11T01:48:59.839Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/zones.d.ts.map",
+      "bytes": 2671,
+      "sha256": "4E00DB9AF759C965035B659E3DA58A4C6A38895F0E6DA9CE2913FB7839B8A182",
+      "mtime": "2026-09-11T01:48:59.838Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/zones.js",
+      "bytes": 12271,
+      "sha256": "4BB2EC88B7F14D7633C84D1C851A56D42C1B8FCF7EF81DB440CBBE6418543085",
+      "mtime": "2026-09-11T01:48:59.837Z"
+    },
+    {
+      "path": "lib/types/internal/compaction/zones.js.map",
+      "bytes": 8189,
+      "sha256": "00EB9D0AA74B71EE6661679F775343A1B8CA00DD2F75D917B187AD89EB4721F7",
+      "mtime": "2026-09-11T01:48:59.836Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/batch.d.ts",
+      "bytes": 4111,
+      "sha256": "1FACED329D38182509FCCDA3ABE5E4EB8BE68127C0FF1834D46C5888B5E1AB04",
+      "mtime": "2026-09-11T01:48:59.769Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/batch.d.ts.map",
+      "bytes": 1313,
+      "sha256": "B7922650476584D067D058A4CC2E4A7C442F978DC5F26E59A93C316C71FA00D1",
+      "mtime": "2026-09-11T01:48:59.769Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/batch.js",
+      "bytes": 5078,
+      "sha256": "C696459FB1239B07366FEFB45E08922F8A687618A20FDF331D3E7DA515621441",
+      "mtime": "2026-09-10T12:44:58.087Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/batch.js.map",
+      "bytes": 2337,
+      "sha256": "E1950BFC6CFE415CADB3160F347847698F04D6ED1B886D9DF0ADC9DEEED4395A",
+      "mtime": "2026-09-10T12:44:58.087Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/bytes.d.ts",
+      "bytes": 2136,
+      "sha256": "3803159A0582C5366160A07CD4BE64AC12F040CC406F7BDA9BBAC4CB07B3044C",
+      "mtime": "2026-09-05T18:41:12.803Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/bytes.d.ts.map",
+      "bytes": 737,
+      "sha256": "E267806F6236CE90F562D828361A8A3312F254C555A2BEFC6E3A7C654EBB457A",
+      "mtime": "2026-09-05T18:41:12.803Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/bytes.js",
+      "bytes": 2592,
+      "sha256": "CCF71E19C0532844CFBD356C7FDC2452FA6DD69947FE736268BD8B4848559131",
+      "mtime": "2026-09-05T18:41:12.802Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/bytes.js.map",
+      "bytes": 1432,
+      "sha256": "33498992ACC4990BBC10E1C3C22C0D8E155122F422E1EC92777660E2105BABA3",
+      "mtime": "2026-09-05T18:41:12.802Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/config.d.ts",
+      "bytes": 1042,
+      "sha256": "BC41DB44D1FAAB872EC90AC93264FE53D266AC02182EF3CC37699A36294E4778",
+      "mtime": "2026-09-11T01:48:59.766Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/config.d.ts.map",
+      "bytes": 300,
+      "sha256": "5FBF42CAC3D407D469F6A1CBBEF0DB8D58317312B73203330395F2E11B704415",
+      "mtime": "2026-09-11T01:48:59.766Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/config.js",
+      "bytes": 3123,
+      "sha256": "B3DE84B38A06B0D2CA253455E6E77703193647929CC752AB4CA27A5CA088D299",
+      "mtime": "2026-09-10T12:44:58.081Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/config.js.map",
+      "bytes": 2096,
+      "sha256": "80D6EF2D1EC49A76BA393875F11B84EAA82E51786E2EA74513547D32BB905AC0",
+      "mtime": "2026-09-10T12:44:58.081Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/domain.d.ts",
+      "bytes": 1815,
+      "sha256": "BB03DF41864C850A20749BACDC87C17D4EC9D35DF876D9E5D94B1ADAE5972B47",
+      "mtime": "2026-09-11T01:48:59.716Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/domain.d.ts.map",
+      "bytes": 435,
+      "sha256": "A5AC6BCC067334931F295B2BE87FFBF5BAFFC495DC5CA326DA8B010E8432A6F0",
+      "mtime": "2026-09-11T01:48:59.716Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/domain.js",
+      "bytes": 1704,
+      "sha256": "66612FFC24AA12D314997E46652AFB3412DFEE939639CA6CEE9ABD8A56F6C0D7",
+      "mtime": "2026-09-05T18:59:59.549Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/domain.js.map",
+      "bytes": 613,
+      "sha256": "1EF9F6F1E68335024A10DE5B0C006BB8ABB70A4CF4EBC9E9DBD75CCDA92A9A5D",
+      "mtime": "2026-09-05T18:59:59.549Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/filter.d.ts",
+      "bytes": 4609,
+      "sha256": "8D8691B7E2B35C5E29F02D85D522F5018B391DC15CF2C0659AC7BEE2513B0C99",
+      "mtime": "2026-09-05T18:59:59.563Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/filter.d.ts.map",
+      "bytes": 1775,
+      "sha256": "36E2F185AE73FBAE7574DC59FA9A79E117E4FE2D5BCD602F5689D944C0FB6197",
+      "mtime": "2026-09-05T18:59:59.563Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/filter.js",
+      "bytes": 22549,
+      "sha256": "D1DC35461F40883E05FB4CC25190DD0FD7E64ED742F6094423BD05611746D237",
+      "mtime": "2026-09-05T18:59:59.562Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/filter.js.map",
+      "bytes": 17213,
+      "sha256": "5A03CFC7B8931C6F95F645BD6EC2FD7FA047EA20F8896B1765BBE8FF3DA23400",
+      "mtime": "2026-09-05T18:59:59.561Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/host.d.ts",
+      "bytes": 3908,
+      "sha256": "EBCC069B555314D5482166F635F8068B055F8BCFDEF37785559D8543F3FFD659",
+      "mtime": "2026-09-11T01:48:59.723Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/host.d.ts.map",
+      "bytes": 800,
+      "sha256": "AFC78652D13939F54655FA9467CC9CA8F8CEFD2227AA8C9E64FD885C6A70D4BF",
+      "mtime": "2026-09-11T01:48:59.723Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/host.js",
+      "bytes": 10587,
+      "sha256": "B5923676FFD32AEDDAA55C7196BDA69A2D64D4D8FDA312F47E5AFC880A446685",
+      "mtime": "2026-09-10T12:44:58.190Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/host.js.map",
+      "bytes": 5973,
+      "sha256": "379396B7872D9AFFD8175FB2C6AFA649209C16F11EB7D611381BCB7592EC5496",
+      "mtime": "2026-09-10T12:44:58.190Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/prompt.d.ts",
+      "bytes": 1959,
+      "sha256": "B51AD1E0FACBD3E92A220626707BAA5D566C34A9C01338E107E0CB17AEA4F03F",
+      "mtime": "2026-09-11T01:48:59.768Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/prompt.d.ts.map",
+      "bytes": 620,
+      "sha256": "B4CA6FE6E43FB0235C3ED3B64504E28745FA6C73B76BC2B0EB581702FA44A3A1",
+      "mtime": "2026-09-11T01:48:59.768Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/prompt.js",
+      "bytes": 4974,
+      "sha256": "54236E3A92F7222C23A08C458118A515EBED3151BD90C92B697FDF17433D7113",
+      "mtime": "2026-09-10T12:44:58.084Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/prompt.js.map",
+      "bytes": 1524,
+      "sha256": "6D99346CB62017C61406CCB7FEF57735B71BDDEAF1C97241E8FB93446D155BB2",
+      "mtime": "2026-09-10T12:44:58.084Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/service.d.ts",
+      "bytes": 7535,
+      "sha256": "2E35635753188595A8E24A0457B4A4387374EBFF5DF30B2ECC5581891C6028CB",
+      "mtime": "2026-09-11T01:48:59.720Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/service.d.ts.map",
+      "bytes": 2045,
+      "sha256": "BF4D92F71F16BB48DB88482315BA070214720EC55B95142B90828F5C8FC4E0FC",
+      "mtime": "2026-09-11T01:48:59.719Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/service.js",
+      "bytes": 36191,
+      "sha256": "849C2FBA1405B53E623F5FC8B1B5F5A3EAB00A116E11AD5E897820ED6ACF6217",
+      "mtime": "2026-09-10T14:30:02.293Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/service.js.map",
+      "bytes": 27220,
+      "sha256": "A387D8EF869E17B459A86FDB7441C300B9E33509AF978956BED19FEC32818BCB",
+      "mtime": "2026-09-10T14:30:02.291Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/types.d.ts",
+      "bytes": 6480,
+      "sha256": "C18D4AE433E729DF3344EC78B9F2D28227A3781201B1948DB492E18E465E5232",
+      "mtime": "2026-09-11T01:48:59.766Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/types.d.ts.map",
+      "bytes": 3612,
+      "sha256": "524996E023B93ED1984104AE11C2386C5DAC48C2EBBFA8BBFB042F97A79440CF",
+      "mtime": "2026-09-11T01:48:59.765Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/types.js",
+      "bytes": 347,
+      "sha256": "E9075522CE83BE1689EBDC1E59E4E8994856C51BC9B88C8F2969C0B6AA085643",
+      "mtime": "2026-09-10T12:44:58.183Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/types.js.map",
+      "bytes": 153,
+      "sha256": "65AD1DA5F1EE4AFC9848EF27AC7C6912BA5D083822AF5DC7853CA741210B2022",
+      "mtime": "2026-09-10T12:44:58.183Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/update.d.ts",
+      "bytes": 6713,
+      "sha256": "25051BA2CF1DD1F5361DD01B84E5F64467D7ADE4949C2F4D9497939F511D3428",
+      "mtime": "2026-09-11T01:48:59.725Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/update.d.ts.map",
+      "bytes": 2391,
+      "sha256": "611C5BA47BB69FD9DC0F67FA3F72C0646A5400BA2FF1BE36E52ECF947D8F43AE",
+      "mtime": "2026-09-11T01:48:59.725Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/update.js",
+      "bytes": 17017,
+      "sha256": "0AF4E1D548E908D0CEEB2B22F1D52FF2799299049D553D3C80780EF7B5874A63",
+      "mtime": "2026-09-10T14:30:02.002Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/update.js.map",
+      "bytes": 12153,
+      "sha256": "AF80165A20D0D8F3BEAAED1A9FC3A90682C7E1A898D481930D9346EBC25C10F1",
+      "mtime": "2026-09-10T14:30:02.001Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/worker.d.ts",
+      "bytes": 8819,
+      "sha256": "D382838A478921FA698120AC8E442908D65F3DABA5F2505E68FD5E456936E03B",
+      "mtime": "2026-09-11T01:48:59.730Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/worker.d.ts.map",
+      "bytes": 3710,
+      "sha256": "5F710EB9A851BAB22EA60F3C4EEA1FB3891791F24F97D758B3EE32D0E997BC39",
+      "mtime": "2026-09-11T01:48:59.730Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/worker.js",
+      "bytes": 16531,
+      "sha256": "6254C1F126601AFC8A4DC925A17D9D4CBB82C4714213E8F5E68BC0DA308EB5B0",
+      "mtime": "2026-09-10T12:44:58.024Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/basic/worker.js.map",
+      "bytes": 9870,
+      "sha256": "BBF8D1AC2AFD23705B1492B83916EE9EE5A9B8343AB5832D6012939AD47B3C1F",
+      "mtime": "2026-09-10T12:44:58.024Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/audit.d.ts",
+      "bytes": 9326,
+      "sha256": "41C5B0FFAA11160514CE6606A716024A834F9B1A03A72667E9E088014E7C6414",
+      "mtime": "2026-09-11T01:48:59.790Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/audit.d.ts.map",
+      "bytes": 1953,
+      "sha256": "8E7A9599181C6784308D7C650CC62BE5381141B4DC1994E9DADA180BC65CEEA0",
+      "mtime": "2026-09-11T01:48:59.789Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/audit.js",
+      "bytes": 9264,
+      "sha256": "CF853A97DE4C68A2AA593A154F9258C3AA7E64FBA3297178B619CD6E4406AD94",
+      "mtime": "2026-09-08T03:35:21.025Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/audit.js.map",
+      "bytes": 4888,
+      "sha256": "0E45B036CF8AE9CB9C684015E873D9B98B7762EB37B08705D70CEF8993135942",
+      "mtime": "2026-09-08T03:35:21.025Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/brand.d.ts",
+      "bytes": 1802,
+      "sha256": "EBE0251BED0EF5B2AEDDA83E7CC80AC84F4080DDE79FF97647D9003E3FB93077",
+      "mtime": "2026-09-05T18:41:12.777Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/brand.d.ts.map",
+      "bytes": 488,
+      "sha256": "EFBAB8A6D9CE6B86E89088FD9EE7247895BBCA32D7DAC4DAFB93215D7FC53BCF",
+      "mtime": "2026-09-05T18:41:12.777Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/brand.js",
+      "bytes": 932,
+      "sha256": "3DC7518C28373DDD251AD5B989D058726079FB7E864CAC087D012788A0B1900A",
+      "mtime": "2026-09-05T18:41:12.776Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/brand.js.map",
+      "bytes": 314,
+      "sha256": "F17B4A8F8626C2479124D4C5B653937F1F8BB7064D87922E0F66B3661DDA5956",
+      "mtime": "2026-09-05T18:41:12.776Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/index.d.ts",
+      "bytes": 3149,
+      "sha256": "642706D42B746C9512E1A23B69AB31569E7FC53F2B6089F92A344AC33B9B6EFC",
+      "mtime": "2026-09-11T01:48:59.712Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/index.d.ts.map",
+      "bytes": 1057,
+      "sha256": "E06F9B84FBB326F43C991B27A3DC4D0CF9DE9862FD00831117B1BA7C53803D36",
+      "mtime": "2026-09-11T01:48:59.711Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/index.js",
+      "bytes": 2000,
+      "sha256": "1F91115FCCF47870BC611B7EB845165F4C2A7046D440BED14B24AD32612D5463",
+      "mtime": "2026-09-10T12:44:58.006Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/index.js.map",
+      "bytes": 707,
+      "sha256": "D0D96E7C021F5CBD849BBC2B678244A123B901166C1D1174B91902B09D5BC1F6",
+      "mtime": "2026-09-10T12:44:58.006Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/spec.d.ts",
+      "bytes": 3817,
+      "sha256": "26162F0EDEFE40FE4EDD34F442A7F0521EEA6E7342FB4AB22E2D183D09E39A8E",
+      "mtime": "2026-09-11T01:48:59.785Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/spec.d.ts.map",
+      "bytes": 1355,
+      "sha256": "7427C2ADFFB7D80641FE0D339249AB28BF299AE61A4734D766E1DF29CACE8E3A",
+      "mtime": "2026-09-11T01:48:59.785Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/spec.js",
+      "bytes": 6057,
+      "sha256": "4ABC901DAB93B90F51E0A25DF8468187A0F35AAC80379CA29C66D0D06D0363ED",
+      "mtime": "2026-09-08T03:03:56.680Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/spec.js.map",
+      "bytes": 3892,
+      "sha256": "72373124804BAE22AD7FF27406D5F522BD2875D3673958E3D969463A2A6A860D",
+      "mtime": "2026-09-08T03:03:56.679Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/types.d.ts",
+      "bytes": 14426,
+      "sha256": "CAB6241E199D771335BD15448A0CA64BD844CEB60FB9B1D5F8E6063CB48E3A36",
+      "mtime": "2026-09-11T01:48:59.783Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/types.d.ts.map",
+      "bytes": 5619,
+      "sha256": "87A64C8FB37B79525155CDC2EBAB05F1D09694C3FF92D655E5596A236672F205",
+      "mtime": "2026-09-11T01:48:59.782Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/types.js",
+      "bytes": 738,
+      "sha256": "BDA16E27ED7C230A662BF9C3D4DCD26EA700B1C1B3E2219902510B78A50E8FDB",
+      "mtime": "2026-09-08T03:03:56.492Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/contract/types.js.map",
+      "bytes": 163,
+      "sha256": "ABC6EBC35335C10F129CAE239FE95C448526301018CBC9A9C8CDBEE89C28C09E",
+      "mtime": "2026-09-08T03:03:56.491Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/service.d.ts",
+      "bytes": 718,
+      "sha256": "3A836377BCDB60A9C83147FD6C03773381D81D8D6B022827D96794ADF40127F4",
+      "mtime": "2026-09-11T01:48:59.733Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/service.d.ts.map",
+      "bytes": 601,
+      "sha256": "07A79E69C926256FBC3C45F323DA29477F1186410C7473A9696CDB365FF06109",
+      "mtime": "2026-09-11T01:48:59.733Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/service.js",
+      "bytes": 7961,
+      "sha256": "307E190F760AA1964BB7D9F9540A0FA6346D7F538793AC8FC0BB7471FB693A41",
+      "mtime": "2026-09-10T12:44:58.040Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/service.js.map",
+      "bytes": 4646,
+      "sha256": "3236F21BED9530F3C4E774F5D6058656FF37B68840F5A8F6EBEB20FACBCA8B64",
+      "mtime": "2026-09-10T12:44:58.039Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/types.d.ts",
+      "bytes": 4711,
+      "sha256": "D4A6EB342FC4C8E0F55A9DE9A0266D0D5E7A5783C446E4D588E37FB358CB649D",
+      "mtime": "2026-09-11T01:48:59.771Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/types.d.ts.map",
+      "bytes": 2025,
+      "sha256": "3DC70552084ADA1B776F7CD41F901FE51248F51A65331B6535E47FCDFA29B17F",
+      "mtime": "2026-09-11T01:48:59.771Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/types.js",
+      "bytes": 1570,
+      "sha256": "10C92BF9E794B2E206827E345E8E68BB930E6150D6641DDBC046CB0564455B6D",
+      "mtime": "2026-09-10T12:44:58.089Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/control/types.js.map",
+      "bytes": 181,
+      "sha256": "AFBE4827C2D82F4AB2B356D4AD464A38C310E013F1D30510552FC7CD52C24132",
+      "mtime": "2026-09-10T12:44:58.089Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/index.d.ts",
+      "bytes": 1913,
+      "sha256": "3ACED82233AD71E8D4AE1618DB6956D70472BDB985C936ACF6C9884D4C7EFD77",
+      "mtime": "2026-09-11T01:48:59.722Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/index.d.ts.map",
+      "bytes": 1230,
+      "sha256": "4BD24E45F59665B2BF7B2D274C708C0CE8DD12460F08839D64C071F351562AE9",
+      "mtime": "2026-09-11T01:48:59.721Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/index.js",
+      "bytes": 1253,
+      "sha256": "683732B2A215B0AD5F2B2E5188CA30DACB7F38064948481B190BA68D8F59C402",
+      "mtime": "2026-09-10T12:44:58.015Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/index.js.map",
+      "bytes": 791,
+      "sha256": "B2E4E41A51E0B4073367AACDAA815BEFBE9932B3B71BF5117488C2424C521865",
+      "mtime": "2026-09-10T12:44:58.014Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/index.d.ts",
+      "bytes": 2382,
+      "sha256": "B1DDC168422CC1CCCFBA5534FE03EB28B1E0975E522B22B2FAF8EFF584F71D07",
+      "mtime": "2026-09-11T01:48:59.775Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/index.d.ts.map",
+      "bytes": 645,
+      "sha256": "E093D470200B090B0E2841DEF23592BABDFCC5774D6172F2412640B5EA98C402",
+      "mtime": "2026-09-11T01:48:59.775Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/index.js",
+      "bytes": 3454,
+      "sha256": "CC4815D3383A3619E296EEE2648229B8DA186DDC5D8FB1A12B14901FB0F4731E",
+      "mtime": "2026-09-10T12:44:58.094Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/index.js.map",
+      "bytes": 1308,
+      "sha256": "C84D7FB871D8B80782CA53DF7715C8D6E48C60A46D127E6851AB2EA063B36F4D",
+      "mtime": "2026-09-10T12:44:58.094Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/render.d.ts",
+      "bytes": 1728,
+      "sha256": "8BB3AA5AE494CC5F731D7B40B557854943F7D452D94676A75F9DD3A7E384E365",
+      "mtime": "2026-09-11T01:48:59.791Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/render.d.ts.map",
+      "bytes": 355,
+      "sha256": "88FCA047D546121D85860113DCA60E3D106AE5AFA36D657236E45A56E5AFC8F5",
+      "mtime": "2026-09-11T01:48:59.791Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/render.js",
+      "bytes": 5172,
+      "sha256": "3EE475D031302138C48A7F9D587369B64DAA54E8A99CF6F35070608B77AD2CF4",
+      "mtime": "2026-09-08T03:03:56.692Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/render.js.map",
+      "bytes": 3467,
+      "sha256": "4BB066CD2229D5CB72D7A46F02C17E7F97930EE017377C6960DC1E6E96D56405",
+      "mtime": "2026-09-08T03:03:56.691Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/types.d.ts",
+      "bytes": 735,
+      "sha256": "E0D1E35C3F223213AA552C7BCB4D1598797D0E0B6B675F0242B77650E795F05D",
+      "mtime": "2026-09-05T18:41:12.849Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/types.d.ts.map",
+      "bytes": 247,
+      "sha256": "C6DFE750829E4268821E7C778A9CFEAFF68A3BB1F07F2A46CBBCAD7EF443EEF0",
+      "mtime": "2026-09-05T18:41:12.849Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/types.js",
+      "bytes": 251,
+      "sha256": "E22EB0B2D8ACE4B0AADCC235E779F7C611E37777B81566C22C4726C55445CA8A",
+      "mtime": "2026-09-05T18:41:12.849Z"
+    },
+    {
+      "path": "lib/types/internal/task-state/prompt/types.js.map",
+      "bytes": 153,
+      "sha256": "5427EE89FC6A9617547F70BC6A97AD85CFA2BB27D25870F25C7E9FC08A523232",
+      "mtime": "2026-09-05T18:41:12.849Z"
+    },
+    {
+      "path": "lib/types/task-state-basic.d.ts",
+      "bytes": 1384,
+      "sha256": "DC3B751097DCC04887BAB15DD0EAD2283F2A721575C57A8AD55C3E4A9EDD4C3E",
+      "mtime": "2026-09-11T01:48:59.721Z"
+    },
+    {
+      "path": "lib/types/task-state-basic.d.ts.map",
+      "bytes": 465,
+      "sha256": "BA65F91B84A5CC818517FF795CB624753F022C0912ADC9A73D0AE2EEEF2A2639",
+      "mtime": "2026-09-11T01:48:59.720Z"
+    },
+    {
+      "path": "lib/types/task-state-basic.js",
+      "bytes": 1083,
+      "sha256": "AD8AAA08BD01E698D5F30A177106C6920EA752900309071E0B863180FDC4592B",
+      "mtime": "2026-09-10T12:44:58.152Z"
+    },
+    {
+      "path": "lib/types/task-state-basic.js.map",
+      "bytes": 307,
+      "sha256": "747857C6D0EBE0DF338E2104AC3A9A6722466401099819ABE4508C668F10050F",
+      "mtime": "2026-09-10T12:44:58.151Z"
+    },
+    {
+      "path": "lib/types/task-state-control.d.ts",
+      "bytes": 172,
+      "sha256": "CBBC443607FF580EC70A949384FCB01EED377D896CA9696398BC8BE0F69B3BC7",
+      "mtime": "2026-09-11T01:48:59.735Z"
+    },
+    {
+      "path": "lib/types/task-state-control.d.ts.map",
+      "bytes": 197,
+      "sha256": "9EF440DD0D04CBB212D07BDCE9C2F6F29F18FB6374D19F6A3407CAC6FF9954F8",
+      "mtime": "2026-09-11T01:48:59.734Z"
+    },
+    {
+      "path": "lib/types/task-state-control.js",
+      "bytes": 170,
+      "sha256": "3FCBFFB727242391C8B58EF26EA1493B4F8ACA158562EECA5574D9AB6CE55B3F",
+      "mtime": "2026-09-08T03:35:21.144Z"
+    },
+    {
+      "path": "lib/types/task-state-control.js.map",
+      "bytes": 195,
+      "sha256": "6DFF47CCC57D0F1FC57D734A04F0471683199F0C3354957B551A71BAF04C44F0",
+      "mtime": "2026-09-08T03:35:21.143Z"
+    },
+    {
+      "path": "lib/types/task-state-prompt.d.ts",
+      "bytes": 1878,
+      "sha256": "128E67EBE30BE460A9EF4599353F95449531694332BDA30DCECB909992002B26",
+      "mtime": "2026-09-11T01:48:59.736Z"
+    },
+    {
+      "path": "lib/types/task-state-prompt.d.ts.map",
+      "bytes": 632,
+      "sha256": "B4C9337EBC0A111355CB4D654A7BBD8EBD1C7655574DC1B982F679B2C864257A",
+      "mtime": "2026-09-11T01:48:59.736Z"
+    },
+    {
+      "path": "lib/types/task-state-prompt.js",
+      "bytes": 2870,
+      "sha256": "2A3B89BAB4AC3B860D91DC76AA637B0AC9DBF5376D9A91386C8902FDA2031FAF",
+      "mtime": "2026-09-10T12:44:58.045Z"
+    },
+    {
+      "path": "lib/types/task-state-prompt.js.map",
+      "bytes": 1293,
+      "sha256": "E0CDACE62AF179B3E7393F3487863C006F338F0D5DB97EA37DF2A548C31F04A1",
+      "mtime": "2026-09-10T12:44:58.044Z"
+    },
+    {
+      "path": "lib/types/task-state.d.ts",
+      "bytes": 2335,
+      "sha256": "1CFC7F1294A539039FD0C0017D7103F9A8E2A1EA6951A0A257D288EAECD93982",
+      "mtime": "2026-09-11T01:48:59.738Z"
+    },
+    {
+      "path": "lib/types/task-state.d.ts.map",
+      "bytes": 993,
+      "sha256": "B019C1163C31A914CB5FDACE3FBCF803B169E26AF0D172E318AA3C427F049D70",
+      "mtime": "2026-09-11T01:48:59.738Z"
+    },
+    {
+      "path": "lib/types/task-state.js",
+      "bytes": 1601,
+      "sha256": "C1B56E22EC76C87186B86A91604EFD32D675F5DEFBFA69C4C848337EEE4E7EE8",
+      "mtime": "2026-09-08T03:35:21.148Z"
+    },
+    {
+      "path": "lib/types/task-state.js.map",
+      "bytes": 601,
+      "sha256": "5609E8CD7C12D8A0502C093A9508ED99305C9E5D42ABE9E106CDBDA246892749",
+      "mtime": "2026-09-08T03:35:21.147Z"
+    },
+    {
+      "path": "lib/types/tool-result-pruner.d.ts",
+      "bytes": 8099,
+      "sha256": "899441AA779ABB01E13220DAD6B1DBE3A5E8D988582A18BA01698A22FCE3F95D",
+      "mtime": "2026-09-11T01:48:59.683Z"
+    },
+    {
+      "path": "lib/types/tool-result-pruner.d.ts.map",
+      "bytes": 1526,
+      "sha256": "D213993C177F1082380BF50B30F4FB79FF0F951FF88BFD8D01F4A83953DF848E",
+      "mtime": "2026-09-11T01:48:59.682Z"
+    },
+    {
+      "path": "lib/types/tool-result-pruner.js",
+      "bytes": 17924,
+      "sha256": "E2ACA72D1E8ADFC9EDF6A43CD648042273A0DCCE9F9CCF100CAB3FC25AC147CE",
+      "mtime": "2026-09-11T01:48:59.679Z"
+    },
+    {
+      "path": "lib/types/tool-result-pruner.js.map",
+      "bytes": 9674,
+      "sha256": "CF52254185525F26B047A605A4D1F9AFF44C049DD16EFDB82A7D839D8AB252B5",
+      "mtime": "2026-09-11T01:48:59.679Z"
+    },
+    {
+      "path": "lib/types/tsconfig.build.tsbuildinfo",
+      "bytes": 131125,
+      "sha256": "E15F472780508153F5572C85F6FF9FDDE3CF6AD2EB26B78876CC40BF811D3328",
+      "mtime": "2026-09-11T01:48:59.853Z"
+    },
+    {
+      "path": "package.json",
+      "bytes": 6910,
+      "sha256": "20454835EACDDC3878B65CBAA7BEA95309A2E6715F8A4B7A1E7C17C8786702E9",
+      "mtime": "2026-09-08T02:48:36.636Z"
+    },
+    {
+      "path": "presets/contextual/agent.cordis.yml",
+      "bytes": 14711,
+      "sha256": "E9EA912E6D4917F4C08BCF8F0B997DC0E0D1CAD0A39D19A3E6D7D52704EFBBC5",
+      "mtime": "2026-09-05T12:19:59.126Z"
+    },
+    {
+      "path": "presets/contextual/preset.yml",
+      "bytes": 284,
+      "sha256": "C6DA64A97038FD007AA87AE85E1489BF1867972ADAB415DBE00977A3E844AF6D",
+      "mtime": "2026-09-06T02:54:53.177Z"
+    },
+    {
+      "path": "scripts/patch-client-id.mjs",
+      "bytes": 428,
+      "sha256": "7300F858ACD159C5686E34D74ABFF4A83A636DB6916B2DA147C826BF4A6E29E1",
+      "mtime": "2026-09-05T18:40:54.481Z"
+    },
+    {
+      "path": "tsconfig.build.json",
+      "bytes": 403,
+      "sha256": "01CAD375F5EEFDE0E74DFC4655D6FACC3BCA0FAEC1396B4835EC0FE6185032CA",
+      "mtime": "2026-09-05T18:30:59.628Z"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 693,
+      "sha256": "E165353730B5170881A3E81F18F191F0B8EFD6233A4D7599D1BB7103814471FB",
+      "mtime": "2026-09-05T18:39:41.600Z"
+    },
+    {
+      "path": "tsdown.config.ts",
+      "bytes": 516,
+      "sha256": "088A4E9742C6F5E83639D15BA8B57B07D70CB1F7509F31485870D0616D77EC8F",
+      "mtime": "2026-09-07T23:13:07.186Z"
+    },
+    {
+      "path": "vitest.config.ts",
+      "bytes": 1187,
+      "sha256": "E83E33C5C7F11668E44A3DE3D0B8493F66658251006436ADE33640964AFE75D5",
+      "mtime": "2026-09-08T00:17:57.529Z"
+    }
+  ]
+}

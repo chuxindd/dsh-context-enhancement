@@ -1,0 +1,36 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ × 审计资料/实验结果/B7-E09修复后回归/b7-e09-regression.spec.ts > E09 · fork/resume lifecycle identity, stable, cursor and inherited prefix > resumes the same-lifecycle stable and gives a forked child its own stable, cursor and inherited prefix 625ms
+   → expected [ …(2) ] to deep equally contain StringContaining{…}
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  审计资料/实验结果/B7-E09修复后回归/b7-e09-regression.spec.ts > E09 · fork/resume lifecycle identity, stable, cursor and inherited prefix > resumes the same-lifecycle stable and gives a forked child its own stable, cursor and inherited prefix
+AssertionError: expected [ …(2) ] to deep equally contain StringContaining{…}
+
+- Expected:
+StringContaining "revision 1, source event 5"
+
++ Received:
+[
+  "E09 hidden node E09-HIDDEN-SNAPSHOT-NODE: a plugin-sourced runtime-context snapshot shape for session e09-parent.",
+  "Current runtime context: none. Earlier runtime-context snapshots no longer apply.",
+]
+
+ ❯ 审计资料/实验结果/B7-E09修复后回归/b7-e09-regression.spec.ts:1586:8
+    1584|     expect(realStepView['requestSnapshotCount']).toBeGreaterThanOrEqua…
+    1585|     expect((realStepView['requestSnapshotTexts'] as string[]) ?? [])
+    1586|       .toContainEqual(expect.stringContaining(`revision ${parentRevisi…
+       |        ^
+    1587|     expect(assemblyLayer['renderedRevision']).toBe(parentRevisionA)
+    1588|     expect(assemblyLayer['renderedSourceCursor']).toBe(parentCursorA)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  17:38:12
+   Duration  1.37s (transform 408ms, setup 0ms, import 569ms, tests 626ms, environment 0ms)
+

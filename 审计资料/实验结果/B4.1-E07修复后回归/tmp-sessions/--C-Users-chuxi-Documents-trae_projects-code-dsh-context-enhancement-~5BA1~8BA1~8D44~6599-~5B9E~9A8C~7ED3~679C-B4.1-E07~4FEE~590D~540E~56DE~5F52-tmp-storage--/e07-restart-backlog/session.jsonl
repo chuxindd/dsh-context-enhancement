@@ -1,0 +1,12 @@
+{"type":"session","version":0,"id":"e07-restart-backlog","createdAt":1700000000000,"cwd":"C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage","delegationDepth":0}
+{"type":"turn/start","seq":0,"time":1789270386175,"data":{"turn":1}}
+{"type":"user/message","seq":1,"time":1789270386176,"data":{"content":[{"type":"text","text":"B4.1 stage one user message"}],"source":{"kind":"user"},"role":"user","id":"fc94f0ae-2db4-4103-a31a-aa5081758dd6"},"surfaceOp":"append"}
+{"type":"assistant/message","seq":2,"time":1789270386177,"data":{"turn":1,"step":1,"message":{"role":"assistant","content":[{"type":"text","text":"B4.1 stage one assistant message"}],"source":{"kind":"model","provider":"current-route","model":"current-model"},"id":"cd7ad790-a728-4a88-841c-012610261835"}},"surfaceOp":"append"}
+{"type":"turn/end","seq":3,"time":1789270386177,"data":{"turn":1,"reason":{"kind":"completed"}}}
+{"type":"session/end-seed","seq":4,"time":1789270386378,"data":{}}
+{"type":"turn/start","seq":5,"time":1789270386380,"data":{"turn":2}}
+{"type":"user/message","seq":6,"time":1789270386380,"data":{"content":[{"type":"text","text":"B4.1 stage two backlog user message"}],"source":{"kind":"user"},"role":"user","id":"dbef423d-0eee-4a45-a4c1-945c62e3e5a7"},"surfaceOp":"append"}
+{"type":"assistant/message","seq":7,"time":1789270386380,"data":{"turn":2,"step":1,"message":{"role":"assistant","content":[{"type":"text","text":"B4.1 stage two backlog assistant message"}],"source":{"kind":"model","provider":"current-route","model":"current-model"},"id":"3ce37959-6007-4d11-aef5-8bd082ce53bd"}},"surfaceOp":"append"}
+{"type":"turn/end","seq":8,"time":1789270386380,"data":{"turn":2,"reason":{"kind":"completed"}}}
+{"type":"session/end-seed","seq":9,"time":1789270386545,"data":{}}
+{"type":"user/message","seq":10,"time":1789270388622,"data":{"content":[{"type":"text","text":"B4.1 stage four single new user message"}],"source":{"kind":"user"},"role":"user","id":"dfe440ed-e067-4dc8-88f4-ef19c2a8d887"},"surfaceOp":"append"}

@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/E07-重启积压/e07-restart-backlog.spec.ts > E07 · restart backlog (does startup discover an unprocessed tail?) > reopens the same durable storage and session with an unprocessed eligible tail and never folds it until a new event arrives 3330ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:09:13
+   Duration  3.92s (transform 166ms, setup 0ms, import 416ms, tests 3.33s, environment 0ms)
+

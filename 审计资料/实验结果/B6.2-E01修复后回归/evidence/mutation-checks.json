@@ -1,0 +1,36 @@
+{
+  "batch": "B6.2",
+  "purpose": "Sanctioned mutation checks: prove the new recovery spec fails when the state machine's core guarantee is removed, then restore the exact source bytes.",
+  "method": "Temporarily patch one production constant/transition, run the new spec, observe the failure, revert the exact edit, re-hash and re-run.",
+  "checks": [
+    {
+      "id": "M1-no-audit-write-retry",
+      "file": "src/internal/compaction/tool-group-audit-store.ts",
+      "mutation": "TOOL_GROUP_AUDIT_WRITE_ATTEMPTS: 2 -> 1 (remove the bounded retry)",
+      "command": "npx vitest run tests/compaction-tool-audit-recovery.spec.ts -t \"transient\"",
+      "observed": "FAIL: 'absorbs one transient audit write failure through the real store and still commits success' — expected rows length 1, received 0 (the injected first backend write is lost, so no durable row exists at all)",
+      "testsFailed": 1,
+      "reverted": true
+    },
+    {
+      "id": "M2-abort-recorded-as-success",
+      "file": "src/internal/compaction/tool-group-audit.ts",
+      "mutation": "abortToolGroupAudit returns status 'success' instead of 'aborted' (fabricate a commit for a row nothing proved)",
+      "command": "npx vitest run tests/compaction-tool-audit-recovery.spec.ts",
+      "observed": "FAIL: 3 of 10 — the interrupted-attempt case, the foreign-owner case, and the conflicting-claim case (every case that asserts a landing is never fabricated)",
+      "testsFailed": 3,
+      "reverted": true
+    }
+  ],
+  "revertProof": {
+    "src/internal/compaction/tool-group-audit.ts": {
+      "sha256AfterRevert": "3745455351f5f218214fbb7fc46d94ff7cca6e01779718a8b6097509a0ce7c44",
+      "matchesPreMutationHash": true
+    },
+    "src/internal/compaction/tool-group-audit-store.ts": {
+      "sha256AfterRevert": "0cfe538a9a35a3aa9a8c40b28f02af6a379ae5dec229445af6e3e6615393404a",
+      "matchesPreMutationHash": true
+    }
+  },
+  "postRevertRun": "npx vitest run tests/compaction-tool-audit-recovery.spec.ts -> 10/10 passed"
+}

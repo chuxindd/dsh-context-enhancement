@@ -1,0 +1,8 @@
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/E08-Stable注入累积/e08-stable-injection.spec.ts > E08 · stable injection accumulation (append vs fixed slot/replacement) > commits 12 content-different revisions with one real step each and reports whether old snapshots stay model-visible 800ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:24:10
+   Duration  1.41s (transform 390ms, setup 0ms, import 431ms, tests 801ms, environment 0ms)

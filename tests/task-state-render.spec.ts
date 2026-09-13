@@ -10,10 +10,14 @@ import {
 
 const encoder = new TextEncoder()
 
+/** A stable that never had an authoritative Goal or TODO view. */
+const NO_GOAL = { status: 'none' } as const
+const NO_TODO = { status: 'none', items: [] } as const
+
 /** One committed stable whose lists carry deterministic, distinct content. */
 function canonical(): TaskStateStable {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     revision: 3,
     filterVersion: 'filter-v1',
     sourceCursor: 7,
@@ -32,9 +36,13 @@ function canonical(): TaskStateStable {
       { seq: 5, note: 'user message described the failure' },
       { seq: 7, note: 'tool/result confirmed the fix' },
     ],
-    todoReferences: [{ seq: 4, content: 'read the design docs' }],
+    todoReferences: [{ seq: 4, content: 'read the design docs [pending]' }],
+    goalView: { status: 'current', goalId: 'goal-1', goalRevision: 4, phase: 'active', objective: 'ship the durable task-state consumer' },
+    todoView: { status: 'current', sourceSeq: 4, items: [{ content: 'read the design docs', status: 'pending' }] },
     continuation: {
-      currentObjective: 'ship the durable task-state consumer',
+      // A stale model narrative: the authoritative goal above supersedes it and
+      // the renderer must never present both as the goal in force.
+      currentObjective: 'stale model narrative that must not render',
       currentFocus: 'rendering the bounded snapshot',
       openWork: ['cover the CJK boundary'],
       nextActions: ['run the focused gate'],
@@ -45,7 +53,7 @@ function canonical(): TaskStateStable {
 /** An otherwise-empty stable carrying only a continuation objective. */
 function continuationOnly(): TaskStateStable {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     revision: 1,
     filterVersion: 'filter-v1',
     sourceCursor: 0,
@@ -56,16 +64,21 @@ function continuationOnly(): TaskStateStable {
     risks: [],
     evidence: [],
     todoReferences: [],
+    goalView: NO_GOAL,
+    todoView: NO_TODO,
     continuation: { currentObjective: 'objective only', currentFocus: '', openWork: [], nextActions: [] },
   }
 }
 
 describe('renderTaskStateSnapshot', () => {
-  it('renders the header, continuation state, and every non-empty list in fixed order', () => {
+  it('renders the header, the authoritative Goal and TODO views, then continuation state and lists', () => {
     const text = renderTaskStateSnapshot(canonical(), 1 << 20)
     expect(text).toBe([
       'Durable task state (revision 3, source event 7, digest digest-3).',
-      'Current objective: ship the durable task-state consumer',
+      'Current goal: ship the durable task-state consumer',
+      'Goal identity: goal goal-1, revision 4, phase active',
+      'TODO list (session event 4):',
+      '- [pending] read the design docs',
       'Current focus: rendering the bounded snapshot',
       'Open work:',
       '- cover the CJK boundary',
@@ -81,14 +94,34 @@ describe('renderTaskStateSnapshot', () => {
       'Evidence:',
       '- user message described the failure (session event 5)',
       '- tool/result confirmed the fix (session event 7)',
-      'TODO references:',
-      '- read the design docs (session event 4)',
     ].join('\n'))
+    // The authoritative goal is the only objective rendered: the model-authored
+    // continuation narrative is superseded, never a second live objective.
+    expect(text).not.toContain('stale model narrative')
+  })
+
+  it('renders a cleared Goal and a cleared TODO as explicit clears, never as absent sections', () => {
+    const stable: TaskStateStable = {
+      ...continuationOnly(),
+      goalView: { status: 'cleared' },
+      todoView: { status: 'cleared', sourceSeq: 9, items: [] },
+      continuation: {
+        currentObjective: 'the superseded objective must not come back',
+        currentFocus: '',
+        openWork: [],
+        nextActions: [],
+      },
+    }
+    const text = renderTaskStateSnapshot(stable, 1 << 20)
+    expect(text).toContain('Current goal: cleared (no authoritative goal is set).')
+    expect(text).toContain('TODO list: cleared (the authoritative list is empty).')
+    expect(text).not.toContain('the superseded objective must not come back')
+    expect(text).not.toContain('Current objective:')
   })
 
   it('renders a committed-but-empty stable as its header alone', () => {
     const stable: TaskStateStable = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       revision: 1,
       filterVersion: 'filter-v1',
       sourceCursor: 0,
@@ -99,6 +132,8 @@ describe('renderTaskStateSnapshot', () => {
       risks: [],
       evidence: [],
       todoReferences: [],
+      goalView: NO_GOAL,
+      todoView: NO_TODO,
       continuation: { currentObjective: '', currentFocus: '', openWork: [], nextActions: [] },
     }
     expect(renderTaskStateSnapshot(stable, 1 << 20))
@@ -107,7 +142,7 @@ describe('renderTaskStateSnapshot', () => {
 
   it('renders list sections without continuation content directly after the header', () => {
     const stable: TaskStateStable = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       revision: 2,
       filterVersion: 'filter-v1',
       sourceCursor: 4,
@@ -121,6 +156,8 @@ describe('renderTaskStateSnapshot', () => {
       risks: [],
       evidence: [],
       todoReferences: [],
+      goalView: NO_GOAL,
+      todoView: NO_TODO,
       continuation: { currentObjective: '', currentFocus: '', openWork: [], nextActions: [] },
     }
     expect(renderTaskStateSnapshot(stable, 1 << 20)).toBe([
@@ -133,7 +170,7 @@ describe('renderTaskStateSnapshot', () => {
 
   it('renders an openWork list without an objective or focus', () => {
     const stable: TaskStateStable = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       revision: 4,
       filterVersion: 'filter-v1',
       sourceCursor: 9,
@@ -144,6 +181,8 @@ describe('renderTaskStateSnapshot', () => {
       risks: [],
       evidence: [],
       todoReferences: [],
+      goalView: NO_GOAL,
+      todoView: NO_TODO,
       continuation: { currentObjective: '', currentFocus: '', openWork: ['finish the renderer'], nextActions: [] },
     }
     expect(renderTaskStateSnapshot(stable, 1 << 20)).toBe([
@@ -183,8 +222,12 @@ describe('renderTaskStateSnapshot', () => {
     const text = renderTaskStateSnapshot(canonical(), budget)
     expect(encoder.encode(text).byteLength).toBeLessThanOrEqual(budget)
     expect(text.endsWith(TASK_STATE_TRUNCATION_MARKER)).toBe(true)
-    expect(text).not.toContain('- read the design docs (session event 4)')
+    expect(text).not.toContain('- tool/result confirmed the fix (session event 7)')
     expect(text).toContain('revision 3')
+    // The authoritative views render before the tail-dropped lists, so a
+    // truncated snapshot never hides the goal the Session is committed to.
+    expect(text).toContain('Current goal: ship the durable task-state consumer')
+    expect(text).toContain('- [pending] read the design docs')
   })
 
   it('returns an empty string when no whole line can fit beside the marker', () => {
@@ -207,10 +250,10 @@ describe('renderTaskStateSnapshot', () => {
         id: TaskStateEntryId('fact-55555555-5555-4555-8555-555555555555'),
         content: 'keep {{task_state_snapshot}} verbatim and 中文 intact',
       }],
-      todoReferences: [{ seq: 4, content: '模板 {{literal}} 不展开' }],
+      todoView: { status: 'current', sourceSeq: 4, items: [{ content: '模板 {{literal}} 不展开', status: 'pending' }] },
     }
     const text = renderTaskStateSnapshot(stable, 1 << 20)
     expect(text).toContain('- keep {{task_state_snapshot}} verbatim and 中文 intact')
-    expect(text).toContain('- 模板 {{literal}} 不展开 (session event 4)')
+    expect(text).toContain('- [pending] 模板 {{literal}} 不展开')
   })
 })

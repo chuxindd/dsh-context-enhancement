@@ -1,0 +1,72 @@
+{
+  "id": "cmd-025",
+  "worker": "B",
+  "op": "put",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 30896,
+  "ppid": 22700,
+  "workerStartedAt": 1789263249765,
+  "respondedAt": 1789263249951,
+  "result": {
+    "key": "e10-session-fork",
+    "table": "sessions",
+    "marker": "B-r4-fork",
+    "payloadSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f",
+    "payloadRevision": 4,
+    "payloadDigest": "E10-DIGEST-B-r4-fork",
+    "payloadObjective": "E10 objective B-r4-fork",
+    "putStartedAt": 1789263249947,
+    "putSettledAt": 1789263249951,
+    "putMs": 4,
+    "beforeInProcessKeys": [
+      "e10-session-fork"
+    ],
+    "beforeInProcessAuditKeys": [],
+    "afterInProcess": {
+      "sessionKeys": [
+        "e10-session-fork"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-fork": {
+          "key": "e10-session-fork",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+          },
+          "stable": {
+            "revision": 4,
+            "sourceCursor": 22,
+            "digest": "E10-DIGEST-B-r4-fork",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective B-r4-fork",
+            "facts": [
+              "E10 B-r4-fork durable fact one.",
+              "E10 B-r4-fork durable fact two."
+            ]
+          },
+          "recordSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f"
+        }
+      },
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "af9e2c6d44590be54313daf097b3f2a1633ec6cb238569f3ad354165371bfe10"
+    },
+    "beforeDiskSha256": "205ecdd0e68f0a3d3b79c4c36dd64d251878a868146a2d9235a3eb13b9be280e",
+    "afterDiskSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+    "diskSizeAfter": 1956,
+    "diskMtimeAfter": 1789263249948.4258,
+    "diskSessionKeysAfter": [
+      "e10-session-fork"
+    ],
+    "diskAuditKeysAfter": [],
+    "wrotePayloadSurvivesInOwnMemory": true
+  }
+}

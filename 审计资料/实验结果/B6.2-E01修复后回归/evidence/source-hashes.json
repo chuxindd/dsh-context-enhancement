@@ -1,0 +1,123 @@
+{
+  "batch": "B6.2",
+  "recordedAtUtc": "2026-09-13T09:08:18Z",
+  "baselineSource": "B6.1 record section 3 (before sha256) + measured before this batch started",
+  "changedThisBatch": [
+    {
+      "path": "src/compaction-basic.ts",
+      "sha256": "a92e0d33bcf99541ff7eca9060e20d3f6b1fb444a1a4d276d2782813d85b8784",
+      "bytes": 103466,
+      "mtimeUtc": "2026-09-13T08:56:54.224Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "src/internal/compaction/tool-group-audit.ts",
+      "sha256": "3745455351f5f218214fbb7fc46d94ff7cca6e01779718a8b6097509a0ce7c44",
+      "bytes": 26403,
+      "mtimeUtc": "2026-09-13T09:04:10.835Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "src/internal/compaction/tool-group-audit-store.ts",
+      "sha256": "0cfe538a9a35a3aa9a8c40b28f02af6a379ae5dec229445af6e3e6615393404a",
+      "bytes": 3258,
+      "mtimeUtc": "2026-09-13T09:03:56.635Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "src/internal/compaction/tool-group-domain.ts",
+      "sha256": "4c78e11fab4da5b39a722a502c2382c445befc392e6d5c95e1e88c4cd02656ef",
+      "bytes": 2341,
+      "mtimeUtc": "2026-09-13T08:47:40.783Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "tests/compaction-tool-audit-recovery.spec.ts",
+      "sha256": "7ea5df79b858ccc97db99d830836e6cbd1a90a2c85a1da2b23eee1cde9a888dc",
+      "bytes": 53863,
+      "mtimeUtc": "2026-09-13T09:06:26.623Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "tests/compaction-tool-group-audit-failure.spec.ts",
+      "sha256": "ab53804515038671232831b1155f494698c7256a726ae28070f0891a970369d8",
+      "bytes": 19662,
+      "mtimeUtc": "2026-09-13T09:04:42.419Z",
+      "crlf": 0,
+      "bom": false
+    }
+  ],
+  "unchangedForbiddenFiles": [
+    {
+      "path": "src/internal/compaction/source-index.ts",
+      "sha256": "a81e1381ce566b4b05efea60d3dbc95aec868124e31f79748482bc03e0c76b46",
+      "bytes": 23044,
+      "mtimeUtc": "2026-09-13T08:34:43.980Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "src/internal/compaction/tool-group-replacement.ts",
+      "sha256": "30157c2417c74cd11186eb27d5def1e68ae37a979683116a407861d1012d599e",
+      "bytes": 10539,
+      "mtimeUtc": "2026-09-13T08:28:09.693Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "src/tool-result-pruner.ts",
+      "sha256": "acbee1c80b1e4feb6bf33d5bceb0f82ab8ead013c43ef8bcc352e5752fa0adfb",
+      "bytes": 19454,
+      "mtimeUtc": "2026-09-13T08:27:20.029Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "lib/client.js",
+      "sha256": "092384a0471281947960499787ea0ca438c9ea12b2c9524bf722d14d7033e231",
+      "bytes": 211941,
+      "mtimeUtc": "2026-09-11T01:49:09.908Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "dsh-context-enhancement-0.1.10.tgz",
+      "sha256": "be9de3de1f560e65b6e68e4a9b1647ca8cc042f98a8d58112c6961e6665a7e40",
+      "bytes": 1321348,
+      "mtimeUtc": "2026-09-10T12:51:02.867Z",
+      "crlf": 29,
+      "bom": false
+    },
+    {
+      "path": "package.json",
+      "sha256": "20454835eacddc3878b65cbaa7bea95309a2e6715f8a4b7a1e7c17c8786702e9",
+      "bytes": 6910,
+      "mtimeUtc": "2026-09-08T02:48:36.635Z",
+      "crlf": 0,
+      "bom": false
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "e165353730b5170881a3e81f18f191f0b8efd6233a4d7599d1bb7103814471fb",
+      "bytes": 693,
+      "mtimeUtc": "2026-09-05T18:39:41.600Z",
+      "crlf": 0,
+      "bom": false
+    }
+  ],
+  "baselineSha256": {
+    "src/compaction-basic.ts": "a70e8c84eebef626499a4aec7731c8410ec989a4c2de38b51d393587a96f9f5f",
+    "src/internal/compaction/tool-group-audit.ts": "ad485d650bf963a1b185b5586fa11ac229678c6aa39f7181d92fa268cf55fd79",
+    "src/internal/compaction/tool-group-audit-store.ts": "30ebd7782582fca5ff7b6cd3509cab15fa79028304c7dd94d05100d05b854cab",
+    "src/internal/compaction/tool-group-domain.ts": "9b2b313dd34a877538900b4e8440cc141361d74bfe9a2b2a4a9ac0830175df23",
+    "tests/compaction-tool-group-audit-failure.spec.ts": "85371fe347fc810e516f458e45c42e8a5a06ed2d6851837629252e17e63ab4df",
+    "src/internal/compaction/source-index.ts": "a81e1381ce566b4b05efea60d3dbc95aec868124e31f79748482bc03e0c76b46",
+    "src/internal/compaction/tool-group-replacement.ts": "30157c2417c74cd11186eb27d5def1e68ae37a979683116a407861d1012d599e",
+    "src/tool-result-pruner.ts": "acbee1c80b1e4feb6bf33d5bceb0f82ab8ead013c43ef8bcc352e5752fa0adfb"
+  }
+}

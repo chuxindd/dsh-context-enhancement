@@ -1,5 +1,5 @@
 import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm'
-import type { ContentBlock, GenerateOptions, TokenUsage } from '@deepseek-ai/dsh-llm'
+import type { ContentBlock, GenerateOptions, TokenUsage, UserMessage } from '@deepseek-ai/dsh-llm'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { Context } from '@deepseek-ai/cordis'
 import { buildToolGroupSummaryInput, parseToolGroupSummary } from './tool-group-summary.ts'
@@ -46,6 +46,27 @@ Rules:
 - Preserve exact sourceSeq and callId values.
 - Do not include Markdown fences or any text outside the JSON object.`
 
+export function buildToolGroupSummaryMessage(
+  session: SessionRead,
+  group: ToolGroup,
+): UserMessage {
+  const input = buildToolGroupSummaryInput(session, group)
+  return createUserMessage({
+    content: [{ type: 'text', text: `${INSTRUCTION}\n\nINPUT:\n${JSON.stringify(input)}` }],
+    source: { kind: 'plugin', plugin: 'dsh-context-enhancement/tool-group-summarizer' },
+  })
+}
+
+export function estimateToolGroupAuxiliaryRequestTokens(
+  session: SessionRead,
+  group: ToolGroup,
+  reserveTokens: number,
+  estimateMessage: (message: UserMessage) => number,
+): number {
+  const message = buildToolGroupSummaryMessage(session, group)
+  return estimateMessage(message) + Math.max(0, reserveTokens)
+}
+
 export async function summarizeToolGroup(
   ctx: Context,
   session: SessionRead,
@@ -53,9 +74,24 @@ export async function summarizeToolGroup(
   agent: Agent,
   route: ToolGroupSummaryRoute,
   signal?: AbortSignal,
+  inputCapTokens?: number,
 ): Promise<ToolGroupSummaryCallResult> {
   if (route.provider.length === 0 || route.model.length === 0) {
     throw new ToolGroupSummaryFallbackError('route', 'tool-group-summary: provider/model route is empty')
+  }
+  if (inputCapTokens !== undefined) {
+    const fullTokens = estimateToolGroupAuxiliaryRequestTokens(
+      session,
+      group,
+      route.maxTokens,
+      msg => ctx.tokenMeter.estimateMessage(msg),
+    )
+    if (fullTokens > inputCapTokens) {
+      throw new ToolGroupSummaryFallbackError(
+        'stream',
+        `tool-group-summary: complete auxiliary request (${fullTokens} tokens) exceeds input cap (${inputCapTokens} tokens)`,
+      )
+    }
   }
   const input = buildToolGroupSummaryInput(session, group)
   const assembler = new BlockAssembler()
@@ -63,10 +99,7 @@ export async function summarizeToolGroup(
     const options: GenerateOptions = {
       provider: route.provider,
       model: route.model,
-      messages: [createUserMessage({
-        content: [{ type: 'text', text: `${INSTRUCTION}\n\nINPUT:\n${JSON.stringify(input)}` }],
-        source: { kind: 'plugin', plugin: 'dsh-context-enhancement/tool-group-summarizer' },
-      })],
+      messages: [buildToolGroupSummaryMessage(session, group)],
       maxTokens: route.maxTokens,
       sessionId: agent.session.id,
       purpose: 'compaction',

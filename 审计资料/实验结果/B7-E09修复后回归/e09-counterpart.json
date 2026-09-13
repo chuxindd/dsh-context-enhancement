@@ -1,0 +1,76 @@
+{
+  "experiment": "B7 · E09 修复后对照（post-fix child first window）",
+  "invokedBy": "审计资料/实验结果/B7-E09修复后回归/b7-e09-counterpart.spec.ts",
+  "historical": {
+    "source": "审计资料/实验结果/E09-ForkResume/e09-ledger.json → stages.stageE.childFirstCommitIncludedSeqs",
+    "domainFile": "context_enhancement_task_state.json (v1, retired in the current tree)",
+    "childFirstCommitIncludedSeqs": [
+      1,
+      2,
+      3,
+      5,
+      11,
+      13,
+      19,
+      21,
+      24,
+      25,
+      26,
+      28,
+      31,
+      32,
+      33
+    ],
+    "note": "pre-B7: the child had no record, so its committed cursor started at -1 and its first window folded the WHOLE inherited prefix (12 inherited eligible seqs) plus its own turn"
+  },
+  "postFix": {
+    "childInheritedCount": 4,
+    "childFirstLiveSeqAtFork": 4,
+    "parentStableCursorAtFork": 3,
+    "childStableBeforeOwnEvents": null,
+    "childFirstWindowIncludedSeqs": [
+      6,
+      7,
+      8
+    ],
+    "childFirstWindowInheritedSeqCount": 0,
+    "childFirstWindowOwnSeqCount": 3,
+    "childFirstWindowBaseIsNull": true,
+    "childFirstWindowInheritedMarker": {
+      "source": "fork-prefix",
+      "ownBoundarySeq": 4,
+      "inheritedThroughSeq": 3,
+      "parentSession": "e09-counterpart-parent"
+    },
+    "childFirstCursor": 8,
+    "childFirstRevision": 1,
+    "childStableInheritedMarker": {
+      "source": "fork-prefix",
+      "ownBoundarySeq": 4,
+      "inheritedThroughSeq": 3,
+      "parentSession": "e09-counterpart-parent"
+    },
+    "inheritedPrefixEligibleSeqCount": 3,
+    "inheritedPrefixEligibleSeqs": [
+      1,
+      2,
+      3
+    ],
+    "ownTurnSeqs": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "durableChildStableCursor": 8,
+    "durableChildStableInherited": {
+      "source": "fork-prefix",
+      "ownBoundarySeq": 4,
+      "inheritedThroughSeq": 3,
+      "parentSession": "e09-counterpart-parent"
+    },
+    "auditRowsChild": 1,
+    "auditRowsParent": 1,
+    "taskStateModelCalls": 2
+  }
+}

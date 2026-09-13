@@ -14,4 +14,15 @@ export interface TaskStatePromptConfig {
    * budget.
    */
   readonly maxBytes: number
+  /**
+   * Maximum token budget I for the injected task-state slot.
+   * Defaults to {@link DEFAULT_TASK_STATE_INJECTION_BUDGET_TOKENS} (512) when omitted.
+   */
+  readonly maxTokens?: number
+}
+
+/** The single resolved injection budget containing both byte and token bounds. */
+export interface ResolvedInjectionBudget {
+  readonly maxBytes: number
+  readonly maxTokens: number
 }

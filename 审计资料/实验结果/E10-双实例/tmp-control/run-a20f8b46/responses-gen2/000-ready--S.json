@@ -1,0 +1,37 @@
+{
+  "id": "000-ready",
+  "worker": "S",
+  "op": "ready",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 76340,
+  "ppid": 22700,
+  "workerStartedAt": 1789263249260,
+  "respondedAt": 1789263249261,
+  "result": {
+    "worker": "S",
+    "gen": 2,
+    "pid": 76340,
+    "ppid": 22700,
+    "workerStartedAt": 1789263249260,
+    "node": "v24.20.0",
+    "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+    "storageRoot": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46",
+    "controlDir": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-control\\run-a20f8b46",
+    "domainFile": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46\\context_enhancement_task_state.json",
+    "specIdentity": {
+      "name": "context_enhancement_task_state",
+      "version": 1,
+      "layout": "single",
+      "tables": [
+        "sessions",
+        "audit"
+      ],
+      "importedFrom": "src\\internal\\task-state\\basic\\domain.ts",
+      "domainSourceSha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7",
+      "contractSourceSha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca",
+      "workerFile": "审计资料\\实验结果\\E10-双实例\\e10-storage-worker.mts"
+    }
+  }
+}

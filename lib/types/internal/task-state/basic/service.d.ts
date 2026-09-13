@@ -16,8 +16,13 @@
  * opens storage a second time, and never invokes a model to repair the
  * medium. Ordinary Sessions remain fully usable; they simply see
  * `getStable()` return `undefined`. Eligible events after a committed cursor
- * are processed later in the background when normal activity schedules the
- * per-Session worker.
+ * are folded in the background: normal activity schedules the per-Session
+ * worker, and establishing a runtime (creation, domain open, or stored-record
+ * hydration) additionally offers ONE startup backlog check, which folds an
+ * inherited tail that already meets `minEvents` without waiting for a new
+ * event. Recovery itself never folds, never replays an unfinished update, and
+ * never calls a model — the recovered stable is published first and any
+ * backlog revision is committed afterwards by its own scheduled wave.
  *
  * The plugin declares NO SessionEventMap members: the audit vocabulary lives
  * in this provider's own storage domain (`sessions` + `audit` tables), never
@@ -28,7 +33,7 @@
 import { Context, Service } from '@deepseek-ai/cordis';
 import z from '@deepseek-ai/schemastery';
 import type { SessionId } from '@deepseek-ai/dsh-session/types';
-import { TaskStateService, type TaskStateStable } from '../contract/index.ts';
+import { TaskStateService, type TaskStateBlockedVerdict, type TaskStateRecord, type TaskStateStable, type TaskStateTerminalRecord } from '../contract/index.ts';
 import type { TaskStateBasicConfig, TaskStateCommittedListener } from './types.ts';
 import type { TaskStateEditRequest, TaskStateEditResult } from '../control/types.ts';
 export type { TaskStateBasicConfig } from './types.ts';
@@ -90,6 +95,56 @@ export declare class TaskStateBasicService extends TaskStateService {
     /** The lifecycle-matching stored record, or `undefined` (absent or mismatched). */
     private recordFor;
     /**
+     * Read the effective committed cursor for one Session: the newest of the
+     * committed stable's `sourceCursor` (absent before the first commit) and the
+     * durable terminal verdict's cursor. A verdict therefore never has to be
+     * carried by a stable, and a stable never silently discards one.
+     *
+     * The result is always fenced against the Session's own-event boundary, so a
+     * forked child can never fold (or report coverage of) its inherited prefix:
+     * see {@link fenceCursor}.
+     */
+    private effectiveCursor;
+    /**
+     * Fence one stored coverage claim against the LIVE own-event boundary of its
+     * Session lifecycle.
+     *
+     * Below the boundary nothing may be claimed: those sequences are the parent's
+     * facts, delivered to this lifecycle as history. A claim that contradicts the
+     * live boundary is refused as a whole and the lifecycle re-derives from its own
+     * events above the boundary, which is the conservative direction — the content
+     * is still served, while no unverifiable coverage is trusted. Every lifecycle
+     * that did not begin on an inherited prefix floors at `-1`, so its cursor is
+     * exactly what it was before this contract existed.
+     */
+    private fenceCursor;
+    /**
+     * Emit one best-effort lifecycle diagnostic. A warning must never fail a read,
+     * a commit, or a startup path, and a throwing logger must not escape.
+     */
+    private warnDiagnostic;
+    /**
+     * The generation of one Session's CURRENT measurable situation: the committed
+     * base stable (revision identity, cursor, digest, and filter version) together
+     * with the configured framed-input budget. A terminal verdict stores the
+     * generation it was measured against, so this is what decides whether the
+     * window must be re-opened.
+     */
+    private currentGeneration;
+    /**
+     * Recompute one runtime's ACTIVE terminal block from its durable verdict.
+     * Called after a verdict write and after every commit, because a commit
+     * changes the base generation and therefore re-opens a blocked window.
+     */
+    private refreshTerminalBlock;
+    /**
+     * The still-active block of one Session, or `undefined` when its verdict is a
+     * quarantine or its generation no longer matches. The provider reads the
+     * durable record for a runtime it does not own, so a Session hydrated later
+     * still answers with its own stored, generation-fenced block.
+     */
+    private activeTerminalBlock;
+    /**
      * Count PROJECTABLE eligible events above the committed cursor for one
      * Session by running the real versioned filter over each event.
      */
@@ -98,15 +153,65 @@ export declare class TaskStateBasicService extends TaskStateService {
     private putOpenAudit;
     /** Put one finished-phase audit update on the request id's existing open row. */
     private putFinishedAudit;
-    /** The authoritative commit: replace one Session's stable record. */
+    /**
+     * The authoritative commit: replace one Session's stable record.
+     *
+     * The durable terminal verdict — when the lifecycle holds one — is carried
+     * forward VERBATIM inside the same record put, so a commit can neither
+     * resurrect a quarantined window nor lose the typed reason why a blocked one
+     * is blocked. The verdict keeps its own stored generation: a commit changes
+     * the current generation, so the next decision about that window is a
+     * re-evaluation against the NEW base rather than an inherited ban.
+     */
     private putStable;
+    /**
+     * Persist ONE durable terminal verdict.
+     *
+     * The write carries the lifecycle identity, the untouched committed stable
+     * WHEN one exists, and the verdict — all inside ONE record put, because one
+     * `KvTable.put` is the only atomic durable boundary this storage contract
+     * offers (per-table puts are separate whole-document rewrites). The effective
+     * cursor (`max(stable?.sourceCursor ?? -1, terminal.cursor)`) therefore can
+     * never advance without its provenance, and a rejected or failed put changes
+     * neither the medium nor the in-memory pointer.
+     *
+     * `stable` is NOT required: a verdict is recorded just as durably before the
+     * Session's first commit, so an impossible window no longer has to stall
+     * forever. It NEVER manufactures a stable — the record simply carries none.
+     *
+     * Admission is monotone:
+     * - a `quarantined` verdict must strictly advance the effective cursor past
+     *   the floor it was measured against, so a quarantine can never be a no-op
+     *   and can never move the cursor backwards;
+     * - a `block…` verdict must name the CURRENT generation. It records the
+     *   typed reason why the pending window stays pending, so a restart does not
+     *   re-fold (and never re-pays for) a window whose cause is unchanged, while
+     *   a changed base/filter/budget re-opens it. A block that would restate the
+     *   verdict already stored for the same generation is refused, so a blocked
+     *   window cannot churn the medium.
+     *
+     * Single-writer contract: this is a read-modify-write on the JSON domain's
+     * single unit and there is NO record-level compare-and-swap (B1 is
+     * `blocked-upstream`), so it is only safe while one process writes the
+     * domain. It never claims CAS.
+     * @param session - the live Session whose record is written.
+     * @param terminal - the terminal verdict to record.
+     * @returns whether the verdict became durable (and therefore took effect).
+     */
+    private putTerminal;
     /** Publish the committed pointer only after the authority put resolved. */
     private publishCommitted;
+    /** Announce one published or recovered stable to every committed observer. */
+    private notifyCommitted;
     /**
-     * Observe every committed stable after its authority put resolved. The
-     * listener receives the Session identity and the committed stable; startup
-     * reconciliation and live audit repairs never publish, so an observer sees
-     * exactly the values that advanced the published pointer.
+     * Observe every committed stable after its authority put resolved, plus the
+     * stable recovered from storage when a runtime first seeds it. The listener
+     * receives the Session identity and the committed stable; live audit repairs
+     * never publish (they certify an already-published stable), so an observer
+     * sees exactly the values that advanced the published pointer — including
+     * the startup/reconnect recovery that advances it from nothing to a durable
+     * stable, which is how an already-open remote stream hydrates a Session
+     * whose baseline was read before the seed.
      *
      * The subscription is caller-owned: the returned disposer removes this
      * listener and must be run by the caller's teardown. The provider unload
@@ -126,6 +231,25 @@ export declare class TaskStateBasicService extends TaskStateService {
     private publishedStable;
     /** Read the synchronous committed stable of one Session. */
     getStable(sessionId: SessionId): TaskStateStable | undefined;
+    /**
+     * Read the synchronous durable terminal verdict of one Session, if present:
+     * a `quarantined` culprit window or a `block…` verdict naming a measured
+     * cause that is not a log event (an oversized base stable, or an authority
+     * fact that may never be skipped).
+     */
+    getTerminal(sessionId: SessionId): TaskStateTerminalRecord | undefined;
+    /**
+     * Read the terminal BLOCK of one Session that still applies to the current
+     * base/filter/budget generation, or `undefined`. A quarantine never blocks,
+     * and a block whose generation changed is already re-openable.
+     */
+    getActiveTerminalBlock(sessionId: SessionId): TaskStateBlockedVerdict | undefined;
+    /**
+     * Read the whole durable record of one Session, if present. The record may
+     * carry a terminal verdict without any committed stable (an impossible
+     * window before the first commit), which is why `stable` is optional.
+     */
+    getRecord(sessionId: SessionId): TaskStateRecord | undefined;
 }
 export default TaskStateBasicService;
 //# sourceMappingURL=service.d.ts.map

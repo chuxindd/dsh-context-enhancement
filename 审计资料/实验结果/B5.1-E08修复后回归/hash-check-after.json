@@ -1,0 +1,249 @@
+{
+  "baselineFile": "审计资料/实验结果/E-baseline-hashes.json",
+  "baselineEntries": 342,
+  "equal": 302,
+  "changed": 40,
+  "missing": 0,
+  "changedFiles": [
+    {
+      "path": "src\\internal\\compaction\\config.ts",
+      "baselineSha": "C8801BA48331CFD276C29702FC26CD966A9EE2C00DA32E83039548C1E0960F8E",
+      "currentSha": "2254A88E09559111F58F653BC318F45B31ADBDA11F0745E75E31B86DA4BA00D7",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\compaction\\source-index.ts",
+      "baselineSha": "BF391EF004CC1BE8B8A5321CB6C5596743B94D873EF156DAB8CCBDD6202AD0B5",
+      "currentSha": "216FBD746E8551071BEBCDA11BC4F6D7BBAEBEC25F008459C7CB948E6261DBF5",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\compaction\\types.ts",
+      "baselineSha": "F4286A2446C7EE0F48E00B7FE909D7E40964F611BAC08F164AD379BC931A3780",
+      "currentSha": "C79A9A72A2071BF3F9E843C15630F19249B8D80FB73C1CAED63E8A0A92010DDA",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\compaction\\zones.ts",
+      "baselineSha": "6C6B693B12AD49B344CB29DC75B21232B4544DE002E50BAD3FD89D1BBAB13005",
+      "currentSha": "E3D0342F723D705C7F85CBE3A46EC184552514F57309291424C858BD981E48F7",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\domain.ts",
+      "baselineSha": "DBA64F32B083AEFC09E0457CF749C14B783BB1A30ED0063DF1FED34BD652E2F7",
+      "currentSha": "5ADF431B8B11DD43845EC1850B7BF0376B3BA317EC0AE9670A093DE30940889D",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\filter.ts",
+      "baselineSha": "A047E842369FB2C4DEC5C9CFEE9F273E9CAE0D8E305AB2B85E8FCEBF40AC4918",
+      "currentSha": "5AE4261CF64F571BD15FF9773AB85D9D8F7B773D5A086E61B2C74E5A425B91D8",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\host.ts",
+      "baselineSha": "A3DCAD101ECF1EF33935FE1AB23D7E5424E2AA8F21B9630F93BB335C1B9F56E2",
+      "currentSha": "E7B82CC1F336458AC9854BF0E37439F578031788ED4DA5F8D208FB47CD9F126D",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\prompt.ts",
+      "baselineSha": "EDDBCFF8289D2925644588F62F0E527B2D71670E7303D15185D1EABB2D940649",
+      "currentSha": "9CBECE8F75C88F2032C6AED69141E9743964B98A2B83401D4F910AE6EE0A8F61",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\service.ts",
+      "baselineSha": "45A40A411398CD0F4DF066CCDA57D68680D9D19CF014B0C6BF95E9D082C9757E",
+      "currentSha": "A9DE4B452E12FE245B27133EFFD987199550D74C4844957EDDC00D9BE4B570B1",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\types.ts",
+      "baselineSha": "3AFBBF25B1382FAB6837DA74C04D6FC2FA2EB13918666784D8185700CF98D78D",
+      "currentSha": "02482F0FF7FDCF199B469F04A0C201CA90F38D070C9B09AF1CBB8793795565DB",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\update.ts",
+      "baselineSha": "564941763BAF267A163274E6AEF1E09F59CF3775FD6E7A9787874AD0C6D57795",
+      "currentSha": "F2DF80E9A6E6C797D6D5372D46702B95B457E63B04D35BC0A54FFBABEF801188",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\basic\\worker.ts",
+      "baselineSha": "28D7437FD9EA4D86004D1FDEA84A18ADF8DA6DD825EABC04808B26D91306F626",
+      "currentSha": "BAEF106CF54FFB92B745EFC9A6EC8FF32661665CEACA80A9E109E9CE3EA4F389",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\contract\\audit.ts",
+      "baselineSha": "84AE100818D05722B2F56BF8537D100A7C7B894C1EE72A3306FCE3F3D143262D",
+      "currentSha": "8DFA36C49A7912DE9FFD9D9944AC72A6E116C8D19D4F97854237A3251CC3C5A8",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\contract\\index.ts",
+      "baselineSha": "45011B9904355CEE49C7BE6703E466D91F3216BF1F7A1738C71CE4ED829A4C99",
+      "currentSha": "7AAE1DF69F88992D7424B2C56065F2DC224CC6494E35FBAB69D73DE549984561",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\contract\\spec.ts",
+      "baselineSha": "C9CA675C058526AE05972AFE12936405A8A3B581CB3A8D534E85A30C9632F9CA",
+      "currentSha": "73B5C35308874CD19180396D56AE0D3AFFAC470228A438A19DAD88D07A41774D",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\contract\\types.ts",
+      "baselineSha": "BB7FE3A6BEDE6AE93B6E1A856DA88CF417DFAD4F3087CBBEEA5CB104089F028B",
+      "currentSha": "6F123B081044BB93013429687A41C4061F9A47BDA3DC74862B50782CECED2FAC",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\prompt\\index.ts",
+      "baselineSha": "B27841AF89CB4BDAD366F0D5D55452F97472D4F116142E50492C8AD44C181D0C",
+      "currentSha": "B29F424301AC533218BF607EF60D3685F7DCABC2514A7F39E18AEF926A596D4F",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\prompt\\render.ts",
+      "baselineSha": "0C5F332ED8C2EE431A343E764A8D7115EC8E69F43A67A750325D1283FC8BE46B",
+      "currentSha": "2D5F066AA4932A8FF2B92706245B9775937EE4E298E2F8683A34584AD5539E96",
+      "status": "changed"
+    },
+    {
+      "path": "src\\internal\\task-state\\index.ts",
+      "baselineSha": "3BAA0BA0605A5D5C4771FFE0FE65991BE69F4704F4947C9D83D395E73215A843",
+      "currentSha": "57696DA07FF5A9E731841669EC73A1A53C382C1ED5D567F520030D0EEA9F25FF",
+      "status": "changed"
+    },
+    {
+      "path": "src\\compaction-basic.ts",
+      "baselineSha": "5585C60DCAE9BB61C8BB50DAA1A3FCF67AAD18E2BCEF319D84590895AD46B653",
+      "currentSha": "6A1896D6E1E2126A3DF70BDC040E3AC4841F004360456F0F82AB579D58D38B86",
+      "status": "changed"
+    },
+    {
+      "path": "src\\task-state-prompt.ts",
+      "baselineSha": "3C5A78148264FC73EBD0558226328F0E924A8D9E8E2911091CD501EAC0F20AC7",
+      "currentSha": "1F1D41B4F65099481A9D4E89748DE4D17E1DA3DFF9990826ACCE6784ADE05D93",
+      "status": "changed"
+    },
+    {
+      "path": "src\\task-state.ts",
+      "baselineSha": "DCC10C9A12AEF4538FF477AE2C3872781E95FAEF894E2674C66268E858FC62A3",
+      "currentSha": "31FD191D39571A97CAAD39F187B0C9601938EB8363BFE9590A1A20F6E040BB51",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\compaction-envelope-budget.spec.ts",
+      "baselineSha": "F8E6E395D8855E22E318323F8420901FDBD572329F4145EF1A5C8D8F9046B9D7",
+      "currentSha": "DABCC33DAB45A50CD20BA1473A8DE04EAF3DD514230A5E2FF91B2C5D63E1AA3B",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\compaction-reentry-liveness.spec.ts",
+      "baselineSha": "930D904FEB4297E350CC550CCF8F73E0C34F5F2A4749937DF63FF751FA37C6EC",
+      "currentSha": "D2A29217F9CC8F5C2E9CA895188208FCCD5DE24860563220B4DD6D9E2C10EAC1",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\compaction-three-zone.spec.ts",
+      "baselineSha": "3C0B7A0F813594D47EC6389C39B6FFA68E41BAEE5F9DC68C1F83598A64A5D778",
+      "currentSha": "A3310F771763AC8177CB994D3657BA1BA20508DC5567A3867A955550E4113704",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-batch.spec.ts",
+      "baselineSha": "B6DDA1527B40D816D30A8D07A35FC2952F5D397534B30BB2E2A10117718491E8",
+      "currentSha": "638887F76EE5A581193339218A096BF1D60C51FD35F48B78FA370B5160F73826",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-composition.spec.ts",
+      "baselineSha": "742DA96C39E72513D330F1A97EE6298787587B0461D7589C82C40415EAF68C0D",
+      "currentSha": "8FB9620FB89EC820A1E4AFE5A85D8912FFB896610E3161F344E08FA010F50428",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-control-host.spec.ts",
+      "baselineSha": "C0568AAF56B3DF2898E7803133021E5CFEB7EEEE7781F62DC85CE20224277D83",
+      "currentSha": "43CC5B604D346E2D912B0DB1292B8872A75E9819E36E3801192B700ECF582804",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-control-protocol.spec.ts",
+      "baselineSha": "C764A580916226BB43573EFFF5446F15FF00AB07A1F0AC3D9A4F26568B0928D1",
+      "currentSha": "498E84CA667A60C662085EFF66D45836B7ACD88994F3240B46FD68E401151D6E",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-control-store.spec.ts",
+      "baselineSha": "A1A05E91B667AE1004C6A9471F9A9E47C081365C2F669D248E76C6A2C9D0A6CD",
+      "currentSha": "15C87996F8758AC0038094DC80DC1F9FB92D2ADDD86B8FE4E00E620CC9ADBA0C",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-filter.spec.ts",
+      "baselineSha": "0873CC5367677748F8B70F1999D8092F302871EF710CAD088B82D56D8AB61819",
+      "currentSha": "F6DF7F66E34438C9325EE48FE52AA64E3D534BB088EDE14109DFD7B4E0763B05",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-host.spec.ts",
+      "baselineSha": "46526596165FD69DFD4686AEC3FD536ADD7D0A0F124AA89FCBF09E5DE8CDFE48",
+      "currentSha": "62C8D844BBFC7DE8462C83FF6220B755BDCDD681C57841FABFD90F4D055E5F6E",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-long-session.spec.ts",
+      "baselineSha": "C6C86F22330FC70E31D310131A87148875EC8A46B0B39E1D5352BE68E2968175",
+      "currentSha": "EF53BFAFB6428CB8B6375332B2E23E5FD154E3882D5D48036BBC8661DC228414",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-prompt.spec.ts",
+      "baselineSha": "2EEB0641ABD098D83280AD8F42B1922E15E22D01DA6E0B4FF9A80E93B4077963",
+      "currentSha": "3EAB557892E8C55E5B24039575B1A3B5E33EEBAE9E6FB316CD65D89FC9F37436",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-render.spec.ts",
+      "baselineSha": "080C2DD6910694F52B48C93AE9D19AC0CFC91D850EBA87CBCCBD7EAD12F7EF66",
+      "currentSha": "05A00E1AE1085A419E047E45F7167B79552FD78B69115B5E3F90C5C4330E764F",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-restart-recovery.spec.ts",
+      "baselineSha": "6CBDB3CCF75971F70449F43D27A50C89519F9BF28B9C34EC69A0C536D0BAFCED",
+      "currentSha": "56450C4E11955E00C3AF04983741E33519F2AD0811A02E38E003A7682559C0B3",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-schema.spec.ts",
+      "baselineSha": "33646BEB41223E4BE4056C2F2F58ADD1C949C26D303543177A127BB3D86B8D87",
+      "currentSha": "146FD66D28E98AF392C2A031C1713C50E20B5D5B15583BDC033F8697232F6DEA",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-update.spec.ts",
+      "baselineSha": "E544DAAF259B4171E60E5E2606F7B0F266B667ABA0F6564107ADFCBC68D12BC5",
+      "currentSha": "EB28B66B13BA94B7295427F70903A282FDBE612908E1F95554C30B33EBB89A6E",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-view.spec.ts",
+      "baselineSha": "A415F8794A066EE668C79219C03531EF7DC7AF301FD605E19AF52B2DA5BB7213",
+      "currentSha": "1C0D5564C707CBB1C2777DF34FB55A1AE4D278CB685680E9895A975E1DA0C8E6",
+      "status": "changed"
+    },
+    {
+      "path": "tests\\task-state-worker.spec.ts",
+      "baselineSha": "A0E52513E4B4A6A26125DC084D433E1F0E51C5DB9C172557A56D3B5DB8537659",
+      "currentSha": "B4B1BC4DD7AC7E24FBBC0A9599DEAFAA8BB24E2C75F6BF1900EDAE70DAFDB8EF",
+      "status": "changed"
+    }
+  ]
+}

@@ -5,6 +5,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Restored the persisted task summary after a DSH restart: a lifecycle-matching stored stable recovered at startup is now announced to already-open control streams, so a baseline read before the provider finished opening its storage domain hydrates instead of leaving the Context Enhancement page permanently empty.
+- A stale evidence or TODO reference carried forward from an earlier window is now quarantined (dropped, with a diagnostic) instead of failing the whole candidate, so one stale reference can no longer freeze every future task-state update at its last committed revision; valid references and all other summary fields are preserved and no sequence is fabricated.
+- The tool-group summarization audit store now declares its `storageDomain` dependency, so the compaction realm resolves the host storage facility and the audit no longer starts disabled with `cannot get property "storageDomain" without inject`.
+- Tool-group summarization now logs the shared `compaction/prune` shadow price immediately before each replacement, so the 归纳工具操作 status records every successful tool-result reduction path (semantic group summary and deterministic prune) and surface token folds stay exact instead of folding an unpriced replacement neutrally.
+
+## [0.1.11] - 2026-09-13
+
+### Added
+
+- Added bounded pressure exit and low-yield accounting, startup backlog recovery, authoritative Goal/TODO views, clean-break terminal provenance, fixed Stable injection slots, replacement provenance recovery, fork own-event boundaries, and reproducible artifact parity checks.
+
+### Fixed
+
+- Fixed long-session pressure thrashing, restart backlog starvation, stale Goal/TODO resurrection, Stable snapshot accumulation, tool reduction provenance loss, fork cursor replay, and stale client bundle identities.
+
 ## [0.1.10] - 2026-09-08
 
 ### Fixed

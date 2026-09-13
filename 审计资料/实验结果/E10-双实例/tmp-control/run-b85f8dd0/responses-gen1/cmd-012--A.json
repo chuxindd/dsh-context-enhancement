@@ -1,0 +1,77 @@
+{
+  "id": "cmd-012",
+  "worker": "A",
+  "op": "close",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 6340,
+  "ppid": 51736,
+  "workerStartedAt": 1789226296992,
+  "respondedAt": 1789226297570,
+  "result": {
+    "closedAt": 1789226297570,
+    "disposeMs": 2,
+    "finalInProcess": {
+      "sessionKeys": [
+        "e10-session-a"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [
+        "ts-e10-shared-audit-row"
+      ],
+      "auditCount": 1,
+      "records": {
+        "e10-session-a": {
+          "key": "e10-session-a",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0"
+          },
+          "stable": {
+            "revision": 2,
+            "sourceCursor": 11,
+            "digest": "E10-DIGEST-A-t2",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective A-t2",
+            "facts": [
+              "E10 A-t2 durable fact one.",
+              "E10 A-t2 durable fact two."
+            ]
+          },
+          "recordSha256": "dad05807d2df2e610d4690bd4b07aac422f6db79ba4d03caf5191e86bc7ab3e3"
+        }
+      },
+      "audit": {
+        "ts-e10-shared-audit-row": {
+          "key": "ts-e10-shared-audit-row",
+          "schemaValid": true,
+          "requestId": "ts-e10-A-audit-t1",
+          "time": 1700000101000,
+          "lifecycleCreatedAt": 1700000000000,
+          "targetRevision": 1,
+          "baseRevision": null,
+          "baseCursor": null,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "outcome": "success",
+          "finishedRevision": 1,
+          "rowSha256": "392438be1c70b4354445d3abb116a86578a2dafef2117b6b6bf0dc394031d9ca"
+        }
+      },
+      "allRecordsSchemaValid": true,
+      "viewSha256": "0b662ad046b158f9351e6f8b4bebe90d565c46b1e09530de9242026843c05abd"
+    },
+    "diskAtCloseSha256": "2649b337f9cc354bf245c4fd8ed516bf37b0a91d14a382b62e217813dfda4777",
+    "diskAtCloseSessionKeys": [
+      "e10-session-b"
+    ],
+    "domainClosed": true
+  }
+}

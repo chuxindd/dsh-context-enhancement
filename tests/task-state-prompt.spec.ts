@@ -7,6 +7,22 @@ import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import * as TaskStatePrompt from '../src/task-state-prompt.ts'
 
+/**
+ * The prompt consumer's ASSEMBLY contract.
+ *
+ * B5.1 moved the model-visible Stable task-state injection out of the
+ * append-only dynamic runtime context into ONE plugin-owned fixed slot node on
+ * the Session surface (see `tests/task-state-prompt-fixed-slot.spec.ts` for the
+ * surface contract against real Sessions). What remains here is the assembly
+ * contract that the slot depends on: the reserved
+ * `{{task_state_snapshot}}` context and variable stay registered — so an
+ * existing composition and preset keep assembling — while the variable renders
+ * NOTHING, because any non-empty value would re-enter DSH's append-only
+ * runtime-context projection and rebuild exactly the per-revision accumulation
+ * this module must avoid. The rendered text itself is still produced by the
+ * same bounded pure renderer, now handed to the slot.
+ */
+
 /** A committed stable whose content exercises lists, continuation, and literals. */
 function stable(id: string, objective: string): TaskStateStable {
   return {
@@ -24,6 +40,12 @@ function stable(id: string, objective: string): TaskStateStable {
     risks: [],
     evidence: [{ seq: 3, note: `evidence for ${id}` }],
     todoReferences: [{ seq: 2, content: `todo ${id} 模板 {{literal}} 保留` }],
+    goalView: { status: 'none' },
+    todoView: {
+      status: 'current',
+      sourceSeq: 2,
+      items: [{ content: `todo ${id} 模板 {{literal}} 保留`, status: 'pending' }],
+    },
     continuation: { currentObjective: objective, currentFocus: '', openWork: [], nextActions: [] },
   }
 }
@@ -77,6 +99,9 @@ describe('task-state prompt consumer', () => {
     const contributed = assembly.contexts.find(entry => entry.name === 'task-state:snapshot')
     expect(contributed?.text).toBe('{{task_state_snapshot}}')
     expect('task_state_snapshot' in assembly.variables).toBe(true)
+    // The reserved variable is registered but renders nothing: the slot carries
+    // the model-visible text, never the append-only runtime context.
+    expect(assembly.variables['task_state_snapshot']).toBe('')
   })
 
   it('renders no context when no agent is present', async () => {
@@ -89,16 +114,23 @@ describe('task-state prompt consumer', () => {
     expect(renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor('missing-session' as SessionId)))).toBe('')
   })
 
-  it('renders the stable for the session and preserves literal double braces', async () => {
-    const { ctx } = await mount({
-      publish: { sessionId: 'session-1' as SessionId, stable: stable('1', 'ship the consumer') },
-    })
+  it('keeps the committed stable out of the runtime context while the renderer still preserves literal double braces', async () => {
+    const committed = stable('1', 'ship the consumer')
+    const { ctx } = await mount({ publish: { sessionId: 'session-1' as SessionId, stable: committed } })
     const snapshot = renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor('session-1' as SessionId)))
-    expect(snapshot).toContain('Current runtime context. This snapshot supersedes earlier runtime-context snapshots.')
-    expect(snapshot).toContain('Current objective: ship the consumer')
-    expect(snapshot).toContain('Durable task state (revision 1, source event 3, digest digest-1).')
-    expect(snapshot).toContain('- 事实 fact for 1 with literal {{task_state_snapshot}} braces 中文')
-    expect(snapshot).toContain('- todo 1 模板 {{literal}} 保留 (session event 2)')
+    // The runtime-context contribution never carries the stable: delivery is the
+    // plugin-owned fixed slot node, so no assembly can accumulate snapshots.
+    expect(snapshot).toBe('')
+    expect(snapshot).not.toContain('Durable task state')
+    expect(snapshot).not.toContain('Current objective: ship the consumer')
+
+    // The exact text the consumer hands to the slot is still produced by the
+    // bounded renderer, with literal double braces preserved verbatim.
+    const rendered = TaskStatePrompt.renderTaskStateSnapshot(committed, 1 << 20)
+    expect(rendered).toContain('Durable task state (revision 1, source event 3, digest digest-1).')
+    expect(rendered).toContain('Current objective: ship the consumer')
+    expect(rendered).toContain('- 事实 fact for 1 with literal {{task_state_snapshot}} braces 中文')
+    expect(rendered).toContain('- [pending] todo 1 模板 {{literal}} 保留')
   })
 
   it('renders nothing for another session without a committed stable', async () => {
@@ -108,27 +140,19 @@ describe('task-state prompt consumer', () => {
     expect(renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor('session-2' as SessionId)))).toBe('')
   })
 
-  it('bounds the rendered variable value to the deployment byte budget', async () => {
+  it('bounds the injected text to the deployment byte budget', () => {
     const encoder = new TextEncoder()
-    const fullCtx = await mount({
-      publish: { sessionId: 'bounded-full' as SessionId, stable: stable('2', 'short') },
-    })
-    const fullSnapshot = renderContextSnapshot(
-      await fullCtx.ctx.systemPrompt.assemble(contextFor('bounded-full' as SessionId)),
-    )
-    const fullValue = fullSnapshot.slice(fullSnapshot.indexOf('\n\n') + 2)
-    const { ctx } = await mount({
-      publish: { sessionId: 'bounded' as SessionId, stable: stable('2', 'short') },
-      maxBytes: encoder.encode(fullValue).byteLength - 30,
-    })
-    const snapshot = renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor('bounded' as SessionId)))
-    const value = snapshot.slice(snapshot.indexOf('\n\n') + 2)
-    expect(encoder.encode(value).byteLength).toBeLessThanOrEqual(encoder.encode(fullValue).byteLength - 30)
-    expect(value).toContain('Durable task state')
-    expect(value).toContain('truncated')
+    const full = TaskStatePrompt.renderTaskStateSnapshot(stable('2', 'short'), 1 << 20)
+    const budget = encoder.encode(full).byteLength - 30
+    const bounded = TaskStatePrompt.renderTaskStateSnapshot(stable('2', 'short'), budget)
+    expect(encoder.encode(bounded).byteLength).toBeLessThanOrEqual(budget)
+    expect(bounded).toContain('Durable task state')
+    expect(bounded).toContain('truncated')
+    // Below the fixed marker there is nothing honest left to inject.
+    expect(TaskStatePrompt.renderTaskStateSnapshot(stable('2', 'short'), 1)).toBe('')
   })
 
-  it('reads only the task-state pointer during assembly — one synchronous getStable call', async () => {
+  it('reads no task-state pointer during prompt assembly', async () => {
     const ctx = new Context()
     await ctx.plugin(SystemPrompt)
     const provider = new StubTaskStateService(ctx)
@@ -142,11 +166,12 @@ describe('task-state prompt consumer', () => {
     await ctx.plugin(TaskStatePrompt, { maxBytes: 1 << 20 })
 
     const sessionId = 'pointer-session' as SessionId
-    const snapshot = renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor(sessionId)))
-    expect(reads).toBe(1)
-    expect(snapshot).toContain('Current objective: pointer')
-    renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor(sessionId)))
-    expect(reads).toBe(2)
+    // Assembly is a pure prompt operation: the pointer is read at the STEP
+    // boundary that owns the slot, never on the assembly path.
+    expect(renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor(sessionId)))).toBe('')
+    expect(reads).toBe(0)
+    expect(renderContextSnapshot(await ctx.systemPrompt.assemble(contextFor(sessionId)))).toBe('')
+    expect(reads).toBe(0)
   })
 
   it('renders an empty snapshot when a provider never mounts under ctx.taskState', async () => {

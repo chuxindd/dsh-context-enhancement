@@ -1,0 +1,48 @@
+{
+  "id": "cmd-001",
+  "worker": "A",
+  "op": "open",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 6340,
+  "ppid": 51736,
+  "workerStartedAt": 1789226296992,
+  "respondedAt": 1789226297244,
+  "result": {
+    "openedAt": 1789226297237,
+    "specIdentity": {
+      "name": "context_enhancement_task_state",
+      "version": 1,
+      "layout": "single",
+      "tables": [
+        "sessions",
+        "audit"
+      ],
+      "importedFrom": "src\\internal\\task-state\\basic\\domain.ts",
+      "domainSourceSha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7",
+      "contractSourceSha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca",
+      "workerFile": "审计资料\\实验结果\\E10-双实例\\e10-storage-worker.mts"
+    },
+    "inProcess": {
+      "sessionKeys": [],
+      "sessionCount": 0,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {},
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "c8355de09ff14ef39a0ca56e7e402587cc6c6ff20d077910016d2c63e328a6c9"
+    },
+    "disk": {
+      "present": false,
+      "sha256": null,
+      "size": null,
+      "mtimeMs": null
+    },
+    "diskView": {
+      "present": false
+    },
+    "domainFile": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-b85f8dd0\\context_enhancement_task_state.json"
+  }
+}

@@ -1,0 +1,61 @@
+$ node scripts/clean-lib.mjs && tsc -p tsconfig.build.json && tsdown --config-loader tsx && node scripts/patch-client-id.mjs
+clean:lib - removed 247 generated file(s) (17 lib root .js) from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\lib\
+clean:lib - tsc and tsdown re-emit the whole generated half; run them next, not tsdown alone
+ℹ  tsdown v0.22.14 powered by rolldown v1.2.7
+ℹ  config file: C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\tsdown.config.ts (tsx)
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] entry: lib/types/index.js, lib/types/task-state.js, lib/types/task-state-basic.js, lib/types/task-state-control.js, lib/types/task-state-prompt.js, lib/types/compaction-basic.js, lib/types/tool-result-pruner.js
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] target: es2024
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] tsconfig: tsconfig.json
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] entry: src/client/index.ts
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] target: node22.19.0
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] tsconfig: tsconfig.json
+ℹ  Build start
+
+ WARN  We recommend using the ESM format instead of CommonJS.
+The ESM format is compatible with modern platforms and runtimes, and most new libraries are now distributed only in ESM format.
+Learn more at https://nodejs.org/en/learn/modules/publishing-a-package#how-did-we-get-here
+
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
+See more at https://tsdown.dev/options/dependencies#deps-onlybundle
+Detected dependencies in bundle:
+- zod
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
+See more at https://tsdown.dev/options/dependencies#deps-onlybundle
+Detected dependencies in bundle:
+- zod
+- @deepseek-ai/dsh-compaction
+- @deepseek-ai/dsh-scope
+- @deepseek-ai/dsh-session
+- @deepseek-ai/dsh-storage
+- @deepseek-ai/dsh-storage-domain
+- @deepseek-ai/dsh-typert-protocol
+- @deepseek-ai/cosmokit
+- @deepseek-ai/schemastery
+- @deepseek-ai/dsh-timeout
+- @deepseek-ai/dsh-util-values
+- @deepseek-ai/dsh-util-crypto
+- @deepseek-ai/dsh-brand
+- @deepseek-ai/dsh-llm
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] [CJS] lib\client.js      216.39 kB │ gzip: 44.08 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] [CJS] lib\client.js.map  506.79 kB │ gzip: 97.58 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs/client] [CJS] 2 files, total: 723.17 kB
+✔  [@deepseek-ai/dsh-client-ui-jobs/client] Build complete in 147ms
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\compaction-basic.js           425.88 kB │ gzip: 88.04 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\task-state-basic.js           122.09 kB │ gzip: 34.08 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\task-state-prompt.js           29.20 kB │ gzip:  8.81 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\tool-result-pruner.js          14.28 kB │ gzip:  4.41 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\task-state-control.js           6.55 kB │ gzip:  2.20 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\task-state.js                   2.09 kB │ gzip:  0.61 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\index.js                        1.51 kB │ gzip:  0.61 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\schemas-B9RBVgB9.js           218.39 kB │ gzip: 41.91 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\lib-UkEFLxaM.js                91.02 kB │ gzip: 24.85 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\source-index-BiRfSNPU.js       41.24 kB │ gzip: 12.21 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\audit-DbO0V0N_.js              24.97 kB │ gzip:  7.62 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\filter-CczOGkqh.js             18.64 kB │ gzip:  5.41 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\lib-DkAdRvjl.js                 6.76 kB │ gzip:  2.42 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\lib-Bq6jN40l.js                 4.78 kB │ gzip:  2.06 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\contract-C2nAZOQi.js            4.11 kB │ gzip:  1.81 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\rolldown-runtime-8H4AJuhK.js    0.38 kB │ gzip:  0.27 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] 16 files, total: 1.01 MB
+✔  [@deepseek-ai/dsh-client-ui-jobs] Build complete in 168ms
+patch:client-id - lib/client.js carries Loader id "dsh-context-enhancement" (0 scaffold occurrence(s) rewritten; 0 left anywhere under lib/)

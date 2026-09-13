@@ -6,7 +6,7 @@
 
 `dsh-context-enhancement` is a context-enhancement plugin tailored for DeepSeek Harness (DSH). It manages context within a single long-running session and provides tool-result distillation, forget-zone compaction, and an independent session checkpoint. Among the many DSH memory plugins, it is one of the few that focuses on governing a single context.
 
-> Current version: `0.1.10`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
+> Current version: `0.1.11`. Compatible with DeepSeek Harness `0.1.2-rc.1`.
 > This project is still in testing. The code was developed with GPT-5.6 Sol, and feedback is welcome.
 
 ## How It Works
@@ -101,7 +101,7 @@ In Web sessions, the **Context optimization** view shows four runtime capabiliti
 Install a fixed tag so later commits do not change the deployed version:
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.11'
 dsh --profile web
 ```
 
@@ -117,7 +117,7 @@ cd dsh-context-enhancement
 pnpm install
 pnpm run build
 npm pack
-dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.10.tgz"
+dsh plugin --profile web add "file:$PWD/dsh-context-enhancement-0.1.11.tgz"
 dsh --profile web
 ```
 
@@ -189,7 +189,7 @@ Ordinary Sessions remain under `$DSH_HOME/sessions`. Uninstalling the plugin doe
 Upgrade:
 
 ```powershell
-dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.10'
+dsh plugin --profile web add 'github:chuxindd/dsh-context-enhancement#v0.1.11'
 ```
 
 Roll back to the previous version:
@@ -276,10 +276,10 @@ pnpm test
 pnpm run build
 pnpm run release:check
 npm pack
-pnpm run verify:install -- .\dsh-context-enhancement-0.1.10.tgz
+pnpm run verify:install -- .\dsh-context-enhancement-0.1.11.tgz
 ```
 
-After all checks pass, commit the version changes, create the `v0.1.10` tag, and attach the matching tarball to the GitHub Release.
+After all checks pass, commit the version changes, create the `v0.1.11` tag, and attach the matching tarball to the GitHub Release.
 
 ## Compatibility Notes
 

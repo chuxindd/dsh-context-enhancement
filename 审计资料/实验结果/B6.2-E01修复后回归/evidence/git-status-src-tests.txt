@@ -1,0 +1,85 @@
+ M docs/tool-group-summarization-notes.md
+ M src/client/ContextEnhancementView.tsx
+ M src/client/locales.ts
+ M src/compaction-basic.ts
+ M src/effect-projection.ts
+ M src/internal/compaction/config.ts
+ M src/internal/compaction/pruner-types.ts
+ M src/internal/compaction/source-index.ts
+ M src/internal/compaction/summarizer.ts
+ M src/internal/compaction/tool-group-audit-store.ts
+ M src/internal/compaction/tool-group-audit.ts
+ M src/internal/compaction/tool-group-domain.ts
+ M src/internal/compaction/tool-group-replacement.ts
+ M src/internal/compaction/tool-group-summarizer.ts
+ M src/internal/compaction/tool-groups.ts
+ M src/internal/compaction/types.ts
+ M src/internal/compaction/zones.ts
+ M src/internal/task-state/basic/domain.ts
+ M src/internal/task-state/basic/filter.ts
+ M src/internal/task-state/basic/host.ts
+ M src/internal/task-state/basic/prompt.ts
+ M src/internal/task-state/basic/service.ts
+ M src/internal/task-state/basic/types.ts
+ M src/internal/task-state/basic/update.ts
+ M src/internal/task-state/basic/worker.ts
+ M src/internal/task-state/contract/audit.ts
+ M src/internal/task-state/contract/index.ts
+ M src/internal/task-state/contract/spec.ts
+ M src/internal/task-state/contract/types.ts
+ M src/internal/task-state/index.ts
+ M src/internal/task-state/prompt/index.ts
+ M src/internal/task-state/prompt/render.ts
+ M src/internal/task-state/prompt/types.ts
+ M src/task-state-basic.ts
+ M src/task-state-prompt.ts
+ M src/task-state.ts
+ M src/tool-result-pruner.ts
+ M tests/compaction-three-zone.spec.ts
+ M tests/compaction-tool-group-replacement.spec.ts
+ M tests/compaction-tool-groups.spec.ts
+ M tests/effect-projection.spec.ts
+ M tests/task-state-batch.spec.ts
+ M tests/task-state-composition.spec.ts
+ M tests/task-state-control-host.spec.ts
+ M tests/task-state-control-protocol.spec.ts
+ M tests/task-state-control-store.spec.ts
+ M tests/task-state-filter.spec.ts
+ M tests/task-state-host.spec.ts
+ M tests/task-state-long-session.spec.ts
+ M tests/task-state-prompt.spec.ts
+ M tests/task-state-render.spec.ts
+ M tests/task-state-schema.spec.ts
+ M tests/task-state-update.spec.ts
+ M tests/task-state-view.spec.ts
+ M tests/task-state-worker.spec.ts
+?? docs/compaction-algorithm-reconciliation.md
+?? src/internal/compaction/envelope-budget.ts
+?? src/internal/task-state/basic/authority.ts
+?? tests/artifact-parity.spec.ts
+?? tests/compaction-audit-store-injection.spec.ts
+?? tests/compaction-envelope-budget.spec.ts
+?? tests/compaction-lifecycle-scheduling.spec.ts
+?? tests/compaction-pressure-exit.spec.ts
+?? tests/compaction-pressure-low-yield.spec.ts
+?? tests/compaction-pressure-reentry.spec.ts
+?? tests/compaction-recent-hard-limit.spec.ts
+?? tests/compaction-reentry-liveness.spec.ts
+?? tests/compaction-retained-tail-turn-semantics.spec.ts
+?? tests/compaction-served-provenance.spec.ts
+?? tests/compaction-tool-audit-recovery.spec.ts
+?? tests/compaction-tool-group-audit-failure.spec.ts
+?? tests/compaction-tool-group-full-request-budget.spec.ts
+?? tests/compaction-tool-provenance-replay.spec.ts
+?? tests/compaction-tool-stage-debt.spec.ts
+?? tests/task-state-goal-authority.spec.ts
+?? tests/task-state-infeasible-progress.spec.ts
+?? tests/task-state-injection-budget.spec.ts
+?? tests/task-state-prompt-fixed-slot.spec.ts
+?? tests/task-state-recovery-provenance.spec.ts
+?? tests/task-state-restart-recovery.spec.ts
+?? tests/task-state-startup-backlog.spec.ts
+?? tests/task-state-storage-capability.spec.ts
+?? tests/task-state-terminal-bootstrap.spec.ts
+?? tests/task-state-terminal-generation.spec.ts
+?? tests/task-state-todo-authority.spec.ts

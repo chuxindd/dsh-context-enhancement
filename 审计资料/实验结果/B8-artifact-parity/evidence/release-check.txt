@@ -1,0 +1,12 @@
+$ node scripts/release-check.mjs
+ok - package.json parses
+ok - no workspace:* ranges in the manifest
+ok - every expected peer is pinned to the exact rc.1 deployment version
+ok - no @deepseek-ai/*/src/* imports in the built runtime
+ok - every exports target exists
+ok - sideEffects covers every Loader-imported service entry
+ok - cordis.patch.yml parses with the include YAML dialect
+ok - presets/contextual/agent.cordis.yml parses with the include YAML dialect
+ok - packed tarball contains every Loader-imported entry, patch, and preset
+
+all release checks passed

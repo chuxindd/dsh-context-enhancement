@@ -21,7 +21,7 @@ import { Buffer } from 'node:buffer'
 import { boundField } from './bytes.ts'
 
 /** Deterministic filter version recorded on requests and committed stables. */
-export const TASK_STATE_FILTER_VERSION = 'task-state-basic/filter-v2'
+export const TASK_STATE_FILTER_VERSION = 'task-state-basic/filter-v3'
 
 /** Explicit per-field UTF-8 byte limits of the filter projection. */
 export interface FilterFieldLimits {
@@ -374,7 +374,23 @@ function projectEvent(
     case 'goal/change': {
       if (!isRecord(data)) return undefined
       const operation = data['operation']
-      if (operation === 'clear') return { kind: 'goal/change', operation: 'clear' }
+      if (operation === 'clear') {
+        // The clear tombstone is the authority fact that REMOVES the Goal view.
+        // It projects with the identity it removed, so a replay can tell which
+        // goal revision a clear superseded instead of seeing an anonymous
+        // "something was cleared" fact.
+        const cleared = data['cleared']
+        return {
+          kind: 'goal/change',
+          operation: 'clear',
+          ...(isRecord(cleared) && typeof cleared['id'] === 'string' && cleared['id'].length > 0
+            ? { clearedId: cleared['id'] }
+            : {}),
+          ...(isRecord(cleared) && typeof cleared['revision'] === 'number' && Number.isSafeInteger(cleared['revision'])
+            ? { clearedRevision: cleared['revision'] }
+            : {}),
+        }
+      }
       const goal = data['goal']
       if (!isRecord(goal)) return undefined
       const roundsStarted = data['roundsStarted']
@@ -460,9 +476,16 @@ function projectEvent(
     case 'todo/write': {
       if (!isRecord(data)) return undefined
       const todos = data['todos']
-      if (!Array.isArray(todos) || todos.length === 0) return undefined
+      if (!Array.isArray(todos)) return undefined
+      // `todo/write` is a WHOLE-LIST replacement fact, and an empty list is the
+      // legal explicit clear: `{ todos: [] }` is what the durable producer
+      // writes to say "there is no list". Dropping that projection would make a
+      // clear unobservable and leave the previous list rendered as live, so the
+      // clear projects as its own marked authority fact.
+      if (todos.length === 0) return { kind: 'todo/write', status: 'cleared', todos: [] }
       return {
         kind: 'todo/write',
+        status: 'current',
         todos: (todos as readonly unknown[]).map((todo: unknown) => ({
           content: boundField('todo/write.content', stringField(isRecord(todo) ? todo['content'] : undefined), limits.stateBytes, records),
           status: stringField(isRecord(todo) ? todo['status'] : undefined),

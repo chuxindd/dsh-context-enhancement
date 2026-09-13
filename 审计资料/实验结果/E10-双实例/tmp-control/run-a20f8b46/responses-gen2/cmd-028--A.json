@@ -1,0 +1,56 @@
+{
+  "id": "cmd-028",
+  "worker": "A",
+  "op": "close",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 78568,
+  "ppid": 22700,
+  "workerStartedAt": 1789263249565,
+  "respondedAt": 1789263250039,
+  "result": {
+    "closedAt": 1789263250039,
+    "disposeMs": 1,
+    "finalInProcess": {
+      "sessionKeys": [
+        "e10-session-fork"
+      ],
+      "sessionCount": 1,
+      "auditKeys": [],
+      "auditCount": 0,
+      "records": {
+        "e10-session-fork": {
+          "key": "e10-session-fork",
+          "present": true,
+          "schemaValid": true,
+          "session": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+          },
+          "stable": {
+            "revision": 4,
+            "sourceCursor": 21,
+            "digest": "E10-DIGEST-A-r4-fork",
+            "filterVersion": "e10-filter-v1",
+            "schemaVersion": 1,
+            "objective": "E10 objective A-r4-fork",
+            "facts": [
+              "E10 A-r4-fork durable fact one.",
+              "E10 A-r4-fork durable fact two."
+            ]
+          },
+          "recordSha256": "4ad03a27d7e67f2fd95b4cd8fd10e6e3aca4e781c2bbdfb0f6bf5c5cd86bd771"
+        }
+      },
+      "audit": {},
+      "allRecordsSchemaValid": true,
+      "viewSha256": "fa59ea31e119a18258df63aa5e72bf8e46104316285c0048189a2e467804d929"
+    },
+    "diskAtCloseSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+    "diskAtCloseSessionKeys": [
+      "e10-session-fork"
+    ],
+    "domainClosed": true
+  }
+}

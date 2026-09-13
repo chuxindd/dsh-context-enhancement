@@ -1,0 +1,15 @@
+$ node scripts/verify-artifact-parity.mjs
+ok - lib/client.js Loader id is "dsh-context-enhancement" (sha256 D2DC6BBECDC034DA…)
+ok - no @deepseek-ai/dsh-client-ui-jobs bytes under lib/
+note - lib/ files outside package.json#files, so deliberately not shipped (173): lib/client.js.map, lib/types/client/ContextEnhancementView.d.ts.map, lib/types/client/ContextEnhancementView.js, lib/types/client/ContextEnhancementView.js.map, …
+ok - tarball carries all 74 published lib/ files byte-for-byte (86 members total)
+ok - tarball manifest is dsh-context-enhancement@0.1.10
+ok - packed lib/client.js Loader id is "dsh-context-enhancement"
+ok - every lib/ root chunk is either a declared entry or imported by a built file
+note - profile desktop: loads C:\Users\chuxi\.dsh\profiles\desktop\node_modules\dsh-context-enhancement (Loader id "dsh-context-enhancement", sha256 63ECFC17449BBD59…, DIFFERS from the workspace build)
+note - profile desktop: installed copy is stale; reinstall it with `dsh plugin add` against C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\dsh-context-enhancement-0.1.10.tgz before trusting its runtime bytes
+note - profile node_modules: dsh-context-enhancement is not installed (dependsOn null)
+note - profile web: loads C:\Users\chuxi\.dsh\profiles\web\node_modules\dsh-context-enhancement (Loader id "dsh-context-enhancement", sha256 63ECFC17449BBD59…, DIFFERS from the workspace build)
+note - profile web: installed copy is stale; reinstall it with `dsh plugin add` against C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\dsh-context-enhancement-0.1.10.tgz before trusting its runtime bytes
+
+artifact parity verified: dsh-context-enhancement@0.1.10, 74 published lib/ files

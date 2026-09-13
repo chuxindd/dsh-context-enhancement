@@ -4,7 +4,10 @@ import type { TaskStateStable } from '../src/internal/task-state/contract/types.
 import type { TaskStateControlFrame } from '../src/client/task-state-control.ts'
 import {
   TaskStateControlMirror,
+  createTaskStateControlInitialState,
   createTaskStateControlSessionSource,
+  reduceTaskStateControlBaseline,
+  selectTaskStateControlSession,
 } from '../src/client/task-state-control-store.ts'
 
 function mockStable(revision = 1): TaskStateStable {
@@ -26,6 +29,8 @@ function mockStable(revision = 1): TaskStateStable {
     },
     evidence: [],
     todoReferences: [],
+    goalView: { status: 'none' },
+    todoView: { status: 'none', items: [] },
   }
 }
 
@@ -210,5 +215,61 @@ describe('createTaskStateControlSessionSource', () => {
     expect(source2.getSnapshot().stable?.revision).toBe(2)
 
     await mirror.dispose()
+  })
+})
+
+describe('stale-null reconciliation over the control stream', () => {
+  it('replaces a reported null with the recovered stable on a later update', async () => {
+    // A session the Host reported with none (baseline read before the provider
+    // seeded the recovered stable) must hydrate as soon as the update arrives.
+    let pushFrame!: (frame: TaskStateControlFrame) => void
+    const opener = (signal: AbortSignal) => (async function* () {
+      yield {
+        type: 'baseline' as const,
+        value: { items: { ['session-recovered' as SessionId]: null } },
+      }
+      while (!signal.aborted) {
+        try {
+          const frame = await new Promise<TaskStateControlFrame>((resolve, reject) => {
+            pushFrame = resolve
+            signal.addEventListener('abort', () => reject(signal.reason), { once: true })
+          })
+          yield frame
+        } catch {
+          if (signal.aborted) break
+        }
+      }
+    })()
+
+    const mirror = new TaskStateControlMirror({ open: opener })
+    mirror.start()
+    await waitFor(() => mirror.getSnapshot().connection === 'live')
+    expect(mirror.getSnapshot().items['session-recovered' as SessionId]).toBeNull()
+
+    pushFrame({
+      type: 'update',
+      value: { sessionId: 'session-recovered' as SessionId, stable: mockStable(2) },
+    })
+    await waitFor(() => mirror.getSnapshot().items['session-recovered' as SessionId] !== null)
+    expect(mirror.getSnapshot().items['session-recovered' as SessionId]?.revision).toBe(2)
+
+    await mirror.dispose()
+  })
+
+  it('a reconnect baseline re-serves the recovered stable over a stale null', () => {
+    // Generation 1 (baseline read before the provider seeded the runtime)
+    // reported the session with none; the generation opened by a reconnect
+    // carries the persisted stable and replaces the stale null.
+    const id = 'session-reconnected' as SessionId
+    let state = createTaskStateControlInitialState()
+    state = reduceTaskStateControlBaseline(state, { items: { [id]: null } })
+    expect(state.connection).toBe('live')
+    expect(state.items[id]).toBeNull()
+
+    // Reconnect: a fresh generation whose baseline carries the durable stable.
+    const reconnected = reduceTaskStateControlBaseline(state, { items: { [id]: mockStable(2) } })
+    expect(reconnected.generation).toBe(state.generation + 1)
+    expect(reconnected.items[id]?.revision).toBe(2)
+    expect(selectTaskStateControlSession(reconnected, id).stable?.revision).toBe(2)
   })
 })

@@ -1,0 +1,26 @@
+session start reference: 2026-09-13T17:40:00+08:00
+
+B3-E03修复后回归              newest=2026-09-13T11:02:58.0206137+08:00 (README.md)
+B3-tmp                   newest=2026-09-13T10:01:45.2546401+08:00 (probe2.spec.ts)
+B4.1-E07修复后回归            newest=2026-09-13T11:33:54.3715402+08:00 (README.md)
+B4.2-E05E06修复后回归         newest=2026-09-13T12:09:20.3389027+08:00 (b42-ledger.json)
+B5.1-E08修复后回归            newest=2026-09-13T14:06:20.7670399+08:00 (artifact-hashes.json)
+B6.2-E01修复后回归            newest=2026-09-13T17:10:47.6913882+08:00 (vitest-full-suite.txt)
+B7-E09修复后回归              newest=2026-09-13T17:42:41.5190465+08:00 (README.md)
+E00-第一轮现有测试              newest=2026-09-12T17:31:26.7366190+08:00 (result.json)
+E01-工具预释放                newest=2026-09-12T21:50:55.5800966+08:00 (artifact-hashes.json)
+E02-压力回落                 newest=2026-09-12T21:21:14.9051739+08:00 (e02-pressure-release.spec.ts)
+E03-压力抖动                 newest=2026-09-12T21:36:18.6468610+08:00 (result.json)
+E04-Step边界               newest=2026-09-12T21:07:23.7163163+08:00 (e04-step-boundary.spec.ts)
+E05-Goal大改               newest=2026-09-12T21:10:45.2124463+08:00 (e05-goal-change.spec.ts)
+E06-Todo清空               newest=2026-09-12T21:10:22.8806470+08:00 (e06-todo-clear.spec.ts)
+E07-重启积压                 newest=2026-09-12T22:12:06.3810431+08:00 (artifact-hashes.json)
+E08-Stable注入累积           newest=2026-09-12T22:26:26.0222742+08:00 (artifact-hashes.json)
+E09-ForkResume           newest=2026-09-12T22:47:41.9450392+08:00 (artifact-hashes.json)
+E10-双实例                  newest=2026-09-13T09:34:10.5096602+08:00 (e10-ledger.json)
+harness                  newest=2026-09-12T21:19:13.8953588+08:00 (compaction-harness.ts)
+X4-Stable槽位压缩回收          newest=2026-09-13T15:36:13.5049585+08:00 (result.json)
+
+--- 40/41/42 ---
+40-实验结果差异矩阵.md                   mtime=2026-09-12T23:28:46.5066591+08:00
+41-缺陷与风险清单.md                    mtime=2026-09-12T23:35:54.6322656+08:00

@@ -45,6 +45,13 @@ export declare const taskStateAuditOpenSchema: z.ZodObject<{
     request: z.ZodObject<{
         requestId: z.ZodString;
         revision: z.ZodNumber;
+        trigger: z.ZodOptional<z.ZodEnum<{
+            startup: "startup";
+            threshold: "threshold";
+            urgent: "urgent";
+            trailing: "trailing";
+            manual: "manual";
+        }>>;
         base: z.ZodNullable<z.ZodObject<{
             schemaVersion: z.ZodNumber;
             revision: z.ZodNumber;
@@ -70,15 +77,18 @@ export declare const taskStateAuditOpenSchema: z.ZodObject<{
             limitBytes: z.ZodNumber;
             keptBytes: z.ZodNumber;
         }, z.core.$strip>>>;
+        inherited: z.ZodOptional<z.ZodType<import("./types.ts").TaskStateInheritedPrefix, unknown, z.core.$ZodTypeInternals<import("./types.ts").TaskStateInheritedPrefix, unknown>>>;
     }, z.core.$strip>;
 }, z.core.$strip>;
 /** One permissive finished-phase view used to validate a restored row. */
 export declare const taskStateAuditFinishedSchema: z.ZodObject<{
     outcome: z.ZodEnum<{
+        manual: "manual";
         success: "success";
         failure: "failure";
-        manual: "manual";
         repair: "repair";
+        "terminal-infeasible": "terminal-infeasible";
+        aborted: "aborted";
     }>;
     requestId: z.ZodOptional<z.ZodString>;
     revision: z.ZodOptional<z.ZodNumber>;
@@ -130,6 +140,21 @@ export declare function openAuditRow(requestId: TaskStateRequestId, session: Tas
  * @returns the replacement row value.
  */
 export declare function finishAuditRow(row: TaskStateAuditRecord, finished: TaskStateUpdateFinishedData): TaskStateAuditRecord;
+/**
+ * Audit outcome classification distinguishing committed commits, permanent terminal
+ * infeasibility, retryable transient failures, and aborted attempts.
+ */
+export type TaskStateAuditClassification = 'committed' | 'terminal-infeasible' | 'transient-failure' | 'aborted';
+/**
+ * Classify one audit row into its semantic state:
+ * - `committed`: success, manual edit, or certified repair;
+ * - `terminal-infeasible`: permanent budget failure or explicitly quarantined terminal attempt;
+ * - `aborted`: cancelled or in-flight un-settled attempt;
+ * - `transient-failure`: non-terminal failure eligible for subsequent retry.
+ * @param row - the audit record to classify.
+ * @returns the four-way audit classification.
+ */
+export declare function classifyAuditRow(row: TaskStateAuditRecord): TaskStateAuditClassification;
 /** The resolved per-request view a keyless replay test can read. */
 export interface TaskStateAuditTimelineEntry {
     /** Branded request id. */
@@ -144,6 +169,8 @@ export interface TaskStateAuditTimelineEntry {
     readonly certified: boolean;
     /** Revision the finished phase certifies, when `certified`. */
     readonly certifiedRevision: number | undefined;
+    /** Four-way audit outcome classification. */
+    readonly classification: TaskStateAuditClassification;
 }
 /**
  * Pure derivation: project audit rows of one lifecycle into a deterministic,

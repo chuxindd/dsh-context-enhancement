@@ -19,6 +19,8 @@ function baseWithFacts(revision: number, sourceCursor: number, factCount: number
     risks: [],
     evidence: [],
     todoReferences: [],
+    goalView: { status: 'none' },
+    todoView: { status: 'none', items: [] },
     continuation: { currentObjective: 'o', currentFocus: 'f', openWork: [], nextActions: [] },
   }
 }
@@ -108,10 +110,13 @@ describe('task-state-basic batch window folding', () => {
       type: 'user/message',
       data: { content: [{ type: 'text', text: '任务状态' }], source: { kind: 'user' } },
     }]
-    const tiny = foldBatchWindow(cjk, null, -1, 0, { maxEvents: 100, maxInputBytes: 200 })
+    // The v3 frame carries the authoritative Goal/TODO block beside the
+    // projection, so the framed input of one CJK message is ~384 bytes; the
+    // budget below is the smallest one that still fits it whole.
+    const tiny = foldBatchWindow(cjk, null, -1, 0, { maxEvents: 100, maxInputBytes: 400 })
     expect(tiny.kind).toBe('window')
     if (tiny.kind === 'window') {
-      expect(tiny.window.inputBytes).toBeLessThanOrEqual(200)
+      expect(tiny.window.inputBytes).toBeLessThanOrEqual(400)
       expect(tiny.window.events.length).toBe(1)
     }
     const undersized = foldBatchWindow(cjk, null, -1, 0, { maxEvents: 100, maxInputBytes: 10 })

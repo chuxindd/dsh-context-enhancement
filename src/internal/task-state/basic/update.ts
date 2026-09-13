@@ -45,15 +45,23 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { deadline, timeoutOf } from '@deepseek-ai/dsh-timeout'
 import {
   TaskStateRequestId,
+  type TaskStateInheritedPrefix,
   type TaskStateStable,
   type TaskStateTruncationRecord,
   type TaskStateUpdateFinishedData,
   type TaskStateUpdateRequestData,
+  type TaskStateUpdateTrigger,
 } from '../contract/index.ts'
 import { TASK_STATE_FILTER_VERSION } from './filter.ts'
+import { resolveAuthorityViews } from './authority.ts'
 import { commitStable, normalizeCandidate, parseCandidate } from './host.ts'
 import { TASK_STATE_INPUT_SCHEMA_VERSION, TASK_STATE_STABLE_SCHEMA_VERSION } from './prompt.ts'
-import type { TaskStateBatchFailure } from './types.ts'
+import type {
+  CandidateHostContext,
+  TaskStateBatchFailure,
+  TaskStateFilteredEvent,
+  TaskStateReferenceQuarantine,
+} from './types.ts'
 
 /** Stable Host-owned timeout code stamped on the deadline reason. */
 export const TASK_STATE_UPDATE_TIMEOUT_CODE = 'task-state-basic/update-timeout'
@@ -70,6 +78,18 @@ export interface TaskStateUpdateAttempt {
   readonly projection: string
   /** Exact included eligible sequences folded into the window. */
   readonly includedSeqs: readonly number[]
+  /**
+   * Exact projected events of the folded window, in sequence order. The Host
+   * resolves the authoritative Goal/TODO views from THESE facts, so the views a
+   * commit carries are exactly the ones the model was shown in the frame.
+   */
+  readonly windowEvents: readonly TaskStateFilteredEvent[]
+  /**
+   * Why this wave was admitted (`startup`, `threshold`, `trailing`, or
+   * `manual`), recorded verbatim on the durable open audit row. Omitted means
+   * the caller supplied no schedule provenance and the row records none.
+   */
+  readonly trigger?: TaskStateUpdateTrigger
   /** Deterministic truncation records produced by the projection. */
   readonly truncation: readonly TaskStateTruncationRecord[]
   /** Exact model-visible system instruction (pinned). */
@@ -88,6 +108,13 @@ export interface TaskStateUpdateAttempt {
     readonly maxEntryBytes: number
     readonly maxListItems: number
   }
+  /**
+   * The inherited fork boundary of THIS Session lifecycle, or `null` when it
+   * began on its own events. It is recorded on the committed stable and on the
+   * open-phase audit row so both durable descriptions of one window state the
+   * same covered range.
+   */
+  readonly inherited?: TaskStateInheritedPrefix | null
 }
 
 /**
@@ -157,6 +184,7 @@ export async function runUpdateAttempt(
     await hooks.putOpenAudit({
       requestId,
       revision: targetRevision,
+      ...attempt.trigger === undefined ? {} : { trigger: attempt.trigger },
       base: attempt.base === null ? null : structuredClone(attempt.base),
       includedSeqs: [...attempt.includedSeqs],
       filterVersion: TASK_STATE_FILTER_VERSION,
@@ -165,6 +193,9 @@ export async function runUpdateAttempt(
       maxTokens: attempt.maxOutputTokens,
       schema: { version: TASK_STATE_INPUT_SCHEMA_VERSION },
       truncation: [...attempt.truncation],
+      ...attempt.inherited === undefined || attempt.inherited === null
+        ? {}
+        : { inherited: attempt.inherited },
     })
   } catch (error: unknown) {
     return {
@@ -336,8 +367,9 @@ async function appendFailureSafely(
   failure: TaskStateBatchFailure,
 ): Promise<void> {
   try {
+    const outcome = failure.code === 'ABORTED' ? 'aborted' : 'failure'
     await hooks.putFinishedAudit({
-      outcome: 'failure',
+      outcome,
       requestId,
       error: { stage: failure.stage, code: failure.code, message: failure.message },
     })
@@ -397,9 +429,10 @@ async function commitFromOutput(
   }
 
   const context = candidateContext(attempt)
+  const quarantined: TaskStateReferenceQuarantine[] = []
   let normalized: ReturnType<typeof normalizeCandidate>
   try {
-    normalized = normalizeCandidate(candidate, context)
+    normalized = normalizeCandidate(candidate, context, item => { quarantined.push(item) })
   } catch (error: unknown) {
     const failure: TaskStateBatchFailure = {
       stage: 'semantic',
@@ -408,6 +441,17 @@ async function commitFromOutput(
     }
     await appendFailureSafely(hooks, requestId, failure)
     return { ok: false, failure }
+  }
+  if (quarantined.length > 0) {
+    try {
+      attempt.ctx.logger.warn(
+        `task-state-basic: ${attempt.sessionId} quarantined ${quarantined.length} stale reference(s) outside the folded window `
+        + `(${quarantined.map(item => `${item.kind} ${item.seq}`).join(', ')}); the references were dropped with the candidate, `
+        + 'valid references and all other fields were preserved, and no sequence was fabricated',
+      )
+    } catch {
+      // Diagnostic warnings are best-effort and must never abort authority commit.
+    }
   }
 
   const sourceCursor = attempt.includedSeqs[attempt.includedSeqs.length - 1] ?? 0
@@ -419,6 +463,7 @@ async function commitFromOutput(
       targetRevision,
       TASK_STATE_FILTER_VERSION,
       sourceCursor,
+      attempt.inherited ?? null,
     )
   } catch (error: unknown) {
     // commitStable only rejects when the caller-supplied revision/cursor
@@ -466,25 +511,23 @@ async function commitFromOutput(
     // The finished audit could not be put. The stable stays committed; report
     // the audit gap so the worker fills the open row with a repair credential.
     auditGap = true
-    attempt.ctx.logger.warn(
-      `task-state-basic: ${attempt.sessionId} committed stable revision ${stable.revision} but its finished audit failed; repair will certify it: ${errorMessage(error)}`,
-    )
+    try {
+      attempt.ctx.logger.warn(
+        `task-state-basic: ${attempt.sessionId} committed stable revision ${stable.revision} but its finished audit failed; repair will certify it: ${errorMessage(error)}`,
+      )
+    } catch {
+      // Diagnostic warnings are best-effort and must never bubble out of the committed update.
+    }
   }
   return { ok: true, stable, requestId, auditGap, ...usage === undefined ? {} : { usage } }
 }
 
 /** Build the Host semantic-validation context from one attempt. */
-function candidateContext(attempt: TaskStateUpdateAttempt): {
-  base: {
-    revision: number
-    sourceCursor: number
-    entryIds: Set<string>
-    entries: readonly { readonly id: string; readonly kind: string; readonly content: string }[]
-  } | null
-  includedSeqs: Set<number>
-  limits: { readonly maxEntriesPerKind: number; readonly maxEntryBytes: number; readonly maxListItems: number }
-} {
+function candidateContext(attempt: TaskStateUpdateAttempt): CandidateHostContext {
   const base = attempt.base
+  const authority = resolveAuthorityViews(attempt.windowEvents, base, {
+    maxEntryBytes: attempt.limits.maxEntryBytes,
+  })
   return {
     base: base === null
       ? null
@@ -495,6 +538,11 @@ function candidateContext(attempt: TaskStateUpdateAttempt): {
         entries: allEntries(base),
       },
     includedSeqs: new Set(attempt.includedSeqs),
+    authority: {
+      goalView: authority.goalView,
+      todoView: authority.todoView,
+      todoReferences: authority.todoReferences,
+    },
     limits: attempt.limits,
   }
 }

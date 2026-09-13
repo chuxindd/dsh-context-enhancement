@@ -1,0 +1,80 @@
+{
+  "batch": "B6.2",
+  "title": "tool-group audit recovery state machine (open/success/fallback/repair) and lossy/corrupt/restart degradation",
+  "scope": "B6.2 only. B6.1 remains the sole type authority and is not revoked. B6 as a whole is NOT complete.",
+  "recordedAtUtc": "2026-09-13T09:10:00Z",
+  "environment": {
+    "workspace": "C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement",
+    "pluginHead": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCheckout": "C:/Users/chuxi/Documents/trae_projects/code/deepseek-harness",
+    "dshHead": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "dshStatusPorcelainLines": 0,
+    "vitest": "4.1.11"
+  },
+  "deliverables": {
+    "newSpec": "tests/compaction-tool-audit-recovery.spec.ts",
+    "extendedSpec": "tests/compaction-tool-group-audit-failure.spec.ts",
+    "source": [
+      "src/internal/compaction/tool-group-audit.ts",
+      "src/internal/compaction/tool-group-audit-store.ts",
+      "src/internal/compaction/tool-group-domain.ts",
+      "src/compaction-basic.ts"
+    ],
+    "records": [
+      "审计资料/B6.2-实施记录.md",
+      "审计资料/实验结果/B6.2-E01修复后回归/README.md",
+      "审计资料/实验结果/B6.2-E01修复后回归/result.json"
+    ]
+  },
+  "results": {
+    "newSpec": { "file": "tests/compaction-tool-audit-recovery.spec.ts", "tests": 10, "passed": 10, "failed": 0 },
+    "extendedSpec": { "file": "tests/compaction-tool-group-audit-failure.spec.ts", "tests": 5, "passed": 5, "failed": 0 },
+    "toolAuditBatch": { "files": 11, "tests": 70, "passed": 70, "failed": 0 },
+    "compactionPressureBatch": { "files": 17, "tests": 164, "passed": 164, "failed": 0 },
+    "provenanceReplayB61": { "file": "tests/compaction-tool-provenance-replay.spec.ts", "tests": 11, "passed": 11, "failed": 0 },
+    "b3Pressure": {
+      "files": [
+        "tests/compaction-reentry-liveness.spec.ts",
+        "tests/compaction-pressure-reentry.spec.ts",
+        "tests/compaction-pressure-low-yield.spec.ts",
+        "tests/compaction-pressure-exit.spec.ts"
+      ],
+      "passed": true
+    },
+    "typecheck": { "command": "npx tsc -p tsconfig.json --noEmit", "errors": 0 },
+    "fullSuite": { "files": 59, "tests": 541, "passed": 540, "failed": 1 },
+    "artifactParity": {
+      "listedSeparately": true,
+      "file": "tests/artifact-parity.spec.ts",
+      "tests": 5,
+      "failed": 1,
+      "failingTest": "verifies lib/client.js contains patched module id",
+      "preexisting": true,
+      "evidence": "lib/client.js mtime 2026-09-11T01:49:09.9083010Z sha256 092384a0471281947960499787ea0ca438c9ea12b2c9524bf722d14d7033e231; tgz mtime 2026-09-10T12:51:02Z; package.json mtime 2026-09-08T02:48:36Z; all B6.2 edits are >= 2026-09-13T08:27Z; lib/ and .tgz were not rebuilt (forbidden)"
+    }
+  },
+  "mutationChecks": {
+    "file": "审计资料/实验结果/B6.2-E01修复后回归/evidence/mutation-checks.json",
+    "checks": 2,
+    "bothRevertedByteIdentical": true
+  },
+  "invariantsHeld": {
+    "sessionProvenanceIsTypeAuthority": true,
+    "auditCanOnlyMakeClassificationStricter": true,
+    "abortedIsRepairableNeverCommitted": true,
+    "repairedRequiresSessionProvenance": true,
+    "emptyEvidenceRepairThrows": true,
+    "auditLossChangesNoClassification": true,
+    "auditLossIsReported": true,
+    "rejectedAuditWriteDoesNotCancelReduction": true,
+    "degradedAttemptsAreBounded": true,
+    "op1Op2ExclusionSurvivesRestart": true,
+    "landedToolSummaryNotReprocessedByPruner": true
+  },
+  "honestBoundaries": {
+    "blockedSpecificApi": "dsh-storage KvUnit/KvTable expose no revision/etag/CAS/reload; layout:'single' is whole-document last-write-wins with an authoritative in-memory copy. Concurrent overwrite is undetectable in-process and is only observable after a restart as a Session-proven landing with no audit row. Restart vs concurrent writer is indistinguishable, so the only honest verdict is 'aborted'. Carried forward from B1; not resolved, not faked (no in-memory mutex, no timestamps).",
+    "notDone": ["B1 multi-instance CAS", "B7", "B8", "lib/ and .tgz rebuild/reconciliation"],
+    "notRerun": ["审计资料/实验结果/E01-工具预释放/e01-tool-pre-release.spec.ts (historical material, forbidden; its fake pruner writes no provenance, so its observations legally drift under the B6.1 contract)"],
+    "b6OverallComplete": false
+  }
+}

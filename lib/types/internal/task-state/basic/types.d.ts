@@ -5,7 +5,7 @@
  * @module dsh-context-enhancement/internal/task-state/basic/types
  */
 import type { SessionId } from '@deepseek-ai/dsh-session/types';
-import type { TaskStateEntryId, TaskStateStable, TaskStateTruncationRecord } from '../contract/types.ts';
+import type { TaskStateEntryId, TaskStateGoalView, TaskStateStable, TaskStateTodoReference, TaskStateTodoView, TaskStateTruncationRecord } from '../contract/types.ts';
 /** One committed-stable observer notified after the provider's authority put. */
 export type TaskStateCommittedListener = (sessionId: SessionId, stable: TaskStateStable) => void;
 /** Validated deployment policy of one task-state-basic mount. */
@@ -70,12 +70,35 @@ export interface CandidateHostContext {
     } | null;
     /** Exact eligible sequences folded by this batch. */
     readonly includedSeqs: ReadonlySet<number>;
+    /**
+     * The Host-resolved authoritative Goal/TODO views of this exact window,
+     * together with the bounded TODO reference they imply. These fields are
+     * committed VERBATIM and never taken from the candidate: Goal and TODO are
+     * authoritative named views owned by the Host, not model-authored content.
+     */
+    readonly authority: {
+        readonly goalView: TaskStateGoalView;
+        readonly todoView: TaskStateTodoView;
+        readonly todoReferences: readonly TaskStateTodoReference[];
+    };
     /** Validated stable byte and item limits. */
     readonly limits: {
         readonly maxEntriesPerKind: number;
         readonly maxEntryBytes: number;
         readonly maxListItems: number;
     };
+}
+/**
+ * One candidate reference quarantined out of the committed content instead of
+ * failing the whole candidate: a stale reference carried forward from a
+ * previous window can never re-enter an eligible sequence set, so failing on
+ * it would freeze every future update at the last committed revision.
+ */
+export interface TaskStateReferenceQuarantine {
+    /** Which reference list the dropped reference came from. */
+    readonly kind: 'evidence';
+    /** The dropped reference's sequence (never replaced with another value). */
+    readonly seq: number;
 }
 /** Result of minting and verifying one candidate into committed content. */
 export interface TaskStateHostNormalization {
@@ -101,11 +124,15 @@ export interface TaskStateHostNormalization {
         readonly seq: number;
         readonly note: string;
     }[];
-    /** Bounded TODO references, all pointing into `includedSeqs`. */
+    /** Host-derived bounded TODO references, all pointing at the authoritative list. */
     readonly todoReferences: readonly {
         readonly seq: number;
         readonly content: string;
     }[];
+    /** Host-derived authoritative Goal view. */
+    readonly goalView: TaskStateGoalView;
+    /** Host-derived authoritative TODO view. */
+    readonly todoView: TaskStateTodoView;
     /** Durable continuation state. */
     readonly continuation: {
         readonly currentObjective: string;

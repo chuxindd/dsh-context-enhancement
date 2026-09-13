@@ -1,0 +1,34 @@
+{
+  "id": "cmd-011",
+  "worker": "A",
+  "op": "get",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 6340,
+  "ppid": 51736,
+  "workerStartedAt": 1789226296992,
+  "respondedAt": 1789226297538,
+  "result": {
+    "key": "ts-e10-shared-audit-row",
+    "table": "audit",
+    "view": {
+      "key": "ts-e10-shared-audit-row",
+      "schemaValid": true,
+      "requestId": "ts-e10-A-audit-t1",
+      "time": 1700000101000,
+      "lifecycleCreatedAt": 1700000000000,
+      "targetRevision": 1,
+      "baseRevision": null,
+      "baseCursor": null,
+      "includedSeqs": [
+        1,
+        2,
+        3
+      ],
+      "outcome": "success",
+      "finishedRevision": 1,
+      "rowSha256": "392438be1c70b4354445d3abb116a86578a2dafef2117b6b6bf0dc394031d9ca"
+    }
+  }
+}

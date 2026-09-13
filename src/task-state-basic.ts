@@ -23,6 +23,7 @@ export type {
   TaskStateFilteredEvent,
   TaskStateBatchProjection,
   TaskStateHostNormalization,
+  TaskStateReferenceQuarantine,
   TaskStateBatchErrorCode,
   TaskStateBatchFailure,
 } from './internal/task-state/basic/types.ts'

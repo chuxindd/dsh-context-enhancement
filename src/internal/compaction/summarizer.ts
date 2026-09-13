@@ -18,6 +18,7 @@ import { contentHasImage, createUserMessage, BlockAssembler, LlmError } from '@d
 import type {
   ContentBlock, FinishReason, GenerateOptions, Message, TokenUsage, ToolSchema,
 } from '@deepseek-ai/dsh-llm'
+import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 
 interface SummaryConfig {
@@ -201,6 +202,34 @@ export function frameSummary(summary: readonly ContentBlock[]): ContentBlock[] {
     ...summary,
     { type: 'text', text: SUMMARY_CLOSE_TAG },
   ]
+}
+
+/**
+ * Price the fixed compaction instruction with the session estimator, so the
+ * envelope-budget input cap accounts for the only novel part of the auxiliary
+ * request.
+ * @param meter - effective session token meter.
+ * @returns heuristic price of the trailing instruction user message.
+ */
+export function compactionInstructionTokens(meter: TokenMeter): number {
+  return meter.estimateMessage(createUserMessage({
+    content: [{ type: 'text', text: COMPACTION_INSTRUCTION }],
+    source: { kind: 'plugin', plugin: 'dsh-context-enhancement' },
+  }))
+}
+
+/**
+ * Price the smallest possible framed checkpoint. A span at or below this price
+ * can never satisfy the shrink requirement, so the budget pass must decline it
+ * before paying for a call.
+ * @param meter - effective session token meter.
+ * @returns heuristic price of a checkpoint with an empty summary body.
+ */
+export function minimumCheckpointTokens(meter: TokenMeter): number {
+  return meter.estimateMessage(createUserMessage({
+    content: frameSummary([]),
+    source: { kind: 'plugin', plugin: 'dsh-context-enhancement' },
+  }))
 }
 
 /** Map a terminal summarization finish to its fail-closed error. */

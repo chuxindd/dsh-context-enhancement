@@ -3,6 +3,7 @@ import {
   TaskStateEntryId,
   type TaskStateCandidate,
 } from '../src/task-state.ts'
+import type { CandidateHostContext, TaskStateReferenceQuarantine } from '../src/internal/task-state/basic/types.ts'
 import { commitStable, digestOf, normalizeCandidate, parseCandidate } from '../src/internal/task-state/basic/host.ts'
 
 function candidate(overrides: Partial<TaskStateCandidate> = {}): TaskStateCandidate {
@@ -12,7 +13,6 @@ function candidate(overrides: Partial<TaskStateCandidate> = {}): TaskStateCandid
     constraints: [],
     risks: [],
     evidence: [{ seq: 5, note: 'from the last tool result' }],
-    todoReferences: [],
     continuation: {
       currentObjective: 'land the state provider',
       currentFocus: 'writing the worker',
@@ -33,8 +33,13 @@ const context = {
     ],
   },
   includedSeqs: new Set([5, 6]),
+  authority: {
+    goalView: { status: 'none' },
+    todoView: { status: 'none', items: [] },
+    todoReferences: [],
+  },
   limits: { maxEntriesPerKind: 10, maxEntryBytes: 2_000, maxListItems: 8 },
-}
+} satisfies CandidateHostContext
 
 describe('task-state-basic candidate parsing', () => {
   it('accepts a canonical candidate', () => {
@@ -90,16 +95,56 @@ describe('task-state-basic Host normalization', () => {
     }), context)).toThrow(/base holds it as a fact/)
   })
 
-  it('rejects an evidence reference outside the folded window', () => {
-    expect(() => normalizeCandidate(candidate({
-      evidence: [{ seq: 999, note: 'out of window' }],
-    }), context)).toThrow(/not an included eligible sequence/)
+  it('quarantines an evidence reference outside the folded window and keeps valid ones', () => {
+    const quarantined: TaskStateReferenceQuarantine[] = []
+    const normalized = normalizeCandidate(candidate({
+      evidence: [
+        { seq: 999, note: 'stale reference carried forward' },
+        { seq: 5, note: 'from the last tool result' },
+      ],
+    }), context, item => { quarantined.push(item) })
+    // The stale reference is dropped with a diagnostic; the valid in-window
+    // reference and every other field are preserved verbatim.
+    expect(normalized.evidence).toEqual([{ seq: 5, note: 'from the last tool result' }])
+    expect(quarantined).toEqual([{ kind: 'evidence', seq: 999 }])
+    expect(normalized.facts).toHaveLength(1)
   })
 
-  it('rejects a todo reference outside the folded window', () => {
-    expect(() => normalizeCandidate(candidate({
-      todoReferences: [{ seq: 999, content: 'out of window' }],
-    }), context)).toThrow(/not an included eligible sequence/)
+  it('commits the Host-resolved authoritative views instead of anything the candidate proposes', () => {
+    const authority = {
+      goalView: { status: 'current' as const, goalId: 'goal-b', goalRevision: 3, phase: 'active', objective: 'ship goal B' },
+      todoView: { status: 'current' as const, sourceSeq: 6, items: [{ content: 'durable item', status: 'pending' }] },
+      todoReferences: [{ seq: 6, content: 'durable item [pending]' }],
+    }
+    const normalized = normalizeCandidate(candidate(), { ...context, authority })
+    expect(normalized.goalView).toEqual(authority.goalView)
+    expect(normalized.todoView).toEqual(authority.todoView)
+    expect(normalized.todoReferences).toEqual([{ seq: 6, content: 'durable item [pending]' }])
+  })
+
+  it('commits a cleared authority view with no TODO reference left behind', () => {
+    const normalized = normalizeCandidate(candidate(), {
+      ...context,
+      authority: {
+        goalView: { status: 'cleared' },
+        todoView: { status: 'cleared', sourceSeq: 6, items: [] },
+        todoReferences: [],
+      },
+    })
+    expect(normalized.goalView).toEqual({ status: 'cleared' })
+    expect(normalized.todoView).toEqual({ status: 'cleared', sourceSeq: 6, items: [] })
+    expect(normalized.todoReferences).toEqual([])
+  })
+
+  it('never fabricates a sequence for a quarantined reference', () => {
+    const normalized = normalizeCandidate(candidate({
+      evidence: [{ seq: 777, note: 'outside the window' }],
+    }), context)
+    expect(normalized.evidence).toEqual([])
+    expect(normalized.todoReferences).toEqual([])
+    for (const reference of normalized.evidence) {
+      expect(context.includedSeqs.has(reference.seq)).toBe(true)
+    }
   })
 
   it('rejects more entries of one kind than the configured cap', () => {
@@ -109,11 +154,17 @@ describe('task-state-basic Host normalization', () => {
     expect(() => normalizeCandidate(candidate({ decisions: manyDecisions }), context)).toThrow(/exceeding maxEntriesPerKind/)
   })
 
-  it('rejects evidence and todo lists over the item cap', () => {
+  it('rejects an evidence list over the item cap', () => {
     const manyEvidence = Array.from({ length: 9 }, (_, i) => ({ seq: 5, note: `note ${i}` }))
     expect(() => normalizeCandidate(candidate({ evidence: manyEvidence }), context)).toThrow(/evidence exceeds maxListItems/)
+  })
+
+  it('rejects a Host-resolved TODO reference list over the item cap', () => {
     const manyTodos = Array.from({ length: 9 }, (_, i) => ({ seq: 5, content: `todo ${i}` }))
-    expect(() => normalizeCandidate(candidate({ todoReferences: manyTodos }), context)).toThrow(/todoReferences exceeds maxListItems/)
+    expect(() => normalizeCandidate(candidate(), {
+      ...context,
+      authority: { ...context.authority, todoReferences: manyTodos },
+    })).toThrow(/derived todoReferences exceeds maxListItems/)
   })
 
   it('rejects continuation openWork and nextActions over the item cap', () => {

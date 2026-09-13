@@ -4,10 +4,13 @@
  * caller parses with `JSON.parse` and the contract schema), mints Host-owned
  * branded ids for new entries, verifies echoed ids exist in the base, applies
  * the complete-candidate update rules, bounds every retained value with the
- * configured UTF-8 byte and item limits, verifies every evidence and TODO
- * reference points into the folded batch window, and computes the stable
- * digest over the normalized content. Any failure rejects the complete
- * candidate; the previous stable and cursor stay untouched.
+ * configured UTF-8 byte and item limits, keeps every evidence reference that
+ * points into the folded batch window while quarantining (dropping, with a
+ * diagnostic) any reference that points outside it, commits the authoritative
+ * Goal/TODO views the window resolved (never a model-proposed value), and
+ * computes the stable digest over the normalized content. A semantic failure
+ * still rejects the complete candidate; the previous stable and cursor stay
+ * untouched.
  * @module dsh-context-enhancement/internal/task-state/basic/host
  */
 
@@ -17,11 +20,12 @@ import {
   taskStateCandidateSchema,
   taskStateStableSchema,
   type TaskStateCandidate,
+  type TaskStateInheritedPrefix,
   type TaskStateStable,
   type TaskStateStableContent,
 } from '../contract/index.ts'
 import { boundUtf8 } from './bytes.ts'
-import type { CandidateHostContext } from './types.ts'
+import type { CandidateHostContext, TaskStateReferenceQuarantine } from './types.ts'
 
 /** Kinded list names in committed order, each paired with its entry-id kind prefix. */
 const KINDS = [
@@ -62,19 +66,29 @@ function boundEntry(text: string, limitBytes: number): string {
 /**
  * Normalize one parsed candidate into committed content. Steps, in order:
  * check per-kind count and per-list item limits; bound every retained entry,
- * continuation, evidence note, and TODO content; verify every echoed id exists
- * in the base, is used in the list whose kind matches its prefix, echoes the
- * base content VERBATIM, and is unique across the complete candidate; mint ids
- * for every new entry; require every evidence and TODO reference sequence to be
- * one of the exact folded eligible sequences; then validate the fully id-ed
- * content against the committed-content schema.
+ * continuation field, and evidence note; verify every echoed id exists in the
+ * base, is used in the list whose kind matches its prefix, echoes the base
+ * content VERBATIM, and is unique across the complete candidate; mint ids for
+ * every new entry; keep every evidence reference whose sequence is one of the
+ * exact folded eligible sequences while QUARANTINING (dropping, with a
+ * diagnostic) any reference pointing outside the window — a stale reference
+ * carried forward from a previous window can never become eligible again, so
+ * failing the whole candidate on it would freeze every future update at the
+ * last committed revision; commit the Host-resolved authoritative Goal/TODO
+ * views and their derived TODO reference from `context.authority`; then
+ * validate the fully id-ed content against the committed-content schema. No
+ * sequence is ever fabricated for a quarantined reference: only the invalid
+ * reference is dropped, valid references and every other summary field are
+ * preserved.
  * @param candidate - parsed and schema-validated candidate content.
  * @param context - durable base and folded-window facts.
+ * @param onQuarantine - optional observer of each dropped stale reference.
  * @returns the normalized committed content.
  */
 export function normalizeCandidate(
   candidate: TaskStateCandidate,
   context: CandidateHostContext,
+  onQuarantine?: (quarantined: TaskStateReferenceQuarantine) => void,
 ): TaskStateStableContent {
   const { limits } = context
   const checkCount = (kind: KindList): void => {
@@ -140,23 +154,33 @@ export function normalizeCandidate(
   }
 
   const boundNote = (note: string): string => boundEntry(note, limits.maxEntryBytes)
-  const evidence = candidate.evidence.map((reference) => {
+  // A reference outside the folded window is quarantined, not fatal: the stale
+  // seq (typically carried forward from the previous stable, like a durable
+  // todo event already committed under the cursor) can never re-enter the
+  // eligible set, so rejecting the candidate here would permanently freeze the
+  // Session at its last committed revision. The invalid reference is dropped
+  // with a diagnostic; valid references and all other fields are preserved,
+  // and no sequence is fabricated for the dropped one.
+  const quarantine = onQuarantine ?? (() => {})
+  const evidence: { readonly seq: number; readonly note: string }[] = []
+  for (const reference of candidate.evidence) {
     if (!context.includedSeqs.has(reference.seq)) {
-      throw new Error(`task-state-basic: evidence reference ${reference.seq} is not an included eligible sequence`)
+      quarantine({ kind: 'evidence', seq: reference.seq })
+      continue
     }
-    return { seq: reference.seq, note: boundNote(reference.note) }
-  })
+    evidence.push({ seq: reference.seq, note: boundNote(reference.note) })
+  }
   if (evidence.length > limits.maxListItems) {
     throw new Error(`task-state-basic: candidate evidence exceeds maxListItems ${limits.maxListItems}`)
   }
-  const todoReferences = candidate.todoReferences.map((reference) => {
-    if (!context.includedSeqs.has(reference.seq)) {
-      throw new Error(`task-state-basic: todo reference ${reference.seq} is not an included eligible sequence`)
-    }
-    return { seq: reference.seq, content: boundNote(reference.content) }
-  })
+  // Goal and TODO are authoritative named views, not candidate content: the
+  // Host commits the views it resolved from the folded window's own authority
+  // facts, so a model that repeats a superseded objective or a cleared list
+  // cannot merge it back. The bounded TODO reference is derived from that same
+  // resolution, which is why a cleared list leaves no reference behind.
+  const { goalView, todoView, todoReferences } = context.authority
   if (todoReferences.length > limits.maxListItems) {
-    throw new Error(`task-state-basic: candidate todoReferences exceeds maxListItems ${limits.maxListItems}`)
+    throw new Error(`task-state-basic: derived todoReferences exceeds maxListItems ${limits.maxListItems}`)
   }
 
   const openWork = candidate.continuation.openWork.map(item => boundEntry(item, limits.maxEntryBytes))
@@ -185,7 +209,9 @@ export function normalizeCandidate(
     constraints,
     risks,
     evidence,
-    todoReferences,
+    todoReferences: todoReferences.map(reference => ({ seq: reference.seq, content: reference.content })),
+    goalView,
+    todoView,
     continuation,
   }
 }
@@ -206,6 +232,9 @@ export function digestOf(content: TaskStateStableContent): string {
  * @param revision - next monotonic revision (base revision + 1, or 1 first).
  * @param filterVersion - deterministic input-filter version that produced the projection.
  * @param sourceCursor - last eligible sequence actually folded.
+ * @param inherited - the inherited fork boundary this coverage stops at, or
+ *   `null`/absent when the lifecycle began on its own events. Metadata only: it
+ *   rides beside the digest and never enters the digested content.
  * @returns the immutable committed stable.
  */
 export function commitStable(
@@ -214,6 +243,7 @@ export function commitStable(
   revision: number,
   filterVersion: string,
   sourceCursor: number,
+  inherited?: TaskStateInheritedPrefix | null,
 ): TaskStateStable {
   const digest = digestOf(content)
   const stable: TaskStateStable = {
@@ -222,6 +252,7 @@ export function commitStable(
     filterVersion,
     sourceCursor,
     digest,
+    ...inherited === undefined || inherited === null ? {} : { inherited },
     ...content,
   }
   const check = taskStateStableSchema.safeParse(stable)

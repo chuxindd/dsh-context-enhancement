@@ -1,0 +1,19 @@
+{
+  "id": "cmd-022",
+  "worker": "A",
+  "op": "waitBarrier",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 78568,
+  "ppid": 22700,
+  "workerStartedAt": 1789263249565,
+  "respondedAt": 1789263249886,
+  "result": {
+    "nonce": "fork",
+    "goFile": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-control\\run-a20f8b46\\A.gen2.fork.go",
+    "arrivedAt": 1789263249885,
+    "releasedAt": 1789263249886,
+    "waitedMs": 1
+  }
+}

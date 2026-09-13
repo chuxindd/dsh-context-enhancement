@@ -1,0 +1,20 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ tests/compaction-tool-audit-recovery.spec.ts (10 tests) 426ms
+ ✓ tests/compaction-tool-provenance-replay.spec.ts (11 tests) 86ms
+ ✓ tests/compaction-tool-stage-debt.spec.ts (13 tests) 37ms
+ ✓ tests/compaction-audit-store-injection.spec.ts (3 tests) 52ms
+ ✓ tests/compaction-tool-group-audit-failure.spec.ts (5 tests) 29ms
+ ✓ tests/compaction-tool-groups.spec.ts (9 tests) 23ms
+ ✓ tests/compaction-tool-group-replacement.spec.ts (6 tests) 18ms
+ ✓ tests/compaction-tool-group-summarizer.spec.ts (2 tests) 16ms
+ ✓ tests/compaction-served-provenance.spec.ts (5 tests) 14ms
+ ✓ tests/compaction-tool-group-summary.spec.ts (3 tests) 10ms
+ ✓ tests/compaction-tool-group-audit.spec.ts (3 tests) 5ms
+
+ Test Files  11 passed (11)
+      Tests  70 passed (70)
+   Start at  17:07:26
+   Duration  4.71s (transform 369ms, setup 0ms, import 1.98s, tests 717ms, environment 1ms)
+

@@ -1,0 +1,15 @@
+{
+  "id": "cmd-032",
+  "worker": "B",
+  "op": "close",
+  "ok": true,
+  "error": null,
+  "errorStack": null,
+  "pid": 41956,
+  "ppid": 51736,
+  "workerStartedAt": 1789226298383,
+  "respondedAt": 1789226298785,
+  "result": {
+    "alreadyClosed": true
+  }
+}

@@ -17,7 +17,7 @@
  * @module dsh-context-enhancement/internal/task-state/basic/filter
  */
 /** Deterministic filter version recorded on requests and committed stables. */
-export declare const TASK_STATE_FILTER_VERSION = "task-state-basic/filter-v2";
+export declare const TASK_STATE_FILTER_VERSION = "task-state-basic/filter-v3";
 /** Explicit per-field UTF-8 byte limits of the filter projection. */
 export interface FilterFieldLimits {
     /** Direct human or goal-continuation text. */

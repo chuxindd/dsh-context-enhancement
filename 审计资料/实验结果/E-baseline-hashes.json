@@ -1,0 +1,1370 @@
+[
+  {
+    "path": "src\\client\\ContextEnhancementView.tsx",
+    "sha": "E2111864252C21A2358CF340F826E0BA33290B8C9ED644337CCCCC35EFF3994B"
+  },
+  {
+    "path": "src\\client\\index.ts",
+    "sha": "71046060164EF860BC4A84566990D30204E830B40076FE785E44CCA4C566D479"
+  },
+  {
+    "path": "src\\client\\locales.ts",
+    "sha": "CF3D80875E9C02F296B94680E8D12951020C2A54CF8BEE64E7D9F20332D9DF93"
+  },
+  {
+    "path": "src\\client\\task-state-control-store.ts",
+    "sha": "E752456FB0FA1DEC0C2C253424B5056AD4D567DAC70513C0BED19A2EA9842D5F"
+  },
+  {
+    "path": "src\\client\\task-state-control.ts",
+    "sha": "A9EB113558DA576B2AF08842F33D8C10808D7D662ED6D7E2C462B916EE91F75C"
+  },
+  {
+    "path": "src\\client\\task-state-remote.ts",
+    "sha": "F52EE7AAC1871E37801E475B8170AAFB21FBBA53B7B5308F81ADBE1D44DB3649"
+  },
+  {
+    "path": "src\\internal\\compaction\\config.ts",
+    "sha": "C8801BA48331CFD276C29702FC26CD966A9EE2C00DA32E83039548C1E0960F8E"
+  },
+  {
+    "path": "src\\internal\\compaction\\envelope-budget.ts",
+    "sha": "F2E245AFA576634B124B104EDDB3BBC3F3BA0F0671D872A327453910AFFCB120"
+  },
+  {
+    "path": "src\\internal\\compaction\\pruner-config.ts",
+    "sha": "F1AAE9026E4BE64807528F0A369C16D740F0BD356D62F2085C82BA59B7ABE776"
+  },
+  {
+    "path": "src\\internal\\compaction\\pruner-types.ts",
+    "sha": "D793D2E38170719540A69721B6DEE88FADB03C4AFC1040827BCFC267F4222FA9"
+  },
+  {
+    "path": "src\\internal\\compaction\\region.ts",
+    "sha": "34633BF564D4EA12DC62B3C52CBC5865AA73D2E90067223DD1BF88DA53330346"
+  },
+  {
+    "path": "src\\internal\\compaction\\selection-guard.ts",
+    "sha": "411231F913CAB6F018EA4DAE01E2015380C025B354410257521B7136FA00F032"
+  },
+  {
+    "path": "src\\internal\\compaction\\source-index.ts",
+    "sha": "BF391EF004CC1BE8B8A5321CB6C5596743B94D873EF156DAB8CCBDD6202AD0B5"
+  },
+  {
+    "path": "src\\internal\\compaction\\summarizer.ts",
+    "sha": "E35ED55AF3EC319B7EDE3E07F1E9D3A6FF38A0FF0ADF0203BDB90C862792D1E3"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-group-audit-store.ts",
+    "sha": "30EBD7782582FCA5FF7B6CD3509CAB15FA79028304C7DD94D05100D05B854CAB"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-group-audit.ts",
+    "sha": "AD485D650BF963A1B185B5586FA11AC229678C6AA39F7181D92FA268CF55FD79"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-group-domain.ts",
+    "sha": "9B2B313DD34A877538900B4E8440CC141361D74BFE9A2B2A4A9AC0830175DF23"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-group-replacement.ts",
+    "sha": "8F50B6CAA672854F40ADB1BA6A7B81D10CA70238001A7BD082A797ED82971D6D"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-group-summarizer.ts",
+    "sha": "8ECF64036A8A77536BA79B441764FA6DA09420B7DE803C4ACB93FC8CE7F01524"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-group-summary.ts",
+    "sha": "04E07453473AFEA740DF62293C4F64B985591A84A84AA76674CA3BCA0B7AE7D5"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-groups.ts",
+    "sha": "5374005E65E01CBAE71B4658E30709E5BEFA8A39159EE1F81631000310D8C168"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-pairing.ts",
+    "sha": "F6623B87FF94C6CA052ABBF2B3D02213263CEDDEA68290B67E4FC62BD7D485E3"
+  },
+  {
+    "path": "src\\internal\\compaction\\tool-segments.ts",
+    "sha": "5F0B8DD4C7A6C18BCCFDBA71A0CC81615D7DCEBFDD691AB66F009DB9BFDDC5F9"
+  },
+  {
+    "path": "src\\internal\\compaction\\types.ts",
+    "sha": "F4286A2446C7EE0F48E00B7FE909D7E40964F611BAC08F164AD379BC931A3780"
+  },
+  {
+    "path": "src\\internal\\compaction\\zones.ts",
+    "sha": "6C6B693B12AD49B344CB29DC75B21232B4544DE002E50BAD3FD89D1BBAB13005"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\batch.ts",
+    "sha": "22266590A25D5FE70F55ABD458E9DD6CD4EFA72EEE778A8E234DD18B4D7E91C0"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\bytes.ts",
+    "sha": "6C906EC2970687788C37E9D0A7376E46B97000474015F337F049111803755AF0"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\config.ts",
+    "sha": "2418C72FC2A928BB14277CD4BF4275B1F13B0AFCA0974F857A6C018EAE136B24"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\domain.ts",
+    "sha": "DBA64F32B083AEFC09E0457CF749C14B783BB1A30ED0063DF1FED34BD652E2F7"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\filter.ts",
+    "sha": "A047E842369FB2C4DEC5C9CFEE9F273E9CAE0D8E305AB2B85E8FCEBF40AC4918"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\host.ts",
+    "sha": "A3DCAD101ECF1EF33935FE1AB23D7E5424E2AA8F21B9630F93BB335C1B9F56E2"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\prompt.ts",
+    "sha": "EDDBCFF8289D2925644588F62F0E527B2D71670E7303D15185D1EABB2D940649"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\service.ts",
+    "sha": "45A40A411398CD0F4DF066CCDA57D68680D9D19CF014B0C6BF95E9D082C9757E"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\types.ts",
+    "sha": "3AFBBF25B1382FAB6837DA74C04D6FC2FA2EB13918666784D8185700CF98D78D"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\update.ts",
+    "sha": "564941763BAF267A163274E6AEF1E09F59CF3775FD6E7A9787874AD0C6D57795"
+  },
+  {
+    "path": "src\\internal\\task-state\\basic\\worker.ts",
+    "sha": "28D7437FD9EA4D86004D1FDEA84A18ADF8DA6DD825EABC04808B26D91306F626"
+  },
+  {
+    "path": "src\\internal\\task-state\\contract\\audit.ts",
+    "sha": "84AE100818D05722B2F56BF8537D100A7C7B894C1EE72A3306FCE3F3D143262D"
+  },
+  {
+    "path": "src\\internal\\task-state\\contract\\brand.ts",
+    "sha": "FA1412EA4569862F5F3C1104E0BA9BFE48EDCD2F705E02489CB2279B902B5CC6"
+  },
+  {
+    "path": "src\\internal\\task-state\\contract\\index.ts",
+    "sha": "45011B9904355CEE49C7BE6703E466D91F3216BF1F7A1738C71CE4ED829A4C99"
+  },
+  {
+    "path": "src\\internal\\task-state\\contract\\spec.ts",
+    "sha": "C9CA675C058526AE05972AFE12936405A8A3B581CB3A8D534E85A30C9632F9CA"
+  },
+  {
+    "path": "src\\internal\\task-state\\contract\\types.ts",
+    "sha": "BB7FE3A6BEDE6AE93B6E1A856DA88CF417DFAD4F3087CBBEEA5CB104089F028B"
+  },
+  {
+    "path": "src\\internal\\task-state\\control\\service.ts",
+    "sha": "A2EE6B156A48BEB45327533A964C8B80ECC3085E22FC5990CC6AB76CA0C83515"
+  },
+  {
+    "path": "src\\internal\\task-state\\control\\types.ts",
+    "sha": "45DC00044C4C7A243BAC5B5389E615F489587C3BBFBF7EDE6009E7C9EE5D3001"
+  },
+  {
+    "path": "src\\internal\\task-state\\prompt\\index.ts",
+    "sha": "B27841AF89CB4BDAD366F0D5D55452F97472D4F116142E50492C8AD44C181D0C"
+  },
+  {
+    "path": "src\\internal\\task-state\\prompt\\render.ts",
+    "sha": "0C5F332ED8C2EE431A343E764A8D7115EC8E69F43A67A750325D1283FC8BE46B"
+  },
+  {
+    "path": "src\\internal\\task-state\\prompt\\types.ts",
+    "sha": "FD04138C846DA49142FA4ECFB0C54BC7A67493F8229263957E22D8D8FE66845C"
+  },
+  {
+    "path": "src\\internal\\task-state\\index.ts",
+    "sha": "3BAA0BA0605A5D5C4771FFE0FE65991BE69F4704F4947C9D83D395E73215A843"
+  },
+  {
+    "path": "src\\compaction-basic.ts",
+    "sha": "5585C60DCAE9BB61C8BB50DAA1A3FCF67AAD18E2BCEF319D84590895AD46B653"
+  },
+  {
+    "path": "src\\css-modules.d.ts",
+    "sha": "D4395F8EF04EA16601B9B84979DF7DE5AF4CCFEB7B094C510F1442F3D8D5785A"
+  },
+  {
+    "path": "src\\effect-projection.ts",
+    "sha": "8C807CAAFB5E311EEAF851B649F8DB6D167D740597F0B2DA36D67D127C5AAA64"
+  },
+  {
+    "path": "src\\index.ts",
+    "sha": "5F53AEAB615F405A372AF5492F8675D96D58B91E82E5F056758EA42F7413F20B"
+  },
+  {
+    "path": "src\\task-state-basic.ts",
+    "sha": "93F180752934037FDBB17C7CE67658610E0D30C4CA52CEBFB4F0A154E485F3C3"
+  },
+  {
+    "path": "src\\task-state-control.ts",
+    "sha": "E75F9188EFCB624CA82C5B8898A7FA376BA5FA1EE0D6DC2AC43DA6882F9114D2"
+  },
+  {
+    "path": "src\\task-state-prompt.ts",
+    "sha": "3C5A78148264FC73EBD0558226328F0E924A8D9E8E2911091CD501EAC0F20AC7"
+  },
+  {
+    "path": "src\\task-state.ts",
+    "sha": "DCC10C9A12AEF4538FF477AE2C3872781E95FAEF894E2674C66268E858FC62A3"
+  },
+  {
+    "path": "src\\tool-result-pruner.ts",
+    "sha": "BF126FF026FF72CE6042CA013B27CF36AC12E3443F4B3ECE4BBA03A021025DE1"
+  },
+  {
+    "path": "lib\\client.js",
+    "sha": "092384A0471281947960499787EA0CA438C9EA12B2C9524BF722D14D7033E231"
+  },
+  {
+    "path": "lib\\client.js.map",
+    "sha": "088E84E1175A544998443C394807B28A890F02202D10ED898DAA4194E0F20451"
+  },
+  {
+    "path": "lib\\compaction-basic.js",
+    "sha": "4718F3AD7AC59FE89BC0D3ADC53BA41A163674D6F15B18DCC9A8BA2F0CBBC0D1"
+  },
+  {
+    "path": "lib\\contract-BuVHI3zF.js",
+    "sha": "45552DD68E44B8C56FAB486DC2717B3A0BA075748797AC453303532809AB83DC"
+  },
+  {
+    "path": "lib\\index.js",
+    "sha": "921F8F660FADB12747BDC694C9D7144CCBEDB6C43ADA08A122FE5F0B24A20510"
+  },
+  {
+    "path": "lib\\lib-biAw7Hvg.js",
+    "sha": "12733943CE19B63042BA655FA5F1153BA1C338DAE4B7BA50DE08620CD22CBC3F"
+  },
+  {
+    "path": "lib\\lib-Bj3jGSND.js",
+    "sha": "E000B4B894E6FB3DE7F4DAD07CE5EE6C0F99FCCDB5DAEB375BA132585C001422"
+  },
+  {
+    "path": "lib\\lib-DkAdRvjl.js",
+    "sha": "6141D26CFBD0F287CAF2573211EB70824DACD452E84656C9BB0E8F137D4F6312"
+  },
+  {
+    "path": "lib\\lib-DXy8Ramy.js",
+    "sha": "A02CA4AA91BD44A24085C3BE5EFA9E0FB5628A56E0CA53CAEA96A538979C6C49"
+  },
+  {
+    "path": "lib\\rolldown-runtime-8H4AJuhK.js",
+    "sha": "DFDDC72A879E6389656773415CC7E6D1A7FEF5C52AD800A61AC1156A3A66B2F6"
+  },
+  {
+    "path": "lib\\schemas-B9RBVgB9.js",
+    "sha": "4CBCF8D8E47AEA27411228A02DAC80E14C7CD6DC31654DC87ABF2C31D69B92C8"
+  },
+  {
+    "path": "lib\\task-state-basic.js",
+    "sha": "6BF1AD7171DC93FE8E764CE5C092C4C76E5F0507296155D7D510ABE7C060825A"
+  },
+  {
+    "path": "lib\\task-state-control.js",
+    "sha": "BFBF32F658FD3286871FA820EC1E413A90E538469AAF2846DFA63E70B105C218"
+  },
+  {
+    "path": "lib\\task-state-prompt.js",
+    "sha": "BF3FF7A2B81C666AD1440872CCE51A90D8A41E6329496967586E14BAAAA9EA74"
+  },
+  {
+    "path": "lib\\task-state.js",
+    "sha": "B96EC3FD25AB2DFD40219F8703048A741ABAA499303CCA743AD204AAF0CE139F"
+  },
+  {
+    "path": "lib\\tool-groups-CJkqYVVc.js",
+    "sha": "C38BD3C4C2D8F52C2246D9784B1A70D933A586734555A926E402669F0A7FF5C4"
+  },
+  {
+    "path": "lib\\tool-groups-l8pJ_H0h.js",
+    "sha": "14ED336A75C933A9A5E88ED74885742D66A89B67DE152AFBB7A49E6E760CFAF6"
+  },
+  {
+    "path": "lib\\tool-result-pruner.js",
+    "sha": "5E8D5CB5CF6DAB3A2990DD4B6CBDCF8E4269CE9AAA27B8F7D9A769592CA1F1C9"
+  },
+  {
+    "path": "lib\\types\\compaction-basic.d.ts",
+    "sha": "3F51060CA78FACD4909A67AAB88F30F887B2CAEA4173C54E0306BF7CEDE8BCE6"
+  },
+  {
+    "path": "lib\\types\\compaction-basic.d.ts.map",
+    "sha": "096F18E1E266AFC5AEB840F0768E6CF0FACF1496591D8147366C44C2A92A47F6"
+  },
+  {
+    "path": "lib\\types\\compaction-basic.js",
+    "sha": "5844BA3C74F0503C2E9B630384C769C34E17DE445920C6C3CAFDCDC6B74C886B"
+  },
+  {
+    "path": "lib\\types\\compaction-basic.js.map",
+    "sha": "17B16905590AEDED0001634C4E7F94E88F19F12ECD5775D303D276A024322900"
+  },
+  {
+    "path": "lib\\types\\effect-projection.d.ts",
+    "sha": "A09FC0D682E60E123F049306E5DD34510BF9156F1C0A95F6621656C337D74886"
+  },
+  {
+    "path": "lib\\types\\effect-projection.d.ts.map",
+    "sha": "E3CA2E22879CC49EFF19168EFAA2729E1082B1ED2690BB5345E250CEB112C6F4"
+  },
+  {
+    "path": "lib\\types\\effect-projection.js",
+    "sha": "15AF1D4F3177F394CC90CD0C5E214033A0B55BB538256D334B2487F4A960E9AB"
+  },
+  {
+    "path": "lib\\types\\effect-projection.js.map",
+    "sha": "6676B7F4982C19B70DB8234393AB7A3F719129F2FF745CDDC6FAA28C4A73C717"
+  },
+  {
+    "path": "lib\\types\\index.d.ts",
+    "sha": "A46A587162A749FE6B1721D217302AC49B9850935BC332E38451D25B6CBF2BD2"
+  },
+  {
+    "path": "lib\\types\\index.d.ts.map",
+    "sha": "B55089FF5DD8EAE3F12DA16F97FE8C4F60C74360675A4D40D1D3C4DD5E6ABB6B"
+  },
+  {
+    "path": "lib\\types\\index.js",
+    "sha": "BC045745ADA84F0BB121FC49CAFAD856D1508CCA2B2F3CD8A1F13AF14B7A8A46"
+  },
+  {
+    "path": "lib\\types\\index.js.map",
+    "sha": "E92AC8954B7B7358A7A163EEEC867006BCBEBE8ABE2C5EAC60F2D915CF9E4B2E"
+  },
+  {
+    "path": "lib\\types\\task-state-basic.d.ts",
+    "sha": "DC3B751097DCC04887BAB15DD0EAD2283F2A721575C57A8AD55C3E4A9EDD4C3E"
+  },
+  {
+    "path": "lib\\types\\task-state-basic.d.ts.map",
+    "sha": "BA65F91B84A5CC818517FF795CB624753F022C0912ADC9A73D0AE2EEEF2A2639"
+  },
+  {
+    "path": "lib\\types\\task-state-basic.js",
+    "sha": "AD8AAA08BD01E698D5F30A177106C6920EA752900309071E0B863180FDC4592B"
+  },
+  {
+    "path": "lib\\types\\task-state-basic.js.map",
+    "sha": "747857C6D0EBE0DF338E2104AC3A9A6722466401099819ABE4508C668F10050F"
+  },
+  {
+    "path": "lib\\types\\task-state-control.d.ts",
+    "sha": "CBBC443607FF580EC70A949384FCB01EED377D896CA9696398BC8BE0F69B3BC7"
+  },
+  {
+    "path": "lib\\types\\task-state-control.d.ts.map",
+    "sha": "9EF440DD0D04CBB212D07BDCE9C2F6F29F18FB6374D19F6A3407CAC6FF9954F8"
+  },
+  {
+    "path": "lib\\types\\task-state-control.js",
+    "sha": "3FCBFFB727242391C8B58EF26EA1493B4F8ACA158562EECA5574D9AB6CE55B3F"
+  },
+  {
+    "path": "lib\\types\\task-state-control.js.map",
+    "sha": "6DFF47CCC57D0F1FC57D734A04F0471683199F0C3354957B551A71BAF04C44F0"
+  },
+  {
+    "path": "lib\\types\\task-state-prompt.d.ts",
+    "sha": "128E67EBE30BE460A9EF4599353F95449531694332BDA30DCECB909992002B26"
+  },
+  {
+    "path": "lib\\types\\task-state-prompt.d.ts.map",
+    "sha": "B4C9337EBC0A111355CB4D654A7BBD8EBD1C7655574DC1B982F679B2C864257A"
+  },
+  {
+    "path": "lib\\types\\task-state-prompt.js",
+    "sha": "2A3B89BAB4AC3B860D91DC76AA637B0AC9DBF5376D9A91386C8902FDA2031FAF"
+  },
+  {
+    "path": "lib\\types\\task-state-prompt.js.map",
+    "sha": "E0CDACE62AF179B3E7393F3487863C006F338F0D5DB97EA37DF2A548C31F04A1"
+  },
+  {
+    "path": "lib\\types\\task-state.d.ts",
+    "sha": "1CFC7F1294A539039FD0C0017D7103F9A8E2A1EA6951A0A257D288EAECD93982"
+  },
+  {
+    "path": "lib\\types\\task-state.d.ts.map",
+    "sha": "B019C1163C31A914CB5FDACE3FBCF803B169E26AF0D172E318AA3C427F049D70"
+  },
+  {
+    "path": "lib\\types\\task-state.js",
+    "sha": "C1B56E22EC76C87186B86A91604EFD32D675F5DEFBFA69C4C848337EEE4E7EE8"
+  },
+  {
+    "path": "lib\\types\\task-state.js.map",
+    "sha": "5609E8CD7C12D8A0502C093A9508ED99305C9E5D42ABE9E106CDBDA246892749"
+  },
+  {
+    "path": "lib\\types\\tool-result-pruner.d.ts",
+    "sha": "899441AA779ABB01E13220DAD6B1DBE3A5E8D988582A18BA01698A22FCE3F95D"
+  },
+  {
+    "path": "lib\\types\\tool-result-pruner.d.ts.map",
+    "sha": "D213993C177F1082380BF50B30F4FB79FF0F951FF88BFD8D01F4A83953DF848E"
+  },
+  {
+    "path": "lib\\types\\tool-result-pruner.js",
+    "sha": "E2ACA72D1E8ADFC9EDF6A43CD648042273A0DCCE9F9CCF100CAB3FC25AC147CE"
+  },
+  {
+    "path": "lib\\types\\tool-result-pruner.js.map",
+    "sha": "CF52254185525F26B047A605A4D1F9AFF44C049DD16EFDB82A7D839D8AB252B5"
+  },
+  {
+    "path": "lib\\types\\tsconfig.build.tsbuildinfo",
+    "sha": "E15F472780508153F5572C85F6FF9FDDE3CF6AD2EB26B78876CC40BF811D3328"
+  },
+  {
+    "path": "lib\\types\\client\\ContextEnhancementView.d.ts",
+    "sha": "3A5246DEBC049995F5B6F4FDF66B538AE36E6015B286D53CBBCC05F78189EE30"
+  },
+  {
+    "path": "lib\\types\\client\\ContextEnhancementView.d.ts.map",
+    "sha": "81FCF1AA46F79F4319CAEDF81863396C5592CF3277E8BBAE51BC8CF7A71ADF20"
+  },
+  {
+    "path": "lib\\types\\client\\ContextEnhancementView.js",
+    "sha": "9B81BC24E1A643D320C5169AE7C63DAB782694027E14FA5F07ADAF6BEF472169"
+  },
+  {
+    "path": "lib\\types\\client\\ContextEnhancementView.js.map",
+    "sha": "9CFCE8581697566F26440DDBC26158D81607C7A6E6431B8C85ED43C52EEEE4A8"
+  },
+  {
+    "path": "lib\\types\\client\\index.d.ts",
+    "sha": "AB14E7254B6217A56E4309A90F77B66B7F3BEC0AB1367F433841B6BA50945D9A"
+  },
+  {
+    "path": "lib\\types\\client\\index.d.ts.map",
+    "sha": "52A0AFEDDF512A729E5958C23FC8749CC278374E14844A3E7431A81DCD54AA9A"
+  },
+  {
+    "path": "lib\\types\\client\\index.js",
+    "sha": "BCD7F73A5BDA620F18AA9FD11F52E5C4FEC2AF29EA23014E55AADFC54BCAD457"
+  },
+  {
+    "path": "lib\\types\\client\\index.js.map",
+    "sha": "ECA3465F196AE542A97769FE8FB6FF13C72E1EE1CCDBE796A2277D28239DD266"
+  },
+  {
+    "path": "lib\\types\\client\\locales.d.ts",
+    "sha": "DA4BD3C7A2F484A47491F617BF6E6A856D562B169B5F65DD9F2397D6FA3BCA66"
+  },
+  {
+    "path": "lib\\types\\client\\locales.d.ts.map",
+    "sha": "9BF2D52EBD86BE7E95DA46A50B496184B283DD523532901A08125D8B4DFDC20F"
+  },
+  {
+    "path": "lib\\types\\client\\locales.js",
+    "sha": "A7ED0C66BE0C33C8F0DC806A1171F2ADE237FB1471C5699AC3B4B5AB3451AC20"
+  },
+  {
+    "path": "lib\\types\\client\\locales.js.map",
+    "sha": "D80B4B4F8E959AE29D9D860DEEA2B1AA0A4D3C5DA323A6075DD76AE297E39059"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control-store.d.ts",
+    "sha": "9CB7D5FD04B7B4B4B77AE9DAA905527E9CC2814AE28580AA3222CB6F0EBD81F1"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control-store.d.ts.map",
+    "sha": "E2FE7F0F29157617C45B2B359179945C51F4E5E97BABC854714A962138EFFCB3"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control-store.js",
+    "sha": "3EE84CB9E7EDED45139F6D6AD84F06A8E6D4AEA2D1874E11DA8B79B82D0EABEF"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control-store.js.map",
+    "sha": "2C056E613EF22A99BA2A13A7B0E30FC0D880C39C7F2D71765A0951F83FEEC38F"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control.d.ts",
+    "sha": "8EF928B381A60BBBA6C633C05D93A5429F87ED76147F488E3F5D715453BC86A9"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control.d.ts.map",
+    "sha": "CDE4C14471D898820DE11E254B08291158C8FF23D9D23E46C397EEE424EB0A5F"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control.js",
+    "sha": "DBACAC6D1A20EF5A81B0BF109BF4CF6F24F7EA2AE8BC1A57DB1EA0141009960D"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-control.js.map",
+    "sha": "0958BC49D6C8295A4807CA8A83E3F5242AA6729D85C633FA9C6C75FA19E0250B"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-remote.d.ts",
+    "sha": "2C92F3A4311490C262BC9809A78DEF9845945853C6C9F4EF458BD2B0F9B003F2"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-remote.d.ts.map",
+    "sha": "2E26C0A2EEA3F4DEAE27EE31D1F329C2781541D876F3999EB9A49DCE91083DBB"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-remote.js",
+    "sha": "2E9C09824457FF538141D72EC34E75EF95E884F364A52A4351F49D6BD4FB2748"
+  },
+  {
+    "path": "lib\\types\\client\\task-state-remote.js.map",
+    "sha": "6A411782A057ED4D23A38C113C845E8A61CBBEED4ED7F5944D3C77AFBE124379"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\config.d.ts",
+    "sha": "83DC166A901348A60A58E1C5BE83147E82C42CCE359208FD9AB17B55A39F4936"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\config.d.ts.map",
+    "sha": "BD438104B636C7CCDE51F3C22780D289A18AC4761853905D224B06B1EE976286"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\config.js",
+    "sha": "BF0395B5526754DC0CBAB4480D4DF08A04735FB5C2C68ECC1E84A8C76A684C46"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\config.js.map",
+    "sha": "C835FF72649A61BD7E9246515C7AB34B6879E5A9674EC363395FA6A3E3EC7757"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\envelope-budget.d.ts",
+    "sha": "5A13966BA1EFBCB10DD7923BF56B30F080210FCAE52884336DFD887981995722"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\envelope-budget.d.ts.map",
+    "sha": "DBAE82D78578F7AFE07E9D83BFEE9E91680D0C625D6C45F7C30947B5CC8179CF"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\envelope-budget.js",
+    "sha": "CBABE982D4686FE3F322B375DEA8FBC1E171E888FC9F1171CBD3849E1A2496C8"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\envelope-budget.js.map",
+    "sha": "2E388740F94AE1ABD5F555C33CFEA02C4F76849AFE5C3214A63954DE00D05DC8"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-config.d.ts",
+    "sha": "40EC83D5E86050A37AFFD1C21E5287DFA59229768E33E5A30D4E41F3942B594C"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-config.d.ts.map",
+    "sha": "1E075C76081A5DC1637940623BD2BCD0207FEE9DFE495DEBF1ABCE5484224099"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-config.js",
+    "sha": "2D4AE03FB0C9A85E544BEEAC54B972132E17328D8C87548B77D8FDF834DFFCC5"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-config.js.map",
+    "sha": "C9764E9B418E0570FCBBBA282498BAE54975963307423FC1531AE8A867810048"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-types.d.ts",
+    "sha": "B814C37463E156C456294412B3DFFE80D8ABB2AFAF6DBC4F522CF68CE4BEEF85"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-types.d.ts.map",
+    "sha": "59AAA41D1E90931F21F5F749B873C1EAD2A266C76A26858848EF2617F2AC8B44"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-types.js",
+    "sha": "37AA724ED883FB633871497C96534E92CC4439A367941F85ADEB305C2AE2EAF7"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\pruner-types.js.map",
+    "sha": "2F98E686E828C64E8876CDDB61BF0FF8A070AFFB40E4F0CEF62A9C1B46766DC1"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\region.d.ts",
+    "sha": "B3D851A573C2F65A49C3EE2F5A50842255AAA0C74CD29DC0DCCF27F182D64A19"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\region.d.ts.map",
+    "sha": "B779186B73A87DF7B443E19C4475461F1F07FCFCA41C28F0D505CF9EF962B6C2"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\region.js",
+    "sha": "8E2B1BDDCDE874FF1E4302D26EFDF17CF4EC99927EAFA5394A08D60CBE5A1023"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\region.js.map",
+    "sha": "8FCF31B85F89EE7193ECE955E0182FD492EAD309D4D1FBB813C6C5240A0E3DBE"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\selection-guard.d.ts",
+    "sha": "91779D6048D171DEA6C46C7EFFEA41FDF2818DDF18A11A426B421DE6E4BB99C1"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\selection-guard.d.ts.map",
+    "sha": "FE8CF4F2E3F50EABC10363634F79CA64310B7F8ACD706D4B1E5A2C4216D4D8D7"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\selection-guard.js",
+    "sha": "C387D700906C297864F2C3939A9921FA807012645FF29A2A3AC29D80723B3B6C"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\selection-guard.js.map",
+    "sha": "50D613ABD76240C17BA2B880A838F080AC677B1490D9F9D5A59414D79B7D3228"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\source-index.d.ts",
+    "sha": "B9171F10D040E9D8A49886F64581FCEC811FA501E8A41C376115400142B2BAE9"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\source-index.d.ts.map",
+    "sha": "9D11B13AD3A849B8DFEE369B2A9B30EA90495E056F764358A8AA149F4F0B628F"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\source-index.js",
+    "sha": "8F48745509ACF070693505DD527C95C80A49EE7E9A78050FE5E99EF979DD2E6C"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\source-index.js.map",
+    "sha": "6231C463818E63E1016F88A444370CB4FB2DFD569FDE55EC03A88B22748F12B2"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\summarizer.d.ts",
+    "sha": "1E6F443465724AA9B18FF79E7FA93C6FC950DF5ABD8BBC1F0686B2A2C848BD7C"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\summarizer.d.ts.map",
+    "sha": "98A9F39042286726FED1107AFDE76E7662B73A2112771AB32C6BC746100652E1"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\summarizer.js",
+    "sha": "EF17B28066DA06932CAE7CF2192263BEDAB867EF0F00A4675E317F70528E436D"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\summarizer.js.map",
+    "sha": "52114B23892C050039E968A7C5C703C7D7E7E4BDAB65880A2B142EAB76B1689C"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit-store.d.ts",
+    "sha": "DF6652E8B240D5C8EDA725DA9C027D977245A7A1B409F19D406DC655F886162F"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit-store.d.ts.map",
+    "sha": "C01DC67A044F2D4D926749714322DA55F79C7B24FC26015730410E46BE6923D0"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit-store.js",
+    "sha": "24C60489EFD1B30FE8E0E0D002AE039017ECE4B36BACD97812DF0805D55B0C59"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit-store.js.map",
+    "sha": "5D321BC45F7A4A65E05E08FC33F2F1B1D03E20E7CF9E6633F9A6C700BAA46216"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit.d.ts",
+    "sha": "2E04F21D1B9F36CBDE236225EBEDD54DC135F1AE954274C6D9ED5B7385A0E870"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit.d.ts.map",
+    "sha": "80C668F406C46765951C86926A53D8246DD6074E6922CBB76E0737EEFC775FE4"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit.js",
+    "sha": "937B49D7694E67255E77EEF4A0BF2BA3AD57C8D7B3879A434D7D4FA64BB9708A"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-audit.js.map",
+    "sha": "803C63E6A4A363BD69C99DD9FF9C0D64AB3A4335A6393F6455F96278E0EE1A14"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-domain.d.ts",
+    "sha": "EA7D05D2885D959F20892A2C0654151DEA0A4E86B3BDB95181AADDDF17F56FED"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-domain.d.ts.map",
+    "sha": "BD09EF6A86921D1B72729E556E301F922496B13B3BA881563AC7FE52C33C5D08"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-domain.js",
+    "sha": "33D5AFFAD3400E03321AC851BA6A832EB0E4B6207E15654652ABA70334F68827"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-domain.js.map",
+    "sha": "52506DB5F212EE89066F7C2AC28245235E0A8972B4F46563EE512FCE08E740D1"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-replacement.d.ts",
+    "sha": "DFCD54878DCAFCC399A88F24643FAF48BBE6E78BACB071492883542FF67FD446"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-replacement.d.ts.map",
+    "sha": "EC0352C38F74D798923C5938A34F6AEB40FF261276F261BF52B40AFB98B3F1C9"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-replacement.js",
+    "sha": "FD137C5A932BB9B1FAA2122913DCAF49F7837D2FE9E975623D780C02752711BC"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-replacement.js.map",
+    "sha": "584E7720FD9E0C8B4FA85FF3247F4FEDE98A55F3426A1A1CC9837254118BA04C"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summarizer.d.ts",
+    "sha": "7D93B2AFDE7469EA3F8AB104963134EC903F92404434D1B544F6CB81AA1E38DF"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summarizer.d.ts.map",
+    "sha": "7C3B45E9A52C14CD6F2161595E66A6615B32A55D7BE9ACA6796175AFA7234851"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summarizer.js",
+    "sha": "3EE326D56963C3C891AC134D7E20543475945E8789433BF9A42825C83CEA1A25"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summarizer.js.map",
+    "sha": "2ADF0EC9358412E2D9334E4217C61F575B4EC936D116C6679367A4128A8587D1"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summary.d.ts",
+    "sha": "0998C43B88823B691D5C8BD2161D5D8AA3F72EE410FED3C120416AAE30D9F061"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summary.d.ts.map",
+    "sha": "24349BB5100228CBA972285A8D6A51601B9D7F3673F7DDE75ACB94E7F86E2C18"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summary.js",
+    "sha": "A0EC9F81FEF4FB7484B34DA01C41C02E93825955DB9F122C64F4F970A6600845"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-group-summary.js.map",
+    "sha": "C37940B93C37D32F52C42D97A7F4769D23B48DB3FD7985A796302CC011A6B5D6"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-groups.d.ts",
+    "sha": "838DB32EA95E49971797D9D24B7289CE105A9C0105264C03D355708C67672306"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-groups.d.ts.map",
+    "sha": "1F708455BFDBD4E15D14058D67E43147A1BCF4585183DB0C26CBFBD8825BFDC8"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-groups.js",
+    "sha": "0F20EAF71C4D16205919A018614F3574461CEE8019E4F694F09F112FBCF35989"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-groups.js.map",
+    "sha": "ACEDE4C32A83BF899E181DB8C62A5B1644EC06986AB1DA41256A7FDCACB778AB"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-pairing.d.ts",
+    "sha": "D7EF7C4A3B83A391A6459A57B94DD9A28B12FC5F1A5AE11630174A3F6F8548D1"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-pairing.d.ts.map",
+    "sha": "7D44D361507A34FA035EFE6FA909917CD259B4265DD04386484B54FF9C4E2800"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-pairing.js",
+    "sha": "C83C93B80E038878783B10722377A828305DD0025E531F09AC737E0EA99DC0F9"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-pairing.js.map",
+    "sha": "9C8740A3EB26B5DD9CFB63EF4BE55FF56015BA58766D713AB7D11F41BAAB6E0D"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-segments.d.ts",
+    "sha": "1D8230CBA60DC2C71C527296A13CFF6B2B15165DE2ACF4E5C3B8FE9B0B47CDB2"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-segments.d.ts.map",
+    "sha": "570FC212760C733F950B4A7F11904A971F86F7C0C8FB2690E196558210569A7B"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-segments.js",
+    "sha": "B64A513BF70B9BFEA7DD0F78FC3D78E759E2E599B06DEC4A393E12293F9A3E93"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\tool-segments.js.map",
+    "sha": "5A88B495308556A9B4075395EFDD167EC470D568465AC4C943B7E561560C0D21"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\types.d.ts",
+    "sha": "76DCE36973BA8908BDEEA2399E8875B894F7E58CEDA772C5C29E894B40EE771E"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\types.d.ts.map",
+    "sha": "5E50FBE5EA8576D1D7C881D3E1CB366D812780B6BAB59E9A1A57C02C597F4D92"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\types.js",
+    "sha": "A2B99DF3E4F2EF62A35C58906F586F3FCEF6ECD6654BA09CD7C94F959DA80C3A"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\types.js.map",
+    "sha": "E2130E007FFD397C2CBCD7E67453255AC17F2E1C33BCDA416ABAC234819BF711"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\zones.d.ts",
+    "sha": "057392E6BAEE59FFD37C6C5B5C45FC2C324321F7B4846783ECF473FEA0925DBF"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\zones.d.ts.map",
+    "sha": "4E00DB9AF759C965035B659E3DA58A4C6A38895F0E6DA9CE2913FB7839B8A182"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\zones.js",
+    "sha": "4BB2EC88B7F14D7633C84D1C851A56D42C1B8FCF7EF81DB440CBBE6418543085"
+  },
+  {
+    "path": "lib\\types\\internal\\compaction\\zones.js.map",
+    "sha": "00EB9D0AA74B71EE6661679F775343A1B8CA00DD2F75D917B187AD89EB4721F7"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\index.d.ts",
+    "sha": "3ACED82233AD71E8D4AE1618DB6956D70472BDB985C936ACF6C9884D4C7EFD77"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\index.d.ts.map",
+    "sha": "4BD24E45F59665B2BF7B2D274C708C0CE8DD12460F08839D64C071F351562AE9"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\index.js",
+    "sha": "683732B2A215B0AD5F2B2E5188CA30DACB7F38064948481B190BA68D8F59C402"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\index.js.map",
+    "sha": "B2E4E41A51E0B4073367AACDAA815BEFBE9932B3B71BF5117488C2424C521865"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\batch.d.ts",
+    "sha": "1FACED329D38182509FCCDA3ABE5E4EB8BE68127C0FF1834D46C5888B5E1AB04"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\batch.d.ts.map",
+    "sha": "B7922650476584D067D058A4CC2E4A7C442F978DC5F26E59A93C316C71FA00D1"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\batch.js",
+    "sha": "C696459FB1239B07366FEFB45E08922F8A687618A20FDF331D3E7DA515621441"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\batch.js.map",
+    "sha": "E1950BFC6CFE415CADB3160F347847698F04D6ED1B886D9DF0ADC9DEEED4395A"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\bytes.d.ts",
+    "sha": "3803159A0582C5366160A07CD4BE64AC12F040CC406F7BDA9BBAC4CB07B3044C"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\bytes.d.ts.map",
+    "sha": "E267806F6236CE90F562D828361A8A3312F254C555A2BEFC6E3A7C654EBB457A"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\bytes.js",
+    "sha": "CCF71E19C0532844CFBD356C7FDC2452FA6DD69947FE736268BD8B4848559131"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\bytes.js.map",
+    "sha": "33498992ACC4990BBC10E1C3C22C0D8E155122F422E1EC92777660E2105BABA3"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\config.d.ts",
+    "sha": "BC41DB44D1FAAB872EC90AC93264FE53D266AC02182EF3CC37699A36294E4778"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\config.d.ts.map",
+    "sha": "5FBF42CAC3D407D469F6A1CBBEF0DB8D58317312B73203330395F2E11B704415"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\config.js",
+    "sha": "B3DE84B38A06B0D2CA253455E6E77703193647929CC752AB4CA27A5CA088D299"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\config.js.map",
+    "sha": "80D6EF2D1EC49A76BA393875F11B84EAA82E51786E2EA74513547D32BB905AC0"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\domain.d.ts",
+    "sha": "BB03DF41864C850A20749BACDC87C17D4EC9D35DF876D9E5D94B1ADAE5972B47"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\domain.d.ts.map",
+    "sha": "A5AC6BCC067334931F295B2BE87FFBF5BAFFC495DC5CA326DA8B010E8432A6F0"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\domain.js",
+    "sha": "66612FFC24AA12D314997E46652AFB3412DFEE939639CA6CEE9ABD8A56F6C0D7"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\domain.js.map",
+    "sha": "1EF9F6F1E68335024A10DE5B0C006BB8ABB70A4CF4EBC9E9DBD75CCDA92A9A5D"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\filter.d.ts",
+    "sha": "8D8691B7E2B35C5E29F02D85D522F5018B391DC15CF2C0659AC7BEE2513B0C99"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\filter.d.ts.map",
+    "sha": "36E2F185AE73FBAE7574DC59FA9A79E117E4FE2D5BCD602F5689D944C0FB6197"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\filter.js",
+    "sha": "D1DC35461F40883E05FB4CC25190DD0FD7E64ED742F6094423BD05611746D237"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\filter.js.map",
+    "sha": "5A03CFC7B8931C6F95F645BD6EC2FD7FA047EA20F8896B1765BBE8FF3DA23400"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\host.d.ts",
+    "sha": "EBCC069B555314D5482166F635F8068B055F8BCFDEF37785559D8543F3FFD659"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\host.d.ts.map",
+    "sha": "AFC78652D13939F54655FA9467CC9CA8F8CEFD2227AA8C9E64FD885C6A70D4BF"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\host.js",
+    "sha": "B5923676FFD32AEDDAA55C7196BDA69A2D64D4D8FDA312F47E5AFC880A446685"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\host.js.map",
+    "sha": "379396B7872D9AFFD8175FB2C6AFA649209C16F11EB7D611381BCB7592EC5496"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\prompt.d.ts",
+    "sha": "B51AD1E0FACBD3E92A220626707BAA5D566C34A9C01338E107E0CB17AEA4F03F"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\prompt.d.ts.map",
+    "sha": "B4CA6FE6E43FB0235C3ED3B64504E28745FA6C73B76BC2B0EB581702FA44A3A1"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\prompt.js",
+    "sha": "54236E3A92F7222C23A08C458118A515EBED3151BD90C92B697FDF17433D7113"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\prompt.js.map",
+    "sha": "6D99346CB62017C61406CCB7FEF57735B71BDDEAF1C97241E8FB93446D155BB2"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\service.d.ts",
+    "sha": "2E35635753188595A8E24A0457B4A4387374EBFF5DF30B2ECC5581891C6028CB"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\service.d.ts.map",
+    "sha": "BF4D92F71F16BB48DB88482315BA070214720EC55B95142B90828F5C8FC4E0FC"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\service.js",
+    "sha": "849C2FBA1405B53E623F5FC8B1B5F5A3EAB00A116E11AD5E897820ED6ACF6217"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\service.js.map",
+    "sha": "A387D8EF869E17B459A86FDB7441C300B9E33509AF978956BED19FEC32818BCB"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\types.d.ts",
+    "sha": "C18D4AE433E729DF3344EC78B9F2D28227A3781201B1948DB492E18E465E5232"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\types.d.ts.map",
+    "sha": "524996E023B93ED1984104AE11C2386C5DAC48C2EBBFA8BBFB042F97A79440CF"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\types.js",
+    "sha": "E9075522CE83BE1689EBDC1E59E4E8994856C51BC9B88C8F2969C0B6AA085643"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\types.js.map",
+    "sha": "65AD1DA5F1EE4AFC9848EF27AC7C6912BA5D083822AF5DC7853CA741210B2022"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\update.d.ts",
+    "sha": "25051BA2CF1DD1F5361DD01B84E5F64467D7ADE4949C2F4D9497939F511D3428"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\update.d.ts.map",
+    "sha": "611C5BA47BB69FD9DC0F67FA3F72C0646A5400BA2FF1BE36E52ECF947D8F43AE"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\update.js",
+    "sha": "0AF4E1D548E908D0CEEB2B22F1D52FF2799299049D553D3C80780EF7B5874A63"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\update.js.map",
+    "sha": "AF80165A20D0D8F3BEAAED1A9FC3A90682C7E1A898D481930D9346EBC25C10F1"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\worker.d.ts",
+    "sha": "D382838A478921FA698120AC8E442908D65F3DABA5F2505E68FD5E456936E03B"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\worker.d.ts.map",
+    "sha": "5F710EB9A851BAB22EA60F3C4EEA1FB3891791F24F97D758B3EE32D0E997BC39"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\worker.js",
+    "sha": "6254C1F126601AFC8A4DC925A17D9D4CBB82C4714213E8F5E68BC0DA308EB5B0"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\basic\\worker.js.map",
+    "sha": "BBF8D1AC2AFD23705B1492B83916EE9EE5A9B8343AB5832D6012939AD47B3C1F"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\audit.d.ts",
+    "sha": "41C5B0FFAA11160514CE6606A716024A834F9B1A03A72667E9E088014E7C6414"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\audit.d.ts.map",
+    "sha": "8E7A9599181C6784308D7C650CC62BE5381141B4DC1994E9DADA180BC65CEEA0"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\audit.js",
+    "sha": "CF853A97DE4C68A2AA593A154F9258C3AA7E64FBA3297178B619CD6E4406AD94"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\audit.js.map",
+    "sha": "0E45B036CF8AE9CB9C684015E873D9B98B7762EB37B08705D70CEF8993135942"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\brand.d.ts",
+    "sha": "EBE0251BED0EF5B2AEDDA83E7CC80AC84F4080DDE79FF97647D9003E3FB93077"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\brand.d.ts.map",
+    "sha": "EFBAB8A6D9CE6B86E89088FD9EE7247895BBCA32D7DAC4DAFB93215D7FC53BCF"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\brand.js",
+    "sha": "3DC7518C28373DDD251AD5B989D058726079FB7E864CAC087D012788A0B1900A"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\brand.js.map",
+    "sha": "F17B4A8F8626C2479124D4C5B653937F1F8BB7064D87922E0F66B3661DDA5956"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\index.d.ts",
+    "sha": "642706D42B746C9512E1A23B69AB31569E7FC53F2B6089F92A344AC33B9B6EFC"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\index.d.ts.map",
+    "sha": "E06F9B84FBB326F43C991B27A3DC4D0CF9DE9862FD00831117B1BA7C53803D36"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\index.js",
+    "sha": "1F91115FCCF47870BC611B7EB845165F4C2A7046D440BED14B24AD32612D5463"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\index.js.map",
+    "sha": "D0D96E7C021F5CBD849BBC2B678244A123B901166C1D1174B91902B09D5BC1F6"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\spec.d.ts",
+    "sha": "26162F0EDEFE40FE4EDD34F442A7F0521EEA6E7342FB4AB22E2D183D09E39A8E"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\spec.d.ts.map",
+    "sha": "7427C2ADFFB7D80641FE0D339249AB28BF299AE61A4734D766E1DF29CACE8E3A"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\spec.js",
+    "sha": "4ABC901DAB93B90F51E0A25DF8468187A0F35AAC80379CA29C66D0D06D0363ED"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\spec.js.map",
+    "sha": "72373124804BAE22AD7FF27406D5F522BD2875D3673958E3D969463A2A6A860D"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\types.d.ts",
+    "sha": "CAB6241E199D771335BD15448A0CA64BD844CEB60FB9B1D5F8E6063CB48E3A36"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\types.d.ts.map",
+    "sha": "87A64C8FB37B79525155CDC2EBAB05F1D09694C3FF92D655E5596A236672F205"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\types.js",
+    "sha": "BDA16E27ED7C230A662BF9C3D4DCD26EA700B1C1B3E2219902510B78A50E8FDB"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\contract\\types.js.map",
+    "sha": "ABC6EBC35335C10F129CAE239FE95C448526301018CBC9A9C8CDBEE89C28C09E"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\service.d.ts",
+    "sha": "3A836377BCDB60A9C83147FD6C03773381D81D8D6B022827D96794ADF40127F4"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\service.d.ts.map",
+    "sha": "07A79E69C926256FBC3C45F323DA29477F1186410C7473A9696CDB365FF06109"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\service.js",
+    "sha": "307E190F760AA1964BB7D9F9540A0FA6346D7F538793AC8FC0BB7471FB693A41"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\service.js.map",
+    "sha": "3236F21BED9530F3C4E774F5D6058656FF37B68840F5A8F6EBEB20FACBCA8B64"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\types.d.ts",
+    "sha": "D4A6EB342FC4C8E0F55A9DE9A0266D0D5E7A5783C446E4D588E37FB358CB649D"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\types.d.ts.map",
+    "sha": "3DC70552084ADA1B776F7CD41F901FE51248F51A65331B6535E47FCDFA29B17F"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\types.js",
+    "sha": "10C92BF9E794B2E206827E345E8E68BB930E6150D6641DDBC046CB0564455B6D"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\control\\types.js.map",
+    "sha": "AFBE4827C2D82F4AB2B356D4AD464A38C310E013F1D30510552FC7CD52C24132"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\index.d.ts",
+    "sha": "B1DDC168422CC1CCCFBA5534FE03EB28B1E0975E522B22B2FAF8EFF584F71D07"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\index.d.ts.map",
+    "sha": "E093D470200B090B0E2841DEF23592BABDFCC5774D6172F2412640B5EA98C402"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\index.js",
+    "sha": "CC4815D3383A3619E296EEE2648229B8DA186DDC5D8FB1A12B14901FB0F4731E"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\index.js.map",
+    "sha": "C84D7FB871D8B80782CA53DF7715C8D6E48C60A46D127E6851AB2EA063B36F4D"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\render.d.ts",
+    "sha": "8BB3AA5AE494CC5F731D7B40B557854943F7D452D94676A75F9DD3A7E384E365"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\render.d.ts.map",
+    "sha": "88FCA047D546121D85860113DCA60E3D106AE5AFA36D657236E45A56E5AFC8F5"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\render.js",
+    "sha": "3EE475D031302138C48A7F9D587369B64DAA54E8A99CF6F35070608B77AD2CF4"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\render.js.map",
+    "sha": "4BB066CD2229D5CB72D7A46F02C17E7F97930EE017377C6960DC1E6E96D56405"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\types.d.ts",
+    "sha": "E0D1E35C3F223213AA552C7BCB4D1598797D0E0B6B675F0242B77650E795F05D"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\types.d.ts.map",
+    "sha": "C6DFE750829E4268821E7C778A9CFEAFF68A3BB1F07F2A46CBBCAD7EF443EEF0"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\types.js",
+    "sha": "E22EB0B2D8ACE4B0AADCC235E779F7C611E37777B81566C22C4726C55445CA8A"
+  },
+  {
+    "path": "lib\\types\\internal\\task-state\\prompt\\types.js.map",
+    "sha": "5427EE89FC6A9617547F70BC6A97AD85CFA2BB27D25870F25C7E9FC08A523232"
+  },
+  {
+    "path": "tests\\artifact-parity.spec.ts",
+    "sha": "8AC5F40BD5C15C72339A7692F41E76617BEE2A4089D404A5C4174877262B9F5E"
+  },
+  {
+    "path": "tests\\compaction-audit-store-injection.spec.ts",
+    "sha": "403266BA71AA760FAABA7901A7B431A6D32B7952DD428F99E19871B15F346E3C"
+  },
+  {
+    "path": "tests\\compaction-config-tool-groups.spec.ts",
+    "sha": "BB900C49426AEBCE411898426C0EE3E1B62DD79DFED2663FC9C58EF7478E0D13"
+  },
+  {
+    "path": "tests\\compaction-envelope-budget.spec.ts",
+    "sha": "F8E6E395D8855E22E318323F8420901FDBD572329F4145EF1A5C8D8F9046B9D7"
+  },
+  {
+    "path": "tests\\compaction-helpers.spec.ts",
+    "sha": "542400F0ADBFBD18F5909DDF779BBD2E1D5BC272D8338FF747186E6861F7F227"
+  },
+  {
+    "path": "tests\\compaction-lifecycle-scheduling.spec.ts",
+    "sha": "41C6664C74FC73C51D510B0784C46FF4B3EA8F776D54883507D095B893729805"
+  },
+  {
+    "path": "tests\\compaction-recent-hard-limit.spec.ts",
+    "sha": "0E604EF7386EB738EF6228DF65862AF1BBA1C1A5E217E07F30EE4C5BD06A5649"
+  },
+  {
+    "path": "tests\\compaction-reentry-liveness.spec.ts",
+    "sha": "930D904FEB4297E350CC550CCF8F73E0C34F5F2A4749937DF63FF751FA37C6EC"
+  },
+  {
+    "path": "tests\\compaction-regressions.spec.ts",
+    "sha": "3E448ED5D87C12013206D3B5A5B05BD76ED8ACE926548B287C264EFE8F114F3E"
+  },
+  {
+    "path": "tests\\compaction-retained-tail-turn-semantics.spec.ts",
+    "sha": "44C968C4E0A7A9B86BA8FFC40FADD3319E4A2FAF2D17D37CC367ADBFE915B464"
+  },
+  {
+    "path": "tests\\compaction-segments-guard.spec.ts",
+    "sha": "25E158950BD877CFBFC4178AD87B370B995B2D6D31A95F464723EB686D4282A8"
+  },
+  {
+    "path": "tests\\compaction-selection-guard-coverage.spec.ts",
+    "sha": "76789B560561D756AC81E1BDB6B150DB5F2AE082C5DA987788B687D8F96D8E2D"
+  },
+  {
+    "path": "tests\\compaction-served-provenance.spec.ts",
+    "sha": "31A74C6B83475BCD3DF233E89545367B613DC47D40F4646D99C1B71AC67E9EBF"
+  },
+  {
+    "path": "tests\\compaction-three-zone.spec.ts",
+    "sha": "3C0B7A0F813594D47EC6389C39B6FFA68E41BAEE5F9DC68C1F83598A64A5D778"
+  },
+  {
+    "path": "tests\\compaction-tool-group-audit-failure.spec.ts",
+    "sha": "4E9FA836B1C0A30F239ABF955C05B9BDDC6F80B6CD0E93A2AD6E9DB56476546B"
+  },
+  {
+    "path": "tests\\compaction-tool-group-audit.spec.ts",
+    "sha": "D27BF95EFA2CC093ED7E90EC56B24F221E608A8955B2EDDB20BFA754FCB7EC5B"
+  },
+  {
+    "path": "tests\\compaction-tool-group-full-request-budget.spec.ts",
+    "sha": "71AE2A3F4B1C3FF41DD5C071CFFCC8F59E05C4523ABAD337F9459542631CDAF5"
+  },
+  {
+    "path": "tests\\compaction-tool-group-replacement.spec.ts",
+    "sha": "5B456170FE25824DE79A6E5481787A4E620EF3786AC39BF48DDB5D8BA2F65FDA"
+  },
+  {
+    "path": "tests\\compaction-tool-group-summarizer.spec.ts",
+    "sha": "7F591B1759BC58C87F2537D2D2F003CE2135351F881CAD5E2E5B45BD40185A5B"
+  },
+  {
+    "path": "tests\\compaction-tool-group-summary.spec.ts",
+    "sha": "EF3D9A75487ADEE62E2D7AFAF85EB9FC1B826C484027AA13C36E6BBECA7E2A15"
+  },
+  {
+    "path": "tests\\compaction-tool-groups.spec.ts",
+    "sha": "6C4409E9F469724BC6C4EE863EAC698152F083913BA20B8A07AD0C1B82B380D8"
+  },
+  {
+    "path": "tests\\compaction-tool-pairing-coverage.spec.ts",
+    "sha": "F303083393E952C1DCB427CC1CF46F3F7E4AA6A1CECD223F359DA73F3E27CEB3"
+  },
+  {
+    "path": "tests\\compaction-tool-segments-coverage.spec.ts",
+    "sha": "533E370CCB03AAFE2C3993E7744D95BD0EA484A86DB9998021EB9AE19E7B6ACB"
+  },
+  {
+    "path": "tests\\compaction-tool-stage-debt.spec.ts",
+    "sha": "D6B294D357D3D7D029E964358BE2DFAE3014898B642A87C384CCE2BCF6B8489B"
+  },
+  {
+    "path": "tests\\effect-projection.spec.ts",
+    "sha": "E2011876EC9DAC75355B2178A5252230043B8B289A49575B30021E20BB8B8043"
+  },
+  {
+    "path": "tests\\task-state-audit.spec.ts",
+    "sha": "CDDA06C4CCAE2E860ADF534544B8872EA0969DDBAF17FEE79A4873AE50044F2E"
+  },
+  {
+    "path": "tests\\task-state-batch.spec.ts",
+    "sha": "B6DDA1527B40D816D30A8D07A35FC2952F5D397534B30BB2E2A10117718491E8"
+  },
+  {
+    "path": "tests\\task-state-bytes.spec.ts",
+    "sha": "3B5E105644174E1B75E5C4F7537BD55B0BE068AA95F6C26F990E1DA3A17ED5B5"
+  },
+  {
+    "path": "tests\\task-state-composition.spec.ts",
+    "sha": "742DA96C39E72513D330F1A97EE6298787587B0461D7589C82C40415EAF68C0D"
+  },
+  {
+    "path": "tests\\task-state-config.spec.ts",
+    "sha": "4943846AC538A0EA2CC1295D9B1BF87BD4269068994D703381DAE1F6C9531EC2"
+  },
+  {
+    "path": "tests\\task-state-control-host.spec.ts",
+    "sha": "C0568AAF56B3DF2898E7803133021E5CFEB7EEEE7781F62DC85CE20224277D83"
+  },
+  {
+    "path": "tests\\task-state-control-protocol.spec.ts",
+    "sha": "C764A580916226BB43573EFFF5446F15FF00AB07A1F0AC3D9A4F26568B0928D1"
+  },
+  {
+    "path": "tests\\task-state-control-store.spec.ts",
+    "sha": "A1A05E91B667AE1004C6A9471F9A9E47C081365C2F669D248E76C6A2C9D0A6CD"
+  },
+  {
+    "path": "tests\\task-state-filter.spec.ts",
+    "sha": "0873CC5367677748F8B70F1999D8092F302871EF710CAD088B82D56D8AB61819"
+  },
+  {
+    "path": "tests\\task-state-host.spec.ts",
+    "sha": "46526596165FD69DFD4686AEC3FD536ADD7D0A0F124AA89FCBF09E5DE8CDFE48"
+  },
+  {
+    "path": "tests\\task-state-long-session.spec.ts",
+    "sha": "C6C86F22330FC70E31D310131A87148875EC8A46B0B39E1D5352BE68E2968175"
+  },
+  {
+    "path": "tests\\task-state-prompt.spec.ts",
+    "sha": "2EEB0641ABD098D83280AD8F42B1922E15E22D01DA6E0B4FF9A80E93B4077963"
+  },
+  {
+    "path": "tests\\task-state-render.spec.ts",
+    "sha": "080C2DD6910694F52B48C93AE9D19AC0CFC91D850EBA87CBCCBD7EAD12F7EF66"
+  },
+  {
+    "path": "tests\\task-state-restart-recovery.spec.ts",
+    "sha": "6CBDB3CCF75971F70449F43D27A50C89519F9BF28B9C34EC69A0C536D0BAFCED"
+  },
+  {
+    "path": "tests\\task-state-schema.spec.ts",
+    "sha": "33646BEB41223E4BE4056C2F2F58ADD1C949C26D303543177A127BB3D86B8D87"
+  },
+  {
+    "path": "tests\\task-state-unload.spec.ts",
+    "sha": "190AC7CFC393F4ED84A62A56FC83A7406E3DCD7F08BF9A6D286B131414EC62C3"
+  },
+  {
+    "path": "tests\\task-state-update.spec.ts",
+    "sha": "E544DAAF259B4171E60E5E2606F7B0F266B667ABA0F6564107ADFCBC68D12BC5"
+  },
+  {
+    "path": "tests\\task-state-view.spec.ts",
+    "sha": "A415F8794A066EE668C79219C03531EF7DC7AF301FD605E19AF52B2DA5BB7213"
+  },
+  {
+    "path": "tests\\task-state-worker.spec.ts",
+    "sha": "A0E52513E4B4A6A26125DC084D433E1F0E51C5DB9C172557A56D3B5DB8537659"
+  },
+  {
+    "path": "package.json",
+    "sha": "20454835EACDDC3878B65CBAA7BEA95309A2E6715F8A4B7A1E7C17C8786702E9"
+  },
+  {
+    "path": "vitest.config.ts",
+    "sha": "E83E33C5C7F11668E44A3DE3D0B8493F66658251006436ADE33640964AFE75D5"
+  },
+  {
+    "path": "dsh-context-enhancement-0.1.10.tgz",
+    "sha": "BE9DE3DE1F560E65B6E68E4A9B1647CA8CC042F98A8D58112C6961E6665A7E40"
+  }
+]

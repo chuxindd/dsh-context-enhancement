@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ tests/task-state-prompt-fixed-slot.spec.ts (13 tests) 714ms
+ ✓ tests/task-state-composition.spec.ts (8 tests) 417ms
+ ✓ tests/task-state-injection-budget.spec.ts (12 tests) 392ms
+       ✓ maintains exactly ONE visible slot with bounded, flat token consumption across 20 revisions  324ms
+ ✓ tests/task-state-render.spec.ts (11 tests) 43ms
+ ✓ tests/task-state-prompt.spec.ts (10 tests) 25ms
+
+ Test Files  5 passed (5)
+      Tests  54 passed (54)
+   Start at  17:54:03
+   Duration  3.86s (transform 381ms, setup 0ms, import 1.36s, tests 1.59s, environment 0ms)
+

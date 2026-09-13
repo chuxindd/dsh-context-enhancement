@@ -1,0 +1,265 @@
+ M CHANGELOG.md
+ M docs/tool-group-summarization-notes.md
+ M dsh-context-enhancement-0.1.10.tgz
+ M lib/client.js
+ M lib/client.js.map
+ M lib/compaction-basic.js
+ D lib/contract-BuVHI3zF.js
+ D lib/lib-Bj3jGSND.js
+ D lib/lib-DXy8Ramy.js
+ D lib/lib-biAw7Hvg.js
+ M lib/task-state-basic.js
+ M lib/task-state-prompt.js
+ M lib/task-state.js
+ M lib/tool-result-pruner.js
+ M lib/types/client/ContextEnhancementView.d.ts.map
+ M lib/types/client/ContextEnhancementView.js
+ M lib/types/client/ContextEnhancementView.js.map
+ M lib/types/client/locales.d.ts
+ M lib/types/client/locales.js
+ M lib/types/client/locales.js.map
+ M lib/types/compaction-basic.d.ts
+ M lib/types/compaction-basic.d.ts.map
+ M lib/types/compaction-basic.js
+ M lib/types/compaction-basic.js.map
+ M lib/types/effect-projection.d.ts
+ M lib/types/effect-projection.d.ts.map
+ M lib/types/effect-projection.js.map
+ M lib/types/internal/compaction/config.d.ts.map
+ M lib/types/internal/compaction/config.js
+ M lib/types/internal/compaction/config.js.map
+ M lib/types/internal/compaction/pruner-types.d.ts
+ M lib/types/internal/compaction/pruner-types.d.ts.map
+ M lib/types/internal/compaction/source-index.d.ts
+ M lib/types/internal/compaction/source-index.d.ts.map
+ M lib/types/internal/compaction/source-index.js
+ M lib/types/internal/compaction/source-index.js.map
+ M lib/types/internal/compaction/summarizer.d.ts
+ M lib/types/internal/compaction/summarizer.d.ts.map
+ M lib/types/internal/compaction/summarizer.js
+ M lib/types/internal/compaction/summarizer.js.map
+ M lib/types/internal/compaction/tool-group-audit-store.d.ts
+ M lib/types/internal/compaction/tool-group-audit-store.d.ts.map
+ M lib/types/internal/compaction/tool-group-audit-store.js
+ M lib/types/internal/compaction/tool-group-audit-store.js.map
+ M lib/types/internal/compaction/tool-group-audit.d.ts
+ M lib/types/internal/compaction/tool-group-audit.d.ts.map
+ M lib/types/internal/compaction/tool-group-audit.js
+ M lib/types/internal/compaction/tool-group-audit.js.map
+ M lib/types/internal/compaction/tool-group-domain.d.ts.map
+ M lib/types/internal/compaction/tool-group-domain.js
+ M lib/types/internal/compaction/tool-group-domain.js.map
+ M lib/types/internal/compaction/tool-group-replacement.d.ts
+ M lib/types/internal/compaction/tool-group-replacement.d.ts.map
+ M lib/types/internal/compaction/tool-group-replacement.js
+ M lib/types/internal/compaction/tool-group-replacement.js.map
+ M lib/types/internal/compaction/tool-group-summarizer.d.ts
+ M lib/types/internal/compaction/tool-group-summarizer.d.ts.map
+ M lib/types/internal/compaction/tool-group-summarizer.js
+ M lib/types/internal/compaction/tool-group-summarizer.js.map
+ M lib/types/internal/compaction/tool-groups.d.ts
+ M lib/types/internal/compaction/tool-groups.d.ts.map
+ M lib/types/internal/compaction/tool-groups.js
+ M lib/types/internal/compaction/tool-groups.js.map
+ M lib/types/internal/compaction/types.d.ts
+ M lib/types/internal/compaction/types.d.ts.map
+ M lib/types/internal/compaction/zones.d.ts
+ M lib/types/internal/compaction/zones.d.ts.map
+ M lib/types/internal/compaction/zones.js
+ M lib/types/internal/compaction/zones.js.map
+ M lib/types/internal/task-state/basic/domain.d.ts
+ M lib/types/internal/task-state/basic/domain.d.ts.map
+ M lib/types/internal/task-state/basic/domain.js
+ M lib/types/internal/task-state/basic/domain.js.map
+ M lib/types/internal/task-state/basic/filter.d.ts
+ M lib/types/internal/task-state/basic/filter.d.ts.map
+ M lib/types/internal/task-state/basic/filter.js
+ M lib/types/internal/task-state/basic/filter.js.map
+ M lib/types/internal/task-state/basic/host.d.ts
+ M lib/types/internal/task-state/basic/host.d.ts.map
+ M lib/types/internal/task-state/basic/host.js
+ M lib/types/internal/task-state/basic/host.js.map
+ M lib/types/internal/task-state/basic/prompt.d.ts
+ M lib/types/internal/task-state/basic/prompt.d.ts.map
+ M lib/types/internal/task-state/basic/prompt.js
+ M lib/types/internal/task-state/basic/prompt.js.map
+ M lib/types/internal/task-state/basic/service.d.ts
+ M lib/types/internal/task-state/basic/service.d.ts.map
+ M lib/types/internal/task-state/basic/service.js
+ M lib/types/internal/task-state/basic/service.js.map
+ M lib/types/internal/task-state/basic/types.d.ts
+ M lib/types/internal/task-state/basic/types.d.ts.map
+ M lib/types/internal/task-state/basic/update.d.ts
+ M lib/types/internal/task-state/basic/update.d.ts.map
+ M lib/types/internal/task-state/basic/update.js
+ M lib/types/internal/task-state/basic/update.js.map
+ M lib/types/internal/task-state/basic/worker.d.ts
+ M lib/types/internal/task-state/basic/worker.d.ts.map
+ M lib/types/internal/task-state/basic/worker.js
+ M lib/types/internal/task-state/basic/worker.js.map
+ M lib/types/internal/task-state/contract/audit.d.ts
+ M lib/types/internal/task-state/contract/audit.d.ts.map
+ M lib/types/internal/task-state/contract/audit.js
+ M lib/types/internal/task-state/contract/audit.js.map
+ M lib/types/internal/task-state/contract/index.d.ts
+ M lib/types/internal/task-state/contract/index.d.ts.map
+ M lib/types/internal/task-state/contract/index.js
+ M lib/types/internal/task-state/contract/index.js.map
+ M lib/types/internal/task-state/contract/spec.d.ts
+ M lib/types/internal/task-state/contract/spec.d.ts.map
+ M lib/types/internal/task-state/contract/spec.js
+ M lib/types/internal/task-state/contract/spec.js.map
+ M lib/types/internal/task-state/contract/types.d.ts
+ M lib/types/internal/task-state/contract/types.d.ts.map
+ M lib/types/internal/task-state/index.d.ts
+ M lib/types/internal/task-state/index.d.ts.map
+ M lib/types/internal/task-state/index.js
+ M lib/types/internal/task-state/index.js.map
+ M lib/types/internal/task-state/prompt/index.d.ts
+ M lib/types/internal/task-state/prompt/index.d.ts.map
+ M lib/types/internal/task-state/prompt/index.js
+ M lib/types/internal/task-state/prompt/index.js.map
+ M lib/types/internal/task-state/prompt/render.d.ts
+ M lib/types/internal/task-state/prompt/render.d.ts.map
+ M lib/types/internal/task-state/prompt/render.js
+ M lib/types/internal/task-state/prompt/render.js.map
+ M lib/types/internal/task-state/prompt/types.d.ts
+ M lib/types/internal/task-state/prompt/types.d.ts.map
+ M lib/types/task-state-basic.d.ts
+ M lib/types/task-state-basic.d.ts.map
+ M lib/types/task-state-basic.js.map
+ M lib/types/task-state-prompt.d.ts
+ M lib/types/task-state-prompt.d.ts.map
+ M lib/types/task-state-prompt.js
+ M lib/types/task-state-prompt.js.map
+ M lib/types/task-state.d.ts
+ M lib/types/task-state.d.ts.map
+ M lib/types/task-state.js
+ M lib/types/task-state.js.map
+ M lib/types/tool-result-pruner.d.ts
+ M lib/types/tool-result-pruner.d.ts.map
+ M lib/types/tool-result-pruner.js
+ M lib/types/tool-result-pruner.js.map
+ M package.json
+ M scripts/patch-client-id.mjs
+ M scripts/verify-profile-install.mjs
+ M src/client/ContextEnhancementView.tsx
+ M src/client/locales.ts
+ M src/compaction-basic.ts
+ M src/effect-projection.ts
+ M src/internal/compaction/config.ts
+ M src/internal/compaction/pruner-types.ts
+ M src/internal/compaction/source-index.ts
+ M src/internal/compaction/summarizer.ts
+ M src/internal/compaction/tool-group-audit-store.ts
+ M src/internal/compaction/tool-group-audit.ts
+ M src/internal/compaction/tool-group-domain.ts
+ M src/internal/compaction/tool-group-replacement.ts
+ M src/internal/compaction/tool-group-summarizer.ts
+ M src/internal/compaction/tool-groups.ts
+ M src/internal/compaction/types.ts
+ M src/internal/compaction/zones.ts
+ M src/internal/task-state/basic/domain.ts
+ M src/internal/task-state/basic/filter.ts
+ M src/internal/task-state/basic/host.ts
+ M src/internal/task-state/basic/prompt.ts
+ M src/internal/task-state/basic/service.ts
+ M src/internal/task-state/basic/types.ts
+ M src/internal/task-state/basic/update.ts
+ M src/internal/task-state/basic/worker.ts
+ M src/internal/task-state/contract/audit.ts
+ M src/internal/task-state/contract/index.ts
+ M src/internal/task-state/contract/spec.ts
+ M src/internal/task-state/contract/types.ts
+ M src/internal/task-state/index.ts
+ M src/internal/task-state/prompt/index.ts
+ M src/internal/task-state/prompt/render.ts
+ M src/internal/task-state/prompt/types.ts
+ M src/task-state-basic.ts
+ M src/task-state-prompt.ts
+ M src/task-state.ts
+ M src/tool-result-pruner.ts
+ M tests/compaction-three-zone.spec.ts
+ M tests/compaction-tool-group-replacement.spec.ts
+ M tests/compaction-tool-groups.spec.ts
+ M tests/effect-projection.spec.ts
+ M tests/task-state-batch.spec.ts
+ M tests/task-state-composition.spec.ts
+ M tests/task-state-control-host.spec.ts
+ M tests/task-state-control-protocol.spec.ts
+ M tests/task-state-control-store.spec.ts
+ M tests/task-state-filter.spec.ts
+ M tests/task-state-host.spec.ts
+ M tests/task-state-long-session.spec.ts
+ M tests/task-state-prompt.spec.ts
+ M tests/task-state-render.spec.ts
+ M tests/task-state-schema.spec.ts
+ M tests/task-state-update.spec.ts
+ M tests/task-state-view.spec.ts
+ M tests/task-state-worker.spec.ts
+ M tsdown.config.ts
+?? docs/compaction-algorithm-reconciliation.md
+?? lib/audit-DbO0V0N_.js
+?? lib/contract-C2nAZOQi.js
+?? lib/filter-CczOGkqh.js
+?? lib/lib-Bq6jN40l.js
+?? lib/lib-UkEFLxaM.js
+?? lib/source-index-BiRfSNPU.js
+?? lib/types/internal/compaction/envelope-budget.d.ts
+?? lib/types/internal/compaction/envelope-budget.d.ts.map
+?? lib/types/internal/compaction/envelope-budget.js
+?? lib/types/internal/compaction/envelope-budget.js.map
+?? lib/types/internal/task-state/basic/authority.d.ts
+?? lib/types/internal/task-state/basic/authority.d.ts.map
+?? lib/types/internal/task-state/basic/authority.js
+?? lib/types/internal/task-state/basic/authority.js.map
+?? lib/types/internal/task-state/basic/inherited.d.ts
+?? lib/types/internal/task-state/basic/inherited.d.ts.map
+?? lib/types/internal/task-state/basic/inherited.js
+?? lib/types/internal/task-state/basic/inherited.js.map
+?? replay-report.json
+?? replay-stderr.txt
+?? scripts/analyze-font-session.mjs
+?? scripts/candidate-report.mjs
+?? scripts/clean-lib.mjs
+?? scripts/client-bundle-ids.mjs
+?? scripts/reconstruct-font-groups.mjs
+?? scripts/replay-real-session.ts
+?? scripts/summarize-font-session.mjs
+?? scripts/verify-artifact-parity.mjs
+?? src/internal/compaction/envelope-budget.ts
+?? src/internal/task-state/basic/authority.ts
+?? src/internal/task-state/basic/inherited.ts
+?? tests/artifact-parity.spec.ts
+?? tests/compaction-audit-store-injection.spec.ts
+?? tests/compaction-envelope-budget.spec.ts
+?? tests/compaction-lifecycle-scheduling.spec.ts
+?? tests/compaction-pressure-exit.spec.ts
+?? tests/compaction-pressure-low-yield.spec.ts
+?? tests/compaction-pressure-reentry.spec.ts
+?? tests/compaction-recent-hard-limit.spec.ts
+?? tests/compaction-reentry-liveness.spec.ts
+?? tests/compaction-retained-tail-turn-semantics.spec.ts
+?? tests/compaction-served-provenance.spec.ts
+?? tests/compaction-tool-audit-recovery.spec.ts
+?? tests/compaction-tool-group-audit-failure.spec.ts
+?? tests/compaction-tool-group-full-request-budget.spec.ts
+?? tests/compaction-tool-provenance-replay.spec.ts
+?? tests/compaction-tool-stage-debt.spec.ts
+?? tests/task-state-fork-bootstrap.spec.ts
+?? tests/task-state-goal-authority.spec.ts
+?? tests/task-state-infeasible-progress.spec.ts
+?? tests/task-state-injection-budget.spec.ts
+?? tests/task-state-prompt-fixed-slot.spec.ts
+?? tests/task-state-recovery-provenance.spec.ts
+?? tests/task-state-restart-recovery.spec.ts
+?? tests/task-state-startup-backlog.spec.ts
+?? tests/task-state-storage-capability.spec.ts
+?? tests/task-state-terminal-bootstrap.spec.ts
+?? tests/task-state-terminal-generation.spec.ts
+?? tests/task-state-todo-authority.spec.ts
+?? tmp-inspect.mjs
+?? tmp-probe.mts
+?? 审计资料/
+?? 理想化落地方案.md
+?? 调查资料/

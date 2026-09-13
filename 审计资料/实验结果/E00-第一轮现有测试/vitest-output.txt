@@ -1,0 +1,511 @@
+E00 round-1 existing-spec run (per-file, sequential)
+===== FILE: tests/compaction-three-zone.spec.ts  START 2026-09-12 17:17:17 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-three-zone.spec.ts  EXIT: 1 =====
+===== FILE: tests/compaction-envelope-budget.spec.ts  START 2026-09-12 17:17:19 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-envelope-budget.spec.ts  EXIT: 1 =====
+===== FILE: tests/compaction-lifecycle-scheduling.spec.ts  START 2026-09-12 17:17:21 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-lifecycle-scheduling.spec.ts  EXIT: 1 =====
+===== FILE: tests/compaction-reentry-liveness.spec.ts  START 2026-09-12 17:17:23 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-reentry-liveness.spec.ts  EXIT: 1 =====
+===== FILE: tests/compaction-retained-tail-turn-semantics.spec.ts  START 2026-09-12 17:17:25 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-retained-tail-turn-semantics.spec.ts  EXIT: 1 =====
+===== FILE: tests/compaction-tool-group-replacement.spec.ts  START 2026-09-12 17:17:27 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-tool-group-replacement.spec.ts  EXIT: 1 =====
+===== FILE: tests/compaction-tool-group-audit-failure.spec.ts  START 2026-09-12 17:17:29 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/compaction-tool-group-audit-failure.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-filter.spec.ts  START 2026-09-12 17:17:30 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-filter.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-batch.spec.ts  START 2026-09-12 17:17:32 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-batch.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-worker.spec.ts  START 2026-09-12 17:17:34 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-worker.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-update.spec.ts  START 2026-09-12 17:17:36 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-update.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-restart-recovery.spec.ts  START 2026-09-12 17:17:38 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-restart-recovery.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-prompt.spec.ts  START 2026-09-12 17:17:40 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-prompt.spec.ts  EXIT: 1 =====
+===== FILE: tests/task-state-long-session.spec.ts  START 2026-09-12 17:17:42 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/task-state-long-session.spec.ts  EXIT: 1 =====
+===== FILE: tests/artifact-parity.spec.ts  START 2026-09-12 17:17:43 =====
+failed to load config from C:\Users\chuxi\Documents\trae_projects\code\dsh-context-enhancement\vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:458:11)
+    at spawn (node:child_process:813:9)
+    at Object.execFile (node:child_process:349:17)
+    at exec (node:child_process:236:25)
+    at optimizeSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2497:2)
+    at windowsSafeRealPathSync (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:2483:3)
+    at getRealPath (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33260:36)
+    at tryResolveRealFileOrType (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33254:9)
+    at tryCleanFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:33003:21)
+    at tryFsResolve (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:32996:14)
+    at aggregateBindingErrorsIntoJsError (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:48:18)
+    at unwrapBindingResult (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/error-BP8lJHle.mjs:18:128)
+    at #build (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/rolldown@1.2.7/node_modules/rolldown/dist/shared/rolldown-DfXO5K1m.mjs:133:34)
+    at async bundleConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37116:17)
+    at async bundleAndLoadConfigFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:37014:18)
+    at async loadConfigFromFile (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36975:42)
+    at async resolveConfig (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:36581:22)
+    at async _createServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vite@8.2.2_@types+node@22.20.1_esbuild@0.28.2_tsx@4.23.13/node_modules/vite/dist/node/chunks/node.js:26388:65)
+    at async createViteServer (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement/node_modules/.pnpm/vitest@4.1.11_@types+node@2_5a3037f1517819c016f063f9bebb03ab/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+===== FILE: tests/artifact-parity.spec.ts  EXIT: 1 =====

@@ -1,0 +1,213 @@
+{
+  "experiment": "B8-artifact-parity",
+  "title": "B8 · artifact parity 与宿主装配（workspace lib / 打包 tgz / 安装副本的 client loader id 与字节一致性）",
+  "question": "工作区 lib/client.js 的 Loader id 为何仍是脚手架 id `@deepseek-ai/dsh-client-ui-jobs`，而 HEAD 与宿主安装副本是 `dsh-context-enhancement`？Build/patch 顺序如何修复；重建后的 workspace lib、tgz 与安装副本是否字节一致；宿主实际加载哪个 artifact？",
+  "layer": "L1-build",
+  "verdict": "fixed",
+  "verdictMeaning": "四项验收全部达成：(1) `tests/artifact-parity.spec.ts` 全绿（6/6，基线为 4 passed / 1 failed）；(2) 真正的构建链（clean → tsc → tsdown → patch）重建了 lib/*.js、lib/types/**、lib/client.js.map，并以 npm pack 重新打包 tgz，package.json#files 发布的 74 个 lib 文件在 tgz 内逐字节等于 workspace 构建；(3) 构建两次（clean 重建 + 重打包）产出完全相同的 257 文件 hash 清单，含 tgz；(4) 隔离 $DSH_HOME 真实 profile 安装验证通过，安装副本的 lib/client.js 与 workspace 构建字节一致、Loader id 正确、contextual preset 与 standing mount 均通过。",
+  "verdictScope": "只回答 artifact identity / parity / 宿主装配；不宣称 B1 多实例完成（仍 `blocked-upstream`），不覆盖 E01–E10 的业务判定，不改写 40/41。",
+  "baseline": {
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "pluginCommitAfter": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "dshCommitSource": "the client-bundle preset checkout used by the build; read-only",
+    "workspace": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+    "buildPresetCheckout": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\deepseek-harness-rc1-context",
+    "buildPresetPath": "packages/client/tsdown.client.ts",
+    "buildPresetCheckoutReadOnly": true,
+    "buildPresetCheckoutDirtyLines": 33,
+    "buildPresetCheckoutDirtyBuildInputs": 0,
+    "buildPresetCheckoutDirtyNote": "33 条脏改动均为 README/i18n 与 packages/compaction、packages/test-support 的 package.json，与本构建读取的 packages/client/tsdown.client.ts、scripts/client-build-environment.ts 无关；本批次对该 checkout 只读。",
+    "gitHead": { "before": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2", "after": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2" },
+    "gitStatusLines": { "before": 179, "after": 265, "delta": 86, "deltaNote": "增量全部为 lib/**（6 个陈旧 chunk 删除、14 个新产物、106 个类型产物内容变化）、3 个新 scripts、package.json/tsdown.config.ts/scripts/patch-client-id.mjs/scripts/verify-profile-install.mjs 的修改；审计资料 为未跟踪目录，其新增不计入。" },
+    "artifactBefore": {
+      "tarball": { "path": "dsh-context-enhancement-0.1.10.tgz", "bytes": 1321348, "sha256": "BE9DE3DE1F560E65B6E68E4A9B1647CA8CC042F98A8D58112C6961E6665A7E40", "members": 83, "packedClientJsBytes": 210455 },
+      "workspaceClientJs": { "path": "lib/client.js", "bytes": 211941, "sha256": "092384A0471281947960499787EA0CA438C9EA12B2C9524BF722D14D7033E231", "mtime": "2026-09-11T01:49:09.908Z", "loaderId": "@deepseek-ai/dsh-client-ui-jobs" },
+      "staleChunks": ["lib/contract-BuVHI3zF.js", "lib/lib-Bj3jGSND.js", "lib/lib-DXy8Ramy.js", "lib/lib-biAw7Hvg.js", "lib/tool-groups-CJkqYVVc.js", "lib/tool-groups-l8pJ_H0h.js"],
+      "missingEmittedDeclarations": ["lib/types/internal/task-state/basic/authority.d.ts", "lib/types/internal/task-state/basic/inherited.d.ts"],
+      "headCommittedClientJsLoaderId": "dsh-context-enhancement",
+      "hostInstalledClientJs": { "sha256": "63ECFC17449BBD59AFCEF78EEE6F4550F777821C63D28016CBB061880A0035B4", "mtime": "2026-09-08T15:12:05.437Z", "loaderId": "dsh-context-enhancement", "profiles": ["web", "desktop"] }
+    }
+  },
+  "loaderIdSingleSource": {
+    "artifactByteSource": "the shared preset stamps its `id` argument into the client config's `outputOptions.banner` (and into inlined CSS style-injector `data-plugin` values); that banner is the only source of `window.__ModuleLoader__.load({ id })`",
+    "whyScaffold": "the preset resolves a package's client externals through the DSH workspace manifest of the id it is called with (`workspaceManifest(id)` → `packages/<group>/<name>/package.json`), so the argument must name a real package of the reference checkout; this repository is not one of them",
+    "scaffoldId": "@deepseek-ai/dsh-client-ui-jobs",
+    "scaffoldResolvesTo": "packages/client/ui-jobs/package.json (name @deepseek-ai/dsh-client-ui-jobs, version 0.1.2-rc.1)",
+    "publishedId": "dsh-context-enhancement",
+    "publishedIdSource": "package.json#name (scripts/client-bundle-ids.mjs → PUBLISHED_CLIENT_ID)",
+    "previousShape": "tsdown.config.ts 直接把脚手架 id 交给 preset，再由 scripts/patch-client-id.mjs 事后改写第一个 `id: \"…\"` 字面量；只要任何一次 tsdown 之后没有跑 patch，产物就带脚手架 id（工作区 lib/client.js 与 lib/client.js.map 正是该状态，mtime 2026-09-11T01:49:09Z，git status 为 M）",
+    "fixedShape": "tsdown.config.ts 在生成期把 published id 写进客户端 config 的 banner（不匹配脚手架 id 就抛错），scripts/patch-client-id.mjs 变成幂等 + fail-closed 的全量改写与全 lib 校验，因此产物身份不再依赖步骤顺序"
+  },
+  "changes": {
+    "buildInputsModified": [
+      "package.json",
+      "tsdown.config.ts",
+      "scripts/patch-client-id.mjs",
+      "scripts/verify-profile-install.mjs"
+    ],
+    "buildInputsAdded": [
+      "scripts/client-bundle-ids.mjs",
+      "scripts/clean-lib.mjs",
+      "scripts/verify-artifact-parity.mjs"
+    ],
+    "testsModified": ["tests/artifact-parity.spec.ts"],
+    "testsModifiedNote": "该 spec 属 PLAN §10 的 B8 文件范围；新增 1 个用例（tgz 与 workspace lib 的双向字节一致 + 无孤儿 chunk），原 5 个用例断言未改。既有业务测试（60 个 spec 中的其余全部）未改动。",
+    "productionSourceModified": false,
+    "generatedArtifactsRebuilt": ["lib/**", "dsh-context-enhancement-0.1.10.tgz"],
+    "scriptChanges": {
+      "package.json": {
+        "clean:lib": "node scripts/clean-lib.mjs",
+        "build": "node scripts/clean-lib.mjs && tsc -p tsconfig.build.json && tsdown --config-loader tsx && node scripts/patch-client-id.mjs",
+        "build:lib": "同 build",
+        "pack:artifact": "npm pack",
+        "verify:artifact": "node scripts/verify-artifact-parity.mjs"
+      }
+    }
+  },
+  "commands": [
+    { "id": "baseline-parity", "cmd": "pnpm vitest run tests/artifact-parity.spec.ts", "result": "1 failed | 4 passed (5)", "exitCode": 1, "raw": "evidence/baseline-artifact-parity.txt", "note": "唯一失败 = 第 128 行 `unpatched package id must not remain`" },
+    { "id": "build", "cmd": "pnpm build", "result": "clean:lib removed 253 generated file(s) (23 lib root .js) → tsc → tsdown (16 lib files + client.js + map) → patch:client-id (0 scaffold occurrence(s) rewritten; 0 left anywhere under lib/)", "exitCode": 0, "raw": "evidence/build-final.txt" },
+    { "id": "pack", "cmd": "npm pack --json", "result": "dsh-context-enhancement-0.1.10.tgz, 86 entries, 1395917 bytes", "exitCode": 0, "raw": "evidence/npm-pack.json" },
+    { "id": "tsdown-alone-negative-control", "cmd": "pnpm exec tsdown --config-loader tsx（不经过 patch 步骤）", "result": "lib/client.js:2 = `id: \"dsh-context-enhancement\"`，脚手架字节 0 处，client.js sha256 与完整构建链一致；随后 verify:artifact 与 parity spec 仍全绿", "exitCode": 0, "raw": "evidence/tsdown-alone-id-check.txt", "note": "这是修复前会失败的那条路径：旧实现下单独 tsdown 会留下脚手架 id" },
+    { "id": "verify-artifact", "cmd": "node scripts/verify-artifact-parity.mjs --json 审计资料/实验结果/B8-artifact-parity/evidence/artifact-report.json", "result": "artifact parity verified: 74 published lib/ files, 86 tarball members, byte-for-byte", "exitCode": 0, "raw": "evidence/verify-artifact.txt" },
+    { "id": "determinism-rebuild", "cmd": "pnpm build && npm pack --json", "result": "identical: 257/257 manifest entries (incl. tgz sha256) unchanged between post-build-a and post-build-b", "exitCode": 0, "raw": "evidence/build-determinism.txt, evidence/hashes-post-build-a.json, evidence/hashes-post-build-b.json" },
+    { "id": "parity-after", "cmd": "pnpm vitest run tests/artifact-parity.spec.ts", "result": "6 passed (6)", "exitCode": 0, "raw": "evidence/artifact-parity-after.txt" },
+    { "id": "typecheck", "cmd": "pnpm run typecheck", "result": "exit 0 (tsc -p tsconfig.json --pretty false)", "exitCode": 0, "raw": "evidence/typecheck.txt" },
+    { "id": "release-check", "cmd": "pnpm run release:check", "result": "all release checks passed", "exitCode": 0, "raw": "evidence/release-check.txt" },
+    { "id": "verify-install", "cmd": "node scripts/verify-profile-install.mjs dsh-context-enhancement-0.1.10.tgz", "result": "isolated-profile install + standing-mount verification passed; installed client bundle byte-identical to workspace build", "exitCode": 0, "raw": "evidence/verify-profile-install.txt" },
+    { "id": "b3-focused", "cmd": "pnpm exec vitest run tests/compaction-pressure-{exit,low-yield,reentry}.spec.ts tests/compaction-envelope-budget.spec.ts tests/compaction-reentry-liveness.spec.ts tests/compaction-three-zone.spec.ts tests/compaction-retained-tail-turn-semantics.spec.ts", "result": "7 files / 101 passed", "exitCode": 0, "raw": "evidence/B3-focused.txt" },
+    { "id": "b4-focused", "cmd": "pnpm exec vitest run tests/task-state-{startup-backlog,goal-authority,todo-authority,infeasible-progress,recovery-provenance,filter,worker,update,restart-recovery}.spec.ts", "result": "9 files / 130 passed", "exitCode": 0, "raw": "evidence/B4-focused.txt" },
+    { "id": "b5-focused", "cmd": "pnpm exec vitest run tests/task-state-{prompt-fixed-slot,injection-budget,prompt,render,composition}.spec.ts", "result": "5 files / 54 passed", "exitCode": 0, "raw": "evidence/B5-focused.txt" },
+    { "id": "b6-focused", "cmd": "pnpm exec vitest run tests/compaction-{tool-provenance-replay,tool-audit-recovery,tool-group-replacement,tool-group-audit-failure,served-provenance}.spec.ts", "result": "5 files / 37 passed", "exitCode": 0, "raw": "evidence/B6-focused.txt" },
+    { "id": "b7-focused", "cmd": "pnpm exec vitest run tests/task-state-{fork-bootstrap,terminal-bootstrap,terminal-generation,unload,view,batch,audit}.spec.ts", "result": "7 files / 47 passed", "exitCode": 0, "raw": "evidence/B7-focused.txt" },
+    { "id": "full-suite", "cmd": "pnpm test", "result": "60 files / 551 passed, exit 0（连续两次，第二次为无并发占用的最终运行）", "exitCode": 0, "raw": "evidence/full-suite.txt, evidence/full-suite-final.txt" }
+  ],
+  "artifactAfter": {
+    "tarball": { "path": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\dsh-context-enhancement-0.1.10.tgz", "bytes": 1395917, "sha256": "5553D2A01EF55C970DCB6A952ADE95687740AF10E8297553192944CCC924C8A5", "members": 86, "publishedLibFiles": 74 },
+    "workspaceLib": { "files": 247, "rootJs": 17, "emittedDeclarations": 57 },
+    "keyHashes": {
+      "lib/client.js": "D2DC6BBECDC034DADE0F0B363FC3A2C131B923877DA593E56CD49EA7EC0F49D3",
+      "lib/client.js.map": "C97DC594268C1BB57AD43A4970597A99690D1D34A3BAEF03967C61556BA1177D",
+      "lib/compaction-basic.js": "7C42DBC38EE7FC384E08508CA3017044F5082EBD0D5F3F5573C7FB2229F00E52",
+      "lib/task-state-basic.js": "FE7995AC9D4DBCAF32C83BECAE7A56762C9187B480CDC2F135BB5E36EC42DC10",
+      "lib/index.js": "921F8F660FADB12747BDC694C9D7144CCBEDB6C43ADA08A122FE5F0B24A20510",
+      "package.json": "CF797F921A8F11B6D52EC43135CAE87F6BA5244969E25051DB0CE942B031491D",
+      "tsdown.config.ts": "6AE150F5CE399B72C42C53A33F65D33ABFACB8E382B459B6477B27BA6CD1B488",
+      "scripts/patch-client-id.mjs": "9B27CCB0A6BA37CE9DFCFDB9699FFD38196174B5338CBD5EBFA152DD1F8C4E4B",
+      "scripts/client-bundle-ids.mjs": "9AF57C16A8F7974EA1EC302FB189696A5DA593ECDBED02F35657B0DD16405856",
+      "scripts/clean-lib.mjs": "B2464EB7ADB994960579A02F003D13E68BED189A8BF1C4A10571B5B86A3E38B0",
+      "scripts/verify-artifact-parity.mjs": "31FFAB348E96454DF91363C01C127986493FC3E937B8108F59032A83185BF1E3",
+      "scripts/verify-profile-install.mjs": "9A7B1E384DCC2EF4C18A705316C6BC339ABA696462F3E5E76D5B9A8B56D4BF2F",
+      "tests/artifact-parity.spec.ts": "007130145E544B35E0001720E64C8133208143C9B295BADC2E65455A69F52233"
+    },
+    "loaderIdInWorkspaceClientJs": "dsh-context-enhancement",
+    "scaffoldIdBytesUnderLib": 0,
+    "scaffoldIdBytesInTarball": 0,
+    "orphanChunks": 0
+  },
+  "hostAssembly": {
+    "hostHome": "C:\\Users\\chuxi\\.dsh",
+    "webProfileDependency": "dsh-context-enhancement@file:C://Users//chuxi//Documents//trae_projects//code//dsh-context-enhancement//dsh-context-enhancement-0.1.10.tgz",
+    "profiles": [
+      { "profile": "web", "installedPath": "C:\\Users\\chuxi\\.dsh\\profiles\\web\\node_modules\\dsh-context-enhancement", "installedLoaderId": "dsh-context-enhancement", "installedClientSha256": "63ECFC17449BBD59AFCEF78EEE6F4550F777821C63D28016CBB061880A0035B4", "matchesBuiltArtifact": false },
+      { "profile": "desktop", "installedPath": "C:\\Users\\chuxi\\.dsh\\profiles\\desktop\\node_modules\\dsh-context-enhancement", "installedLoaderId": "dsh-context-enhancement", "installedClientSha256": "63ECFC17449BBD59AFCEF78EEE6F4550F777821C63D28016CBB061880A0035B4", "matchesBuiltArtifact": false }
+    ],
+    "hostMutationByThisBatch": false,
+    "isolatedInstallVerification": {
+      "command": "node scripts/verify-profile-install.mjs dsh-context-enhancement-0.1.10.tgz",
+      "tempDshHome": "%TEMP%\\dsh-context-verify-*（脚本自行创建并清理）",
+      "artifactSha256": "5553D2A01EF55C970DCB6A952ADE95687740AF10E8297553192944CCC924C8A5",
+      "installedClientSha256": "D2DC6BBECDC034DADE0F0B363FC3A2C131B923877DA593E56CD49EA7EC0F49D3",
+      "installedEqualsWorkspace": true,
+      "installedLoaderId": "dsh-context-enhancement",
+      "profileLayers": "@deepseek-ai/dsh-base, @deepseek-ai/dsh-web-app, dsh-context-enhancement",
+      "presetDefault": "contextual",
+      "roster": ["contextual", "cordis", "minimal", "ptc", "standard"],
+      "standingMount": "ok - contextual standing mount validated (no waiting rows, no leaked services, no duplicate provider)"
+    }
+  },
+  "determinism": {
+    "manifestsCompared": "evidence/hashes-post-build-a.json vs evidence/hashes-post-build-b.json vs evidence/hashes-final.json（第三次为文档化命令链 clean→tsc→tsdown→patch→npm pack→verify 的完整重跑）",
+    "runs": 3,
+    "fileCount": 257,
+    "onlyInA": 0,
+    "onlyInB": 0,
+    "contentDiffering": 0,
+    "tarballSha256BothRuns": "5553D2A01EF55C970DCB6A952ADE95687740AF10E8297553192944CCC924C8A5",
+    "clientJsSha256BothRuns": "D2DC6BBECDC034DADE0F0B363FC3A2C131B923877DA593E56CD49EA7EC0F49D3"
+  },
+  "artifactDiffPreToPost": {
+    "removed": ["lib/contract-BuVHI3zF.js", "lib/lib-Bj3jGSND.js", "lib/lib-DXy8Ramy.js", "lib/lib-biAw7Hvg.js", "lib/tool-groups-CJkqYVVc.js", "lib/tool-groups-l8pJ_H0h.js"],
+    "added": ["lib/audit-DbO0V0N_.js", "lib/contract-C2nAZOQi.js", "lib/filter-CczOGkqh.js", "lib/lib-Bq6jN40l.js", "lib/lib-UkEFLxaM.js", "lib/source-index-BiRfSNPU.js", "lib/types/internal/task-state/basic/authority.{js,d.ts,d.ts.map,js.map}", "lib/types/internal/task-state/basic/inherited.{js,d.ts,d.ts.map,js.map}"],
+    "contentChanged": 117,
+    "contentChangedNonTypes": ["dsh-context-enhancement-0.1.10.tgz", "lib/client.js", "lib/client.js.map", "lib/compaction-basic.js", "lib/task-state-basic.js", "lib/task-state-prompt.js", "lib/task-state.js", "lib/tool-result-pruner.js", "package.json", "scripts/patch-client-id.mjs", "tsdown.config.ts"],
+    "contentChangedTypes": 106,
+    "sourceDriftExplained": "重建前的 lib/ 是 2026-09-11 的旧构建：缺少 src 在 B4/B7 新增的 authority.ts / inherited.ts 的声明产物，且带 6 个早前构建留下的死 chunk。因此重建不是「只改生成文件」，而是把 lib/ 与当前 src 对齐。"
+  },
+  "sourceDrift": {
+    "productionSourceModified": false,
+    "existingBusinessTestsModified": false,
+    "artifactParitySpecModified": true,
+    "experimentResultsE01ToE10Modified": false,
+    "docs40Or41Modified": false,
+    "historicalResultsIntegrity": "E09-ForkResume 16/16 文件 sha256 与其 artifact-hashes.json 一致；E00–E10/harness/X4 的最新 mtime 均早于本批次开始（证据 evidence/historical-results-untouched.txt）",
+    "srcOrTestsTouchedByThisBatch": ["tests/artifact-parity.spec.ts"],
+    "srcTouchedByThisBatch": [],
+    "evidence": "evidence/git-status-before.txt vs evidence/git-status-after.txt（逐行对照）；src/tests 的 mtime 扫描只剩 tests/artifact-parity.spec.ts",
+    "gitResetCleanCheckoutStashUsed": false,
+    "dshCheckoutModified": false,
+    "realDshHomeTouched": false
+  },
+  "residualRisks": [
+    "宿主已安装副本仍是 2026-09-08 的旧构建（sha256 63ECFC17…）：profile 依赖 `file:…/dsh-context-enhancement-0.1.10.tgz`，而该 tgz 本次已重打包，必须由宿主侧执行安装（`dsh plugin add` / profile 重装）才能让运行中的 Web/desktop profile 使用已验证字节。本批次刻意不修改用户 `~/.dsh`。",
+    "package.json#files 只发布 `lib/*.js` 与 `lib/types/**/*.d.ts`：lib/client.js 末尾声明 `//# sourceMappingURL=client.js.map`，但该 map（以及 lib/types 的 .map/.js）不会被打包，安装副本内没有 map。这是既有的打包边界，本批次未改 `files`；是否随包发布 sourcemap 需产品决定。",
+    "B1 多实例 CAS/refresh/single-writer 仍为 `blocked-upstream`，与本次产物修复无关，不因 artifact parity 通过而改变。",
+    "本批次的 E09/B7 实验 spec（审计资料/实验结果/B7-E09修复后回归/）未重跑：其落盘路径就是 B7 自己的证据目录，重跑会覆盖 B7 的 ledger；且 B8 不改任何 src 语义，其观测面不受产物重建影响。",
+    "40/41 未更新（本批次被明确禁止修改）：R-P2-9 的状态更新留给主代理。"
+  ],
+  "artifacts": [
+    "README.md",
+    "result.json",
+    "evidence/baseline-artifact-parity.txt",
+    "evidence/build-attempt1.txt",
+    "evidence/build-final.txt",
+    "evidence/build-determinism.txt",
+    "evidence/npm-pack.json",
+    "evidence/npm-pack-determinism.json",
+    "evidence/verify-artifact.txt",
+    "evidence/artifact-report.json",
+    "evidence/artifact-parity-after.txt",
+    "evidence/release-check.txt",
+    "evidence/verify-profile-install.txt",
+    "evidence/typecheck.txt",
+    "evidence/B3-focused.txt",
+    "evidence/B4-focused.txt",
+    "evidence/B5-focused.txt",
+    "evidence/B6-focused.txt",
+    "evidence/B7-focused.txt",
+    "evidence/full-suite.txt",
+    "evidence/full-suite-final.txt",
+    "evidence/hashes-pre-build.json",
+    "evidence/hashes-post-build-a.json",
+    "evidence/hashes-post-build-b.json",
+    "evidence/hashes-final.json",
+    "evidence/tarball-members.txt",
+    "evidence/scaffold-id-search.txt",
+    "evidence/historical-results-untouched.txt",
+    "evidence/git-status-before.txt",
+    "evidence/git-status-after.txt",
+    "evidence/git-head.txt",
+    "evidence/hash-manifest.mjs"
+  ],
+  "safety": {
+    "realDshHomeTouched": false,
+    "existingSessionsTouched": false,
+    "port8080OrWebOrMultiInstance": false,
+    "productionSourceModified": false,
+    "dshCheckoutModified": false,
+    "gitResetCleanCheckoutStashUsed": false,
+    "backgroundJobsCollected": true,
+    "stopConditionTriggered": false
+  }
+}

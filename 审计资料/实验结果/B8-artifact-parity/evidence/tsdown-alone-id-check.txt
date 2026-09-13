@@ -1,0 +1,8 @@
+=== 反证：只跑 tsdown（不经 patch），banner 必须已经是 published id ===
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] lib\rolldown-runtime-8H4AJuhK.js    0.38 kB │ gzip:  0.27 kB
+ℹ  [@deepseek-ai/dsh-client-ui-jobs] [ESM] 16 files, total: 1.01 MB
+✔  [@deepseek-ai/dsh-client-ui-jobs] Build complete in 186ms
+--- lib/client.js line2 after bare tsdown ---
+	id: "dsh-context-enhancement",
+scaffold id in lib/client.js: 0
+lib/client.js sha256: D2DC6BBECDC034DADE0F0B363FC3A2C131B923877DA593E56CD49EA7EC0F49D3

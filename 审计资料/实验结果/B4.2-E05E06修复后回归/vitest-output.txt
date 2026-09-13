@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts > B4.2 · E05/E06 同 fixture 修复后对照 > E05 Case B/C · 低于 minEvents 的 Goal 替换被 urgent 波次折叠，旧 Goal 不再注入 250ms
+ ✓ 审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts > B4.2 · E05/E06 同 fixture 修复后对照 > E05 Case C · Goal clear 走 urgent 波次，模型叙事无法让旧 Goal 复活 45ms
+ ✓ 审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts > B4.2 · E05/E06 同 fixture 修复后对照 > E06 Case A/B/D · 空 todo/write 是合法事实：清空走 urgent 波次，提交态与注入都清空 260ms
+ ✓ 审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts > B4.2 · E05/E06 同 fixture 修复后对照 > E06 Case C/E · minEvents = 1 下清空与写入都被折叠，且渲染能表达 cleared 31ms
+ ✓ 审计资料/实验结果/B4.2-E05E06修复后回归/b42-e05e06-regression.spec.ts > B4.2 · E05/E06 同 fixture 修复后对照 > 历史 spec 与 harness 未被本次对照写入（只读凭据） 1ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  12:07:19
+   Duration  1.12s (transform 139ms, setup 0ms, import 359ms, tests 594ms, environment 0ms)
+

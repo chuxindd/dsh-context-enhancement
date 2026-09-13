@@ -1,0 +1,60 @@
+{
+  "experiment": "E00-round1-existing-vitest-specs",
+  "verdict": "partial",
+  "baseline": {
+    "pluginWorkspace": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+    "pluginCommit": "cf034b4bce6141bb95b590f5ed7fa66f8727daa2",
+    "dshCommit": "a66e4702047846cdaa10c66c9d3df3951f5ea70d",
+    "source": "workspace-src",
+    "sourceDrift": false,
+    "modified": 102,
+    "untracked": 32,
+    "note": "审计资料目录新增不计入源码漂移"
+  },
+  "command": {
+    "command": "pnpm exec vitest run <15 specified spec files> --reporter=verbose",
+    "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+    "configModified": false,
+    "testsAddedOrRemoved": false,
+    "environmentBlockResolved": true,
+    "rawOutputFile": "审计资料/实验结果/E00-第一轮现有测试/vitest-output-rerun.txt"
+  },
+  "summary": {
+    "filesRun": 15,
+    "testFilesPassed": 14,
+    "testFilesFailed": 1,
+    "testsTotal": 206,
+    "testsPassed": 205,
+    "testsFailed": 1,
+    "testsSkipped": 0,
+    "exitCode": 1
+  },
+  "failure": {
+    "file": "tests/artifact-parity.spec.ts",
+    "test": "verifies lib/client.js contains patched module id",
+    "location": "tests/artifact-parity.spec.ts:128",
+    "message": "unpatched package id must not remain",
+    "classification": "build-artifact-parity",
+    "matchedStaticFinding": "审计资料/01-插件装配与配置生效链.md:工作区 lib/client.js loader id 残留"
+  },
+  "dynamicEvidence": {
+    "taskStateFilter": "41 tests passed; confirms existing filter behavior including empty todo being dropped",
+    "compactionAndTaskStateSuites": "existing unit/service assertions passed; not equivalent to E01-E10 dedicated experiments",
+    "artifactParity": "client package id mismatch dynamically reproduced",
+    "userPressureSymptom": "not directly tested",
+    "stableGoalTodoImmediateUpdate": "not directly tested",
+    "multiInstanceLww": "not tested"
+  },
+  "limitations": [
+    "Existing tests do not emit the complete maintenance ledger",
+    "No direct measurement of net release, pressure exit ratio, or one-tool-one-compression thrashing",
+    "No dedicated Goal large-change, TODO clear, startup backlog, injection accumulation, fork/resume, or two-process experiment",
+    "Some compaction tests mock summarizeToolGroups or use prune=undefined, so final surface behavior is only partially covered"
+  ],
+  "artifacts": [
+    "审计资料/实验结果/E00-第一轮现有测试/README.md",
+    "审计资料/实验结果/E00-第一轮现有测试/result.json",
+    "审计资料/实验结果/E00-第一轮现有测试/vitest-output.txt",
+    "审计资料/实验结果/E00-第一轮现有测试/vitest-output-rerun.txt"
+  ]
+}

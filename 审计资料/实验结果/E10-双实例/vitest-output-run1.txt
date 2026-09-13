@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/E10-双实例/e10-dual-instance.spec.ts > E10 · 两个独立 OS 进程同时使用同一个临时 storage domain > 记录整文档覆盖 / revision 分叉 / audit 丢失 / 外部变更不可见是否发生 2391ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:18:16
+   Duration  2.81s (transform 88ms, setup 0ms, import 231ms, tests 2.39s, environment 0ms)
+

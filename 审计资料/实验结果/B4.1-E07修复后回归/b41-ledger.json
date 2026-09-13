@@ -1,0 +1,1354 @@
+{
+  "experiment": "B4.1-E07修复后回归",
+  "question": "当 stable 已提交且 sourceCursor = N，日志中已存在高于 N 但从未被折叠的 filter eligible 事件，进程在 worker 更新之前关闭；随后用相同持久 storage、相同 session id 恢复运行且不追加任何新事件时，启动是否会主动发现该积压并更新 stable？",
+  "verdictRule": "E07 的判据规则原样沿用，只替换代码：fixed = 恢复后基线 stable 先被服务（记录中的 revision/cursor 在 resume 时为基线值），且在一个远超 worker 调度窗口的等待内、不追加任何事件的情况下，启动路径自行发起了恰好一波请求把 cursor 之上的全部 eligible 积压折叠进新 revision（durable audit 行的 trigger 为 startup）；still-reproduced = 等待窗口内 stable/cursor 保持基线不变（零请求、零新 audit 行），即 E07 原状；inconclusive = fixture/runner/medium 未能产生证据。",
+  "measurement": "REAL durable storage domain + REAL JSONL session persistence + REAL resume (ctx.sessionPersistence.prepare/enter/announce) + REAL TaskStateBasicService (ctx.plugin) + REAL filter math + REAL renderer; FAKE LLM (scripted adapter, no usage); temporary medium INSIDE this comparison directory; no $HOME/.dsh, no existing session, no port, no concurrent process.",
+  "invokedAs": "ctx.plugin(TaskStateBasicService, CONFIG) — the production service; the fixture never constructs TaskStateWorker and never calls observe/maybeSchedule/maybeScheduleStartup/performBatch by hand",
+  "workerManuallyInvoked": false,
+  "config": {
+    "provider": "current-route",
+    "model": "current-model",
+    "minEvents": 1,
+    "maxEvents": 20,
+    "maxInputBytes": 100000,
+    "maxOutputTokens": 4000,
+    "timeoutMs": 5000,
+    "maxInfraRetries": 0,
+    "maxEntriesPerKind": 10,
+    "maxEntryBytes": 2000,
+    "maxListItems": 8,
+    "note": "minEvents = 1（与 E07 完全一致）：cursor 之上 1 个 eligible 事件就已满足生产阈值，因此「未达阈值」无法解释任何观测到的静止"
+  },
+  "processes": [
+    {
+      "id": "P1",
+      "role": "stage 1 — commit the base stable (cursor = N = 3)"
+    },
+    {
+      "id": "P2",
+      "role": "stage 2 — append the eligible backlog above the cursor while the provider is NOT mounted, then fully close"
+    },
+    {
+      "id": "P3",
+      "role": "stage 3 — reopen the same medium only to prove the backlog survived the close"
+    },
+    {
+      "id": "P4",
+      "role": "stage 4 — reopen the same storage/session with NO new event, sample the startup window, then append exactly one control event"
+    }
+  ],
+  "storage": {
+    "domainRootRelative": "审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage",
+    "sessionRootRelative": "审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-sessions",
+    "backend": "json",
+    "domain": "context_enhancement_task_state",
+    "domainFileRelative": "审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage\\context_enhancement_task_state.json",
+    "sessionArtifacts": [
+      {
+        "path": "--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-B4.1-E07~4FEE~590D~540E~56DE~5F52-tmp-storage--\\e07-restart-backlog\\session.jsonl",
+        "bytes": 2096
+      }
+    ]
+  },
+  "comparison": {
+    "baselineExperiment": "审计资料/实验结果/E07-重启积压",
+    "e07": {
+      "ledgerSha256": "ce9dacbe3133cc8b7c0fc9f4623e80fdf97c0552f84634a99a2900aa42517153",
+      "specSha256": "e83811e5f2cdeda265738559cc7631b0a059f113fa4cb44605e97736291b4090",
+      "verdict": "reproduced",
+      "startupWindow": {
+        "waitMs": 2010,
+        "samples": [
+          {
+            "tMs": 1,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "tMs": 111,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "tMs": 263,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "tMs": 508,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "tMs": 1006,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "tMs": 1502,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "tMs": 2010,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": 3,
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          }
+        ],
+        "requestCountDuringWindow": 0,
+        "startupWaveTriggered": false,
+        "noStartupWave": true
+      },
+      "criteria": {
+        "fixedBeforeRun": true,
+        "backlogCount": 3,
+        "backlogAboveCursor": true,
+        "backlogPresentAtClose": true,
+        "logRestoredExactly": true,
+        "backlogSeqsSurvived": true,
+        "stableRecovered": true,
+        "noStartupWave": true,
+        "newEventTriggeredUpdate": true,
+        "foldedWindowContainsBacklog": true,
+        "routeWorked": true,
+        "evidenceComplete": true,
+        "verdict": "reproduced"
+      },
+      "backlog": {
+        "committedCursorN": 3,
+        "committedRevisionBase": 1,
+        "minEvents": 1,
+        "eligibleSeqs": [
+          6,
+          7,
+          8
+        ],
+        "filterKinds": [
+          {
+            "seq": 6,
+            "kind": "user"
+          },
+          {
+            "seq": 7,
+            "kind": "assistant"
+          },
+          {
+            "seq": 8,
+            "kind": "turn/end"
+          }
+        ],
+        "count": 3,
+        "aboveCursor": true,
+        "requestsWhileAlive": 0
+      }
+    },
+    "sameFixture": true,
+    "sameConfig": true,
+    "sameSampleOffsets": true,
+    "sameSessionId": true,
+    "sameLifecycle": true,
+    "onlyDifference": "被测量的代码版本（src/internal/task-state/basic/{service,worker}.ts 的 B4.1 启动积压检查，以及 contract 层的 trigger 字段）"
+  },
+  "stages": {
+    "stage1": {
+      "providerError": null,
+      "log": {
+        "length": 4,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end"
+        ],
+        "lastSeq": 3
+      },
+      "stable": {
+        "revision": 1,
+        "sourceCursor": 3,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f",
+        "objective": "B4.1 restart backlog probe window-through-3",
+        "facts": [
+          "b41 durable record folded eligible events through 3"
+        ],
+        "injectionChars": 313,
+        "injectionHash": "f7e5961a"
+      },
+      "requests": [
+        {
+          "windowSeqs": [
+            1,
+            2,
+            3
+          ],
+          "maxSeq": 3
+        }
+      ],
+      "durable": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      }
+    },
+    "stage1Close": {
+      "error": null,
+      "durable": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      }
+    },
+    "stage2": {
+      "log": {
+        "length": 9,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed",
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end"
+        ],
+        "lastSeq": 8
+      },
+      "turnStartSeq": 5,
+      "backlogSeqs": [
+        6,
+        7,
+        8
+      ],
+      "backlogKinds": [
+        {
+          "seq": 6,
+          "kind": "user"
+        },
+        {
+          "seq": 7,
+          "kind": "assistant"
+        },
+        {
+          "seq": 8,
+          "kind": "turn/end"
+        }
+      ],
+      "eligibleAboveCursor": [
+        6,
+        7,
+        8
+      ],
+      "requestsWhileAlive": 0,
+      "durable": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      }
+    },
+    "stage2Close": {
+      "error": null,
+      "durable": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      }
+    },
+    "stage3": {
+      "log": {
+        "length": 10,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed",
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed"
+        ],
+        "lastSeq": 9
+      },
+      "backlogAtReopen": [
+        6,
+        7,
+        8
+      ],
+      "surfacedSourceKindsAtReopen": {
+        "user/message:unknown": 2,
+        "assistant/message:model": 2
+      },
+      "durable": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      },
+      "requests": 0
+    },
+    "stage4": {
+      "providerError": null,
+      "recovered": {
+        "revision": 1,
+        "sourceCursor": 3,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f",
+        "objective": "B4.1 restart backlog probe window-through-3",
+        "facts": [
+          "b41 durable record folded eligible events through 3"
+        ],
+        "injectionChars": 313,
+        "injectionHash": "f7e5961a"
+      },
+      "durableAtResume": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 1,
+            "sourceCursor": 3,
+            "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+          }
+        },
+        "auditRowCount": 1,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          }
+        ]
+      },
+      "publications": [
+        {
+          "revision": 1,
+          "sourceCursor": 3,
+          "requestsAtPublish": 0,
+          "atMs": 1789270386560
+        },
+        {
+          "revision": 2,
+          "sourceCursor": 8,
+          "requestsAtPublish": 1,
+          "atMs": 1789270386572
+        },
+        {
+          "revision": 3,
+          "sourceCursor": 10,
+          "requestsAtPublish": 2,
+          "atMs": 1789270388702
+        }
+      ],
+      "startupWindow": {
+        "waitMs": 2000,
+        "windowStartMs": 1789270386556,
+        "samples": [
+          {
+            "offsetMs": 0,
+            "stableRevision": 1,
+            "sourceCursor": 3,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 0,
+            "auditRowsOnDisk": 1
+          },
+          {
+            "offsetMs": 100,
+            "stableRevision": 2,
+            "sourceCursor": 8,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 1,
+            "auditRowsOnDisk": 2
+          },
+          {
+            "offsetMs": 250,
+            "stableRevision": 2,
+            "sourceCursor": 8,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 1,
+            "auditRowsOnDisk": 2
+          },
+          {
+            "offsetMs": 500,
+            "stableRevision": 2,
+            "sourceCursor": 8,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 1,
+            "auditRowsOnDisk": 2
+          },
+          {
+            "offsetMs": 1000,
+            "stableRevision": 2,
+            "sourceCursor": 8,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 1,
+            "auditRowsOnDisk": 2
+          },
+          {
+            "offsetMs": 1500,
+            "stableRevision": 2,
+            "sourceCursor": 8,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 1,
+            "auditRowsOnDisk": 2
+          },
+          {
+            "offsetMs": 2000,
+            "stableRevision": 2,
+            "sourceCursor": 8,
+            "eligibleAboveCursor": [
+              6,
+              7,
+              8
+            ],
+            "adapterRequests": 1,
+            "auditRowsOnDisk": 2
+          }
+        ],
+        "requestCountDuringWindow": 1,
+        "requestWindowsDuringWindow": [
+          [
+            6,
+            7,
+            8
+          ]
+        ],
+        "startupWaveTriggered": true,
+        "firstWaveSampleOffsetMs": 100,
+        "stableAfterWindow": {
+          "revision": 2,
+          "sourceCursor": 8,
+          "filterVersion": "task-state-basic/filter-v2",
+          "schemaVersion": 1,
+          "digest": "df8d0558db4fdf4d7c2cf99ed877902e035b89730097d12b4eb5104796934107",
+          "objective": "B4.1 restart backlog probe window-through-8",
+          "facts": [
+            "b41 durable record folded eligible events through 8"
+          ],
+          "injectionChars": 313,
+          "injectionHash": "40479312"
+        },
+        "durableAfterWindow": {
+          "read": true,
+          "unit": {
+            "name": "context_enhancement_task_state",
+            "version": 1
+          },
+          "sessionRecord": {
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "stable": {
+              "revision": 2,
+              "sourceCursor": 8,
+              "digest": "df8d0558db4fdf4d7c2cf99ed877902e035b89730097d12b4eb5104796934107"
+            }
+          },
+          "auditRowCount": 2,
+          "auditRows": [
+            {
+              "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+              "lifecycle": {
+                "createdAt": 1700000000000,
+                "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+              },
+              "trigger": "startup",
+              "baseRevision": null,
+              "baseCursor": null,
+              "targetRevision": 1,
+              "includedSeqs": [
+                1,
+                2,
+                3
+              ],
+              "outcome": "success",
+              "finishedRevision": 1,
+              "finishedCursor": 3
+            },
+            {
+              "requestId": "ts-6994bd79-9b81-4130-9d9f-b2f163fbdfc7",
+              "lifecycle": {
+                "createdAt": 1700000000000,
+                "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+              },
+              "trigger": "startup",
+              "baseRevision": 1,
+              "baseCursor": 3,
+              "targetRevision": 2,
+              "includedSeqs": [
+                6,
+                7,
+                8
+              ],
+              "outcome": "success",
+              "finishedRevision": 2,
+              "finishedCursor": 8
+            }
+          ]
+        },
+        "startupTriggerFromDurableAudit": "startup"
+      },
+      "log": {
+        "length": 10,
+        "types": [
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed",
+          "turn/start",
+          "user/message",
+          "assistant/message",
+          "turn/end",
+          "session/end-seed"
+        ],
+        "lastSeq": 9
+      },
+      "eligibleAboveCursor": [
+        6,
+        7,
+        8
+      ],
+      "restoreMarker": {
+        "type": "session/end-seed",
+        "eligible": false,
+        "countInLog": 2,
+        "appendedByThisRestore": 0
+      }
+    },
+    "afterNewEvent": {
+      "newEventSeq": 10,
+      "requests": [
+        {
+          "windowSeqs": [
+            6,
+            7,
+            8
+          ],
+          "maxSeq": 8
+        },
+        {
+          "windowSeqs": [
+            10
+          ],
+          "maxSeq": 10
+        }
+      ],
+      "stable": {
+        "revision": 3,
+        "sourceCursor": 10,
+        "filterVersion": "task-state-basic/filter-v2",
+        "schemaVersion": 1,
+        "digest": "370248de50836bf7d2dae42438fc8b8be14717b63deec7e67123b58cb9eb6750",
+        "objective": "B4.1 restart backlog probe window-through-10",
+        "facts": [
+          "b41 durable record folded eligible events through 10"
+        ],
+        "injectionChars": 316,
+        "injectionHash": "183a3839"
+      },
+      "includedSeqsFromDurableAuditRow": [
+        10
+      ],
+      "surfacedSourceKindsAfterNewEvent": {
+        "user/message:unknown": 3,
+        "assistant/message:model": 2
+      },
+      "durable": {
+        "read": true,
+        "unit": {
+          "name": "context_enhancement_task_state",
+          "version": 1
+        },
+        "sessionRecord": {
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "stable": {
+            "revision": 3,
+            "sourceCursor": 10,
+            "digest": "370248de50836bf7d2dae42438fc8b8be14717b63deec7e67123b58cb9eb6750"
+          }
+        },
+        "auditRowCount": 3,
+        "auditRows": [
+          {
+            "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": null,
+            "baseCursor": null,
+            "targetRevision": 1,
+            "includedSeqs": [
+              1,
+              2,
+              3
+            ],
+            "outcome": "success",
+            "finishedRevision": 1,
+            "finishedCursor": 3
+          },
+          {
+            "requestId": "ts-6994bd79-9b81-4130-9d9f-b2f163fbdfc7",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "startup",
+            "baseRevision": 1,
+            "baseCursor": 3,
+            "targetRevision": 2,
+            "includedSeqs": [
+              6,
+              7,
+              8
+            ],
+            "outcome": "success",
+            "finishedRevision": 2,
+            "finishedCursor": 8
+          },
+          {
+            "requestId": "ts-b76ee966-7f72-48c7-a213-250284d95260",
+            "lifecycle": {
+              "createdAt": 1700000000000,
+              "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+            },
+            "trigger": "threshold",
+            "baseRevision": 2,
+            "baseCursor": 8,
+            "targetRevision": 3,
+            "includedSeqs": [
+              10
+            ],
+            "outcome": "success",
+            "finishedRevision": 3,
+            "finishedCursor": 10
+          }
+        ]
+      }
+    }
+  },
+  "backlog": {
+    "committedCursorN": 3,
+    "committedRevisionBase": 1,
+    "minEvents": 1,
+    "eligibleSeqs": [
+      6,
+      7,
+      8
+    ],
+    "filterKinds": [
+      {
+        "seq": 6,
+        "kind": "user"
+      },
+      {
+        "seq": 7,
+        "kind": "assistant"
+      },
+      {
+        "seq": 8,
+        "kind": "turn/end"
+      }
+    ],
+    "count": 3,
+    "aboveCursor": true,
+    "requestsWhileAlive": 0,
+    "turnStartSeqIneligible": 5
+  },
+  "recovery": {
+    "recoveredStable": {
+      "revision": 1,
+      "sourceCursor": 3,
+      "filterVersion": "task-state-basic/filter-v2",
+      "schemaVersion": 1,
+      "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f",
+      "objective": "B4.1 restart backlog probe window-through-3",
+      "facts": [
+        "b41 durable record folded eligible events through 3"
+      ],
+      "injectionChars": 313,
+      "injectionHash": "f7e5961a"
+    },
+    "durableAtResume": {
+      "read": true,
+      "unit": {
+        "name": "context_enhancement_task_state",
+        "version": 1
+      },
+      "sessionRecord": {
+        "lifecycle": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+        },
+        "stable": {
+          "revision": 1,
+          "sourceCursor": 3,
+          "digest": "f125bd8942a74af7da146c5891acdefc4229cd34c486f3ea01ff323375b8777f"
+        }
+      },
+      "auditRowCount": 1,
+      "auditRows": [
+        {
+          "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "trigger": "startup",
+          "baseRevision": null,
+          "baseCursor": null,
+          "targetRevision": 1,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "outcome": "success",
+          "finishedRevision": 1,
+          "finishedCursor": 3
+        }
+      ]
+    },
+    "backlogSeqsAtEveryReopen": {
+      "atStage3Reopen": [
+        6,
+        7,
+        8
+      ],
+      "atStage4ReopenBeforeWindow": [
+        6,
+        7,
+        8
+      ]
+    },
+    "restoreMarker": {
+      "type": "session/end-seed",
+      "eligible": false,
+      "countInLog": 2,
+      "appendedByThisRestore": 0
+    },
+    "baselineServedBeforeBacklogRequest": true
+  },
+  "startupWindow": {
+    "waitMs": 2000,
+    "windowStartMs": 1789270386556,
+    "samples": [
+      {
+        "offsetMs": 0,
+        "stableRevision": 1,
+        "sourceCursor": 3,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 0,
+        "auditRowsOnDisk": 1
+      },
+      {
+        "offsetMs": 100,
+        "stableRevision": 2,
+        "sourceCursor": 8,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 1,
+        "auditRowsOnDisk": 2
+      },
+      {
+        "offsetMs": 250,
+        "stableRevision": 2,
+        "sourceCursor": 8,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 1,
+        "auditRowsOnDisk": 2
+      },
+      {
+        "offsetMs": 500,
+        "stableRevision": 2,
+        "sourceCursor": 8,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 1,
+        "auditRowsOnDisk": 2
+      },
+      {
+        "offsetMs": 1000,
+        "stableRevision": 2,
+        "sourceCursor": 8,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 1,
+        "auditRowsOnDisk": 2
+      },
+      {
+        "offsetMs": 1500,
+        "stableRevision": 2,
+        "sourceCursor": 8,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 1,
+        "auditRowsOnDisk": 2
+      },
+      {
+        "offsetMs": 2000,
+        "stableRevision": 2,
+        "sourceCursor": 8,
+        "eligibleAboveCursor": [
+          6,
+          7,
+          8
+        ],
+        "adapterRequests": 1,
+        "auditRowsOnDisk": 2
+      }
+    ],
+    "requestCountDuringWindow": 1,
+    "requestWindowsDuringWindow": [
+      [
+        6,
+        7,
+        8
+      ]
+    ],
+    "startupWaveTriggered": true,
+    "firstWaveSampleOffsetMs": 100,
+    "stableAfterWindow": {
+      "revision": 2,
+      "sourceCursor": 8,
+      "filterVersion": "task-state-basic/filter-v2",
+      "schemaVersion": 1,
+      "digest": "df8d0558db4fdf4d7c2cf99ed877902e035b89730097d12b4eb5104796934107",
+      "objective": "B4.1 restart backlog probe window-through-8",
+      "facts": [
+        "b41 durable record folded eligible events through 8"
+      ],
+      "injectionChars": 313,
+      "injectionHash": "40479312"
+    },
+    "durableAfterWindow": {
+      "read": true,
+      "unit": {
+        "name": "context_enhancement_task_state",
+        "version": 1
+      },
+      "sessionRecord": {
+        "lifecycle": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+        },
+        "stable": {
+          "revision": 2,
+          "sourceCursor": 8,
+          "digest": "df8d0558db4fdf4d7c2cf99ed877902e035b89730097d12b4eb5104796934107"
+        }
+      },
+      "auditRowCount": 2,
+      "auditRows": [
+        {
+          "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "trigger": "startup",
+          "baseRevision": null,
+          "baseCursor": null,
+          "targetRevision": 1,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "outcome": "success",
+          "finishedRevision": 1,
+          "finishedCursor": 3
+        },
+        {
+          "requestId": "ts-6994bd79-9b81-4130-9d9f-b2f163fbdfc7",
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "trigger": "startup",
+          "baseRevision": 1,
+          "baseCursor": 3,
+          "targetRevision": 2,
+          "includedSeqs": [
+            6,
+            7,
+            8
+          ],
+          "outcome": "success",
+          "finishedRevision": 2,
+          "finishedCursor": 8
+        }
+      ]
+    },
+    "startupTriggerFromDurableAudit": "startup"
+  },
+  "afterNewEvent": {
+    "newEventSeq": 10,
+    "requests": [
+      {
+        "windowSeqs": [
+          6,
+          7,
+          8
+        ],
+        "maxSeq": 8
+      },
+      {
+        "windowSeqs": [
+          10
+        ],
+        "maxSeq": 10
+      }
+    ],
+    "stable": {
+      "revision": 3,
+      "sourceCursor": 10,
+      "filterVersion": "task-state-basic/filter-v2",
+      "schemaVersion": 1,
+      "digest": "370248de50836bf7d2dae42438fc8b8be14717b63deec7e67123b58cb9eb6750",
+      "objective": "B4.1 restart backlog probe window-through-10",
+      "facts": [
+        "b41 durable record folded eligible events through 10"
+      ],
+      "injectionChars": 316,
+      "injectionHash": "183a3839"
+    },
+    "includedSeqsFromDurableAuditRow": [
+      10
+    ],
+    "surfacedSourceKindsAfterNewEvent": {
+      "user/message:unknown": 3,
+      "assistant/message:model": 2
+    },
+    "durable": {
+      "read": true,
+      "unit": {
+        "name": "context_enhancement_task_state",
+        "version": 1
+      },
+      "sessionRecord": {
+        "lifecycle": {
+          "createdAt": 1700000000000,
+          "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+        },
+        "stable": {
+          "revision": 3,
+          "sourceCursor": 10,
+          "digest": "370248de50836bf7d2dae42438fc8b8be14717b63deec7e67123b58cb9eb6750"
+        }
+      },
+      "auditRowCount": 3,
+      "auditRows": [
+        {
+          "requestId": "ts-dd4cbc07-4883-4a50-9085-1320b8929f59",
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "trigger": "startup",
+          "baseRevision": null,
+          "baseCursor": null,
+          "targetRevision": 1,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "outcome": "success",
+          "finishedRevision": 1,
+          "finishedCursor": 3
+        },
+        {
+          "requestId": "ts-6994bd79-9b81-4130-9d9f-b2f163fbdfc7",
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "trigger": "startup",
+          "baseRevision": 1,
+          "baseCursor": 3,
+          "targetRevision": 2,
+          "includedSeqs": [
+            6,
+            7,
+            8
+          ],
+          "outcome": "success",
+          "finishedRevision": 2,
+          "finishedCursor": 8
+        },
+        {
+          "requestId": "ts-b76ee966-7f72-48c7-a213-250284d95260",
+          "lifecycle": {
+            "createdAt": 1700000000000,
+            "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\B4.1-E07修复后回归\\tmp-storage"
+          },
+          "trigger": "threshold",
+          "baseRevision": 2,
+          "baseCursor": 8,
+          "targetRevision": 3,
+          "includedSeqs": [
+            10
+          ],
+          "outcome": "success",
+          "finishedRevision": 3,
+          "finishedCursor": 10
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "fixedBeforeRun": true,
+    "backlogNonEmpty": true,
+    "backlogCountMeetsMinEvents": true,
+    "backlogAboveCursor": true,
+    "backlogUntouchedWhileUnmounted": true,
+    "baselineServedFromStoredRecord": true,
+    "durableAtResumeAtBaseline": true,
+    "startupWaveTriggered": true,
+    "startupWaveWithinWindow": true,
+    "startupWaveFoldedWholeBacklog": true,
+    "startupWaveWindowIsTheBacklog": true,
+    "startupTriggerRecorded": true,
+    "backlogSurvivedEveryReopen": true,
+    "noNewEligibleActivityBeforeTheWindow": true,
+    "controlEventTriggeredUpdate": true,
+    "controlWindowContainsBacklog": true,
+    "routeWorked": true,
+    "evidenceComplete": true,
+    "noErrors": true
+  },
+  "verdict": "fixed",
+  "errors": [],
+  "sourceDrift": {
+    "sourceFiles": [
+      "src/internal/task-state/basic/service.ts",
+      "src/internal/task-state/basic/worker.ts",
+      "src/internal/task-state/basic/update.ts",
+      "src/internal/task-state/contract/types.ts",
+      "src/internal/task-state/contract/audit.ts",
+      "src/task-state.ts",
+      "tests/task-state-startup-backlog.spec.ts"
+    ],
+    "sha256": {
+      "src/internal/task-state/basic/service.ts": "c73a831c6ea9e5b8702cf30c9bbcc9ded637eafc2788223eb99ec4b35020587a",
+      "src/internal/task-state/basic/worker.ts": "4ad8c14109ff3f13be186436f267da1637ae0a45b2e0e0c0d8aff7e39f959176",
+      "src/internal/task-state/basic/update.ts": "704c86550277d9013aecc24a748694788fe80d28638af79b29a4d4b2a0834d87",
+      "src/internal/task-state/contract/types.ts": "d9e18ea6debe63d5c0299135a01b9e7be9c5b6466b0e41c2da2fad65451692be",
+      "src/internal/task-state/contract/audit.ts": "29ea6d596b6e4b666ad43c100a6cfa1b7fc67157058fffbf55b199faa2097642",
+      "src/task-state.ts": "8d84727d11a024575f6f52091f123e8ed6ce1bd22f98849ccbd026c15480b9a7",
+      "tests/task-state-startup-backlog.spec.ts": "23ece29e33e2cae57af0198e1b49395a70a3759a5dda36c1e735595336e80b13"
+    },
+    "note": "本次对照运行所用插件源码的 SHA-256（drift 记录用）；E07 历史目录的文件未被读取以外的任何方式触碰",
+    "e07LedgerSha256": "ce9dacbe3133cc8b7c0fc9f4623e80fdf97c0552f84634a99a2900aa42517153",
+    "e07SpecSha256": "e83811e5f2cdeda265738559cc7631b0a059f113fa4cb44605e97736291b4090"
+  },
+  "artifacts": {
+    "note": "本目录内的交付件与运行期真实持久介质（介质每次运行从干净根重建）",
+    "files": [
+      {
+        "path": "b41-e07-regression.spec.ts",
+        "bytes": 41224
+      },
+      {
+        "path": "b41-ledger.json",
+        "bytes": 42172
+      },
+      {
+        "path": "tmp-sessions\\--C-Users-chuxi-Documents-trae_projects-code-dsh-context-enhancement-~5BA1~8BA1~8D44~6599-~5B9E~9A8C~7ED3~679C-B4.1-E07~4FEE~590D~540E~56DE~5F52-tmp-storage--\\e07-restart-backlog\\session.jsonl",
+        "bytes": 2096,
+        "sha256": "527f2ef1a7e035bfad522ef6fd21148992d45aba2a5ff52243a9a7672bf91bc8"
+      },
+      {
+        "path": "tmp-storage\\context_enhancement_task_state.json",
+        "bytes": 15356,
+        "sha256": "d9fca3434df70092f0c0a0a3eeb057e34a737c8b3cd11aa66ab221e977752b4c"
+      },
+      {
+        "path": "vitest-output-run1.txt",
+        "bytes": 530
+      },
+      {
+        "path": "vitest-output.txt",
+        "bytes": 87
+      }
+    ]
+  },
+  "limitations": [
+    "本对照只回答 E07 的第 1 节问题（重启后无新事件时的启动积压折叠）；不覆盖 B5 固定槽位注入、Goal/TODO 权威契约，也不改 E01–E10 历史结论。",
+    "LLM 为 fake adapter：没有 provider token、usage、真实网络时延，因此「波次是否发生」可测，「模型质量」不可测。",
+    "四个「进程」是同一 vitest 进程内顺序挂载并完整 dispose 的独立 Cordis Context，不是操作系统进程；每个阶段的 storage/JSONL 句柄都已完整关闭并从磁盘重开。",
+    "storage 介质是真实 JSON 文档后端（StorageJson），不是 SQLite，也不是多实例并发介质；B1 的 blocked-upstream（多实例）结论不受本对照影响。",
+    "注入文本 hash（injectionHash）只用来证明「恢复后未变、新事件后已变」；renderer 的 entry id 含随机 UUID，故 hash 只在同一次运行内可比较。",
+    "verdict = fixed 只表示该 fixture 的判据全部成立，不代表理想方案整体达成，也不代表用户现象消失。"
+  ]
+}

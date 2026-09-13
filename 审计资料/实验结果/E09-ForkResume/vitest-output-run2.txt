@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 C:/Users/chuxi/Documents/trae_projects/code/dsh-context-enhancement
+
+ ✓ 审计资料/实验结果/E09-ForkResume/e09-fork-resume.spec.ts > E09 · fork/resume lifecycle identity, stable, cursor and inherited prefix > resumes the same-lifecycle stable and gives a forked child its own stable, cursor and inherited prefix 608ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  22:42:33
+   Duration  1.39s (transform 406ms, setup 0ms, import 542ms, tests 609ms, environment 0ms)
+

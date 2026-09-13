@@ -1,0 +1,1268 @@
+{
+  "experiment": "E10-dual-instance",
+  "title": "E10 · 双实例 storage 覆盖实验（两个独立 OS 进程共用一个临时 storage domain）",
+  "question": "两个独立 DSH/storage host 实例同时使用同一个临时 storage domain 时，是否会发生整文档 last-write-wins 覆盖、revision 分叉、audit 丢失或外部变更不可见？",
+  "verdict": "reproduced",
+  "verdictRule": {
+    "reproduced": "一个实例提交后覆盖/静默丢失另一个实例的已提交数据，或同一 revision 出现分叉且无 CAS/冲突拒绝",
+    "not-reproduced": "以上两者都不成立",
+    "inconclusive": "无法安全启动两个独立进程 / 无法确证子进程访问实验目录 / runner 或子进程失败",
+    "design-confirmed": "只有静态设计证据"
+  },
+  "runId": "a20f8b46",
+  "structure": {
+    "phase1": "同一个临时 storage 根、该根最初为空：A/B 两个进程先后打开同一域，A 提交 Session A → B（陈旧内存视图）读不到 → B 写 Session B → A 基于旧快照更新 Session A → audit 表同 key 交错。用于判定\"整文档覆盖 / 外部变更不可见\"（本阶段结束前两个进程被关闭）。",
+    "mediumResetBetweenPhases": "阶段 2 之前清空 tmp-storage 根（并重启 A/B），使\"同 key 同 revision 分叉\"的判定只依赖同一个介质代际与两个**同等起点**的实例。",
+    "phase2": "介质只含 SEED-r3 一条记录：A/B 两个全新进程同时打开同一域（都从介质读到 revision 3），屏障同时放行后各自写 revision 4 的不同 payload。用于判定\"同 revision 分叉且无 CAS\"。",
+    "phase3": "两个实例关闭后，第三个全新进程只读读回；另由 spec 侧直接从磁盘文档解析并复核。"
+  },
+  "realOsMultiProcess": {
+    "isRealOsMultiProcess": true,
+    "workerCount": 6,
+    "workers": [
+      {
+        "label": "A",
+        "pid": 75732,
+        "ppid": 22700,
+        "startedAt": 1789263248250,
+        "readyAt": 1789263248418,
+        "exitedAt": 1789263249041,
+        "exitCode": 0,
+        "exitSignal": null,
+        "aliveAtHarvest": false,
+        "commands": [
+          "cmd-001",
+          "cmd-003",
+          "cmd-007",
+          "cmd-008",
+          "cmd-009",
+          "cmd-011",
+          "cmd-012",
+          "cmd-013"
+        ],
+        "stdout": "worker-A-gen1-stdout.log",
+        "stderr": "worker-A-gen1-stderr.log",
+        "stderrBytes": 0
+      },
+      {
+        "label": "B",
+        "pid": 36824,
+        "ppid": 22700,
+        "startedAt": 1789263248442,
+        "readyAt": 1789263248621,
+        "exitedAt": 1789263249085,
+        "exitCode": 0,
+        "exitSignal": null,
+        "aliveAtHarvest": false,
+        "commands": [
+          "cmd-002",
+          "cmd-004",
+          "cmd-005",
+          "cmd-006",
+          "cmd-010",
+          "cmd-014",
+          "cmd-015"
+        ],
+        "stdout": "worker-B-gen1-stdout.log",
+        "stderr": "worker-B-gen1-stderr.log",
+        "stderrBytes": 0
+      },
+      {
+        "label": "S",
+        "pid": 76340,
+        "ppid": 22700,
+        "startedAt": 1789263249096,
+        "readyAt": 1789263249260,
+        "exitedAt": 1789263249390,
+        "exitCode": 0,
+        "exitSignal": null,
+        "aliveAtHarvest": false,
+        "commands": [
+          "cmd-016",
+          "cmd-017",
+          "cmd-018",
+          "cmd-019"
+        ],
+        "stdout": "worker-S-gen2-stdout.log",
+        "stderr": "worker-S-gen2-stderr.log",
+        "stderrBytes": 0
+      },
+      {
+        "label": "A",
+        "pid": 78568,
+        "ppid": 22700,
+        "startedAt": 1789263249400,
+        "readyAt": 1789263249565,
+        "exitedAt": 1789263250140,
+        "exitCode": 0,
+        "exitSignal": null,
+        "aliveAtHarvest": false,
+        "commands": [
+          "cmd-020",
+          "cmd-022",
+          "cmd-024",
+          "cmd-026",
+          "cmd-028",
+          "cmd-030",
+          "cmd-031"
+        ],
+        "stdout": "worker-A-gen2-stdout.log",
+        "stderr": "worker-A-gen2-stderr.log",
+        "stderrBytes": 0
+      },
+      {
+        "label": "B",
+        "pid": 30896,
+        "ppid": 22700,
+        "startedAt": 1789263249584,
+        "readyAt": 1789263249765,
+        "exitedAt": 1789263250187,
+        "exitCode": 0,
+        "exitSignal": null,
+        "aliveAtHarvest": false,
+        "commands": [
+          "cmd-021",
+          "cmd-023",
+          "cmd-025",
+          "cmd-027",
+          "cmd-029",
+          "cmd-032",
+          "cmd-033"
+        ],
+        "stdout": "worker-B-gen2-stdout.log",
+        "stderr": "worker-B-gen2-stderr.log",
+        "stderrBytes": 0
+      },
+      {
+        "label": "C",
+        "pid": 41916,
+        "ppid": 22700,
+        "startedAt": 1789263250200,
+        "readyAt": 1789263250358,
+        "exitedAt": 1789263250505,
+        "exitCode": 0,
+        "exitSignal": null,
+        "aliveAtHarvest": false,
+        "commands": [
+          "cmd-034",
+          "cmd-035",
+          "cmd-036",
+          "cmd-037"
+        ],
+        "stdout": "worker-C-gen3-stdout.log",
+        "stderr": "worker-C-gen3-stderr.log",
+        "stderrBytes": 0
+      }
+    ],
+    "distinctProcessHandles": true,
+    "distinctPidsWithinOnePhase": {
+      "A": [
+        75732,
+        78568
+      ],
+      "B": [
+        36824,
+        30896
+      ],
+      "S": [
+        76340
+      ],
+      "C": [
+        41916
+      ]
+    },
+    "pidReuseNote": "Windows 会快速回收 pid：6 个进程句柄只观测到 4 个不同 pid。可靠性依据不是\"pid 全不相同\"，而是每个句柄由各自的 process.pid 自报 + 各自的 startedAt，并且同一阶段内并发的两个进程 pid 一定不同（见各自 ready 响应）。",
+    "phase2SimultaneousAlive": {
+      "aStartedAt": 1789263249400,
+      "bStartedAt": 1789263249584,
+      "aExitedAt": 1789263250140,
+      "bExitedAt": 1789263250187,
+      "overlapStart": 1789263249584,
+      "overlapEnd": 1789263250021,
+      "overlapMs": 437,
+      "aAliveAtBarrierScheduling": true
+    },
+    "laneEvidence": "阶段 2 的 A/B 两个进程在同一毫秒被屏障放行（arrivalDeltaMs 见 stageG_revisionFork.barrier），并且阶段 1 的 worker-process.log 中同一毫秒出现 A、B 两条 claim 记录（pid 不同）；两者都是操作系统级并发，不是同进程内的顺序挂载。",
+    "launcher": "vitest 进程用 node:child_process.spawn 启动 N 个独立 node 进程；每个进程各自创建一个 Cordis Context 并挂载真实 Storage/StorageJson/StorageDomain",
+    "noPortsUsed": true,
+    "noSocketOrNamedPipe": true
+  },
+  "components": {
+    "workerScript": {
+      "path": "审计资料\\实验结果\\E10-双实例\\e10-storage-worker.mts",
+      "sha256": "f2e02a0034b4d311ef6773e66a55fc71ce36931a1f02a85888d085f4a12843ad",
+      "bytes": 28135
+    },
+    "domainSource": {
+      "path": "src/internal/task-state/basic/domain.ts",
+      "sha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7"
+    },
+    "contractSpecSource": {
+      "path": "src/internal/task-state/contract/spec.ts",
+      "sha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca"
+    },
+    "dshStorageJsonLib": {
+      "path": "node_modules/@deepseek-ai/dsh-storage-json/lib/index.js",
+      "sha256": "de4cf45c829edd70c71c4ef4682a467b888f0a187d91923111930b00fba22d85"
+    },
+    "dshStorageDomainLib": {
+      "path": "node_modules/@deepseek-ai/dsh-storage-domain/lib/index.js",
+      "sha256": "e536ba09b7ccc0f10bb54818dfe44454374e5cbf7aeba140b216ba1ca2e87517"
+    },
+    "dshStorageLib": {
+      "path": "node_modules/@deepseek-ai/dsh-storage/lib/index.js",
+      "sha256": "1289574c24ecfa5b134e2750d578c00ae59654de7d00133e117c4cc34095f3a3"
+    },
+    "node": "v24.20.0",
+    "nodeExecPath": "C:\\Program Files\\nodejs\\node.exe",
+    "specUnderTest": "context_enhancement_task_state v1 layout=single tables=sessions,audit"
+  },
+  "scenario": {
+    "id": "multi-instance-same-domain",
+    "storageRoot": "审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46",
+    "domainFile": "审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46\\context_enhancement_task_state.json",
+    "controlDir": "审计资料\\实验结果\\E10-双实例\\tmp-control\\run-a20f8b46",
+    "commandProtocol": "文件命令协议（按\"代\"分通道）：每个 worker 进程只读自己那一代的命令文件 tmp-control/<run>/commands-gen<N>.jsonl，逐条 claim→执行→把响应原子改名发布到 tmp-control/<run>/responses-gen<N>/<id>--<label>.json；无端口、无 socket、无命名管道。分代是必要的：同名实例在阶段 2 被重启，共用一条命令文件会让新进程重放上一代的残留命令（首轮实测到的真实缺陷）。",
+    "interleavingControl": "编排者（本 spec）在**命令粒度**串行发出并等待响应；worker 侧每次 claim 都写时间线，因此谁先写谁后写由实测时间戳证明，而不是靠假设。屏障场景用 waitBarrier 让两个进程在同一时刻同时放行。",
+    "phase1_stageA_open": {
+      "role": "A/B 同时打开同一个 storage domain（同一临时 storage root，同一域文档）",
+      "aPid": 75732,
+      "bPid": 36824,
+      "aReady": {
+        "worker": "A",
+        "gen": 1,
+        "pid": 75732,
+        "ppid": 22700,
+        "workerStartedAt": 1789263248418,
+        "node": "v24.20.0",
+        "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+        "storageRoot": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46",
+        "controlDir": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-control\\run-a20f8b46",
+        "domainFile": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46\\context_enhancement_task_state.json",
+        "specIdentity": {
+          "name": "context_enhancement_task_state",
+          "version": 1,
+          "layout": "single",
+          "tables": [
+            "sessions",
+            "audit"
+          ],
+          "importedFrom": "src\\internal\\task-state\\basic\\domain.ts",
+          "domainSourceSha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7",
+          "contractSourceSha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca",
+          "workerFile": "审计资料\\实验结果\\E10-双实例\\e10-storage-worker.mts"
+        }
+      },
+      "bReady": {
+        "worker": "B",
+        "gen": 1,
+        "pid": 36824,
+        "ppid": 22700,
+        "workerStartedAt": 1789263248621,
+        "node": "v24.20.0",
+        "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement",
+        "storageRoot": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46",
+        "controlDir": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-control\\run-a20f8b46",
+        "domainFile": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46\\context_enhancement_task_state.json",
+        "specIdentity": {
+          "name": "context_enhancement_task_state",
+          "version": 1,
+          "layout": "single",
+          "tables": [
+            "sessions",
+            "audit"
+          ],
+          "importedFrom": "src\\internal\\task-state\\basic\\domain.ts",
+          "domainSourceSha256": "dba64f32b083aefc09e0457cf749c14b783bb1a30ed0063df1fed34bd652e2f7",
+          "contractSourceSha256": "c9ca675c058526ae05972afe12936405a8a3b581cb3a8d534e85a30c9632f9ca",
+          "workerFile": "审计资料\\实验结果\\E10-双实例\\e10-storage-worker.mts"
+        }
+      },
+      "distinctPids": true,
+      "bothAliveNow": true,
+      "aOpenedAtBeforeB": null,
+      "aOpenedAt": 1789263248651,
+      "bOpenedAt": 1789263248683,
+      "aOpenInProcess": {
+        "sessionKeys": [],
+        "sessionCount": 0,
+        "auditKeys": [],
+        "auditCount": 0,
+        "records": {},
+        "audit": {},
+        "allRecordsSchemaValid": true,
+        "viewSha256": "c8355de09ff14ef39a0ca56e7e402587cc6c6ff20d077910016d2c63e328a6c9"
+      },
+      "bOpenInProcess": {
+        "sessionKeys": [],
+        "sessionCount": 0,
+        "auditKeys": [],
+        "auditCount": 0,
+        "records": {},
+        "audit": {},
+        "allRecordsSchemaValid": true,
+        "viewSha256": "c8355de09ff14ef39a0ca56e7e402587cc6c6ff20d077910016d2c63e328a6c9"
+      },
+      "aDiskAtOpen": {
+        "present": false,
+        "sha256": null,
+        "size": null,
+        "mtimeMs": null
+      },
+      "bDiskAtOpen": {
+        "present": false,
+        "sha256": null,
+        "size": null,
+        "mtimeMs": null
+      },
+      "domainFileExistedAtOpen": false,
+      "bothOpenedSameDomainName": true
+    },
+    "phase1_stageB_aWrites": {
+      "role": "A 写 Session A（put 成功 = 已提交）",
+      "ok": true,
+      "error": null,
+      "marker": "A-t1",
+      "putStartedAt": 1789263248727,
+      "putSettledAt": 1789263248732,
+      "diskSessionKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskSha256After": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3",
+      "diskSizeAfter": 1871,
+      "aInProcessSessionKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskFileNow": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3"
+    },
+    "phase1_stageC_externalVisibility": {
+      "role": "B 仍开着，读它自己的内存视图（外部变更可见性）",
+      "aCommittedKey": "e10-session-a",
+      "diskHasAKey": true,
+      "diskSha256": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3",
+      "bInProcessSessionKeys": [],
+      "bInProcessSessionCount": 0,
+      "bSeesAKeyInMemory": false,
+      "bGetAKeyResult": {
+        "key": "e10-session-a",
+        "table": "sessions",
+        "view": {
+          "key": "e10-session-a",
+          "present": false
+        }
+      },
+      "bDiskReadSeesAKey": true,
+      "bDiskShaAtInspect": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3",
+      "bMemoryEqualsDisk": false
+    },
+    "phase1_stageD_bWrites": {
+      "role": "B 从它自己的（早于 A 提交的）内存快照写 Session B",
+      "ok": true,
+      "error": null,
+      "marker": "B-t1",
+      "putStartedAt": 1789263248816,
+      "putSettledAt": 1789263248821,
+      "bInProcessSessionKeysBefore": [],
+      "bInProcessSessionKeysAfter": [
+        "e10-session-b"
+      ],
+      "diskSessionKeysAfter": [
+        "e10-session-b"
+      ],
+      "diskSha256After": "7d7549d6c1e1dd7026f68aa783676c5c04ea6cf5f2bf3e70af99596523225525",
+      "diskBeforeSha256": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3",
+      "aKeySurvivedOnDiskAfterBWrite": false,
+      "aKeyDiscardedFromBView": true
+    },
+    "phase1_stageE_aUpdates": {
+      "role": "A 基于旧快照把 Session A 更新到 revision 2",
+      "aInProcessKeysBefore": [
+        "e10-session-a"
+      ],
+      "aSeesBKeyInMemory": false,
+      "aDiskReadSeesBKey": true,
+      "ok": true,
+      "error": null,
+      "marker": "A-t2",
+      "payloadRevision": 2,
+      "putStartedAt": 1789263248875,
+      "putSettledAt": 1789263248882,
+      "aInProcessSessionKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskSessionKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskSha256After": "93265965299ee6bc06a8f8df2a350b074010f2906e04a859f657b1d05d94eab2",
+      "bKeySurvivedOnDiskAfterAWrite": false
+    },
+    "phase1_stageF_auditSameKey": {
+      "role": "audit 表同一 key 交错写（A 的 open 行 → B 的同行写 → A 再读）",
+      "key": "ts-e10-shared-audit-row",
+      "aPutOk": true,
+      "aPutDiskAuditKeys": [
+        "ts-e10-shared-audit-row"
+      ],
+      "aPutDiskSha256": "0d7cd6e26c1678e8d285c8c183e3164618aedafe6a6ceca8c290e3dff8243861",
+      "bPutOk": true,
+      "bPutDiskAuditKeys": [
+        "ts-e10-shared-audit-row"
+      ],
+      "bPutDiskSha256": "e486d4b430b6a9bcf9ef88a440f10206cadf0894f23dba859519c072ac717efb",
+      "bInProcessAuditKeysAfter": [
+        "ts-e10-shared-audit-row"
+      ],
+      "aGetAfterBSameKey": {
+        "key": "ts-e10-shared-audit-row",
+        "table": "audit",
+        "view": {
+          "key": "ts-e10-shared-audit-row",
+          "schemaValid": true,
+          "requestId": "ts-e10-A-audit-t1",
+          "time": 1700000101000,
+          "lifecycleCreatedAt": 1700000000000,
+          "targetRevision": 1,
+          "baseRevision": null,
+          "baseCursor": null,
+          "includedSeqs": [
+            1,
+            2,
+            3
+          ],
+          "outcome": "success",
+          "finishedRevision": 1,
+          "rowSha256": "9b002abcbec532f5c20e0d5f86634137fdd1bdbcb4f1e4fe37c176e757fb7f25"
+        }
+      },
+      "aSeesOwnRowStill": false,
+      "bOverwroteSameRow": false,
+      "aViewAfterBSameKeyRevision": 1,
+      "aViewMatchesBRowSha": false,
+      "aRowSha256AfterBCommit": "9b002abcbec532f5c20e0d5f86634137fdd1bdbcb4f1e4fe37c176e757fb7f25",
+      "bRowSha256AfterOwnCommit": "4e5f1257e167b7307d6b286f45792156d8871e346ed3af8c1b0de1956151b443",
+      "bPayloadRowSha256": null,
+      "instancesDisagreeOnSameAuditRow": true,
+      "note": "介质上只有 1 个 audit key，因此\"audit 行是否被整文档覆盖丢掉\"只能看它是否还在（该判断在判定段用清空前的介质快照做，C5 = false）；但两个实例对同一行的读值互相不一致这一事实被单独记录（instancesDisagreeOnSameAuditRow）。"
+    },
+    "phase1_endMediumSnapshot": {
+      "role": "阶段 1 结束、介质被清空之前的只读介质快照",
+      "diskSha256": "e486d4b430b6a9bcf9ef88a440f10206cadf0894f23dba859519c072ac717efb",
+      "diskSize": 3187,
+      "sessionKeys": [
+        "e10-session-b"
+      ],
+      "auditKeys": [
+        "ts-e10-shared-audit-row"
+      ],
+      "recordOwners": {
+        "e10-session-b": {
+          "key": "e10-session-b",
+          "digest": "E10-DIGEST-B-t1",
+          "revision": 1,
+          "objective": "E10 objective B-t1",
+          "recordSha256": "8eb0e5a9537d0f99fd17ba9cfd91f581b05f989dd72520ce9636cdfdafe9dd57"
+        }
+      },
+      "aAliveAtSnapshot": true,
+      "bAliveAtSnapshot": true,
+      "aGenAtSnapshot": 1,
+      "bGenAtSnapshot": 1
+    },
+    "phase2_stageG_revisionFork": {
+      "role": "两个全新实例都从介质上同一个 revision 3 出发，各自写 revision 4 的不同 payload（屏障同时放行）",
+      "key": "e10-session-fork",
+      "mediumResetBeforePhase": {
+        "storageRootWiped": true,
+        "diskKeysBeforeReopen": [
+          "e10-session-fork"
+        ],
+        "diskSeedRevision": 3,
+        "diskSeedDigest": "E10-DIGEST-SEED-r3"
+      },
+      "seed": {
+        "ok": true,
+        "seederReusedForPhase2": false,
+        "aAndBSawSameRevisionBeforeFork": true,
+        "aSeedRevision": 3,
+        "bSeedRevision": 3,
+        "sameSeedRecordHash": true,
+        "bothOpenedAfterSeedWasOnDisk": true
+      },
+      "barrier": {
+        "aArrivedAt": 1789263249885,
+        "bArrivedAt": 1789263249885,
+        "aReleasedAt": 1789263249886,
+        "bReleasedAt": 1789263249885,
+        "arrivalDeltaMs": 0
+      },
+      "aFork": {
+        "ok": true,
+        "error": null,
+        "payloadRevision": 4,
+        "payloadDigest": "E10-DIGEST-A-r4-fork",
+        "targetRevision": 4,
+        "putStartedAt": 1789263249916,
+        "putSettledAt": 1789263249921,
+        "diskSha256After": "205ecdd0e68f0a3d3b79c4c36dd64d251878a868146a2d9235a3eb13b9be280e",
+        "diskSessionKeysAfter": [
+          "e10-session-fork"
+        ],
+        "conflictRejected": false
+      },
+      "bFork": {
+        "ok": true,
+        "error": null,
+        "payloadRevision": 4,
+        "payloadDigest": "E10-DIGEST-B-r4-fork",
+        "targetRevision": 4,
+        "putStartedAt": 1789263249947,
+        "putSettledAt": 1789263249951,
+        "diskSha256After": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+        "diskSessionKeysAfter": [
+          "e10-session-fork"
+        ],
+        "conflictRejected": false
+      },
+      "bothProcessesCommittedRevision4": true,
+      "payloadsDiffer": true,
+      "noConflictSignalFromStorageLayer": true,
+      "aReadsBackOwnPayloadAfterBWrite": true,
+      "aReadsBackRevision": 4,
+      "bReadsBackRevision": 4,
+      "bReadsBackOwnPayload": true
+    },
+    "phase2_stageH_closeAndReadBack": {
+      "role": "两个实例都已打开期间完成全部交错写；关闭后从介质只读读回",
+      "bothAliveBeforeClose": true,
+      "simultaneousAlive": {
+        "aStartedAt": 1789263249400,
+        "bStartedAt": 1789263249584,
+        "aExitedAt": 1789263250140,
+        "bExitedAt": 1789263250187,
+        "overlapStart": 1789263249584,
+        "overlapEnd": 1789263250021,
+        "overlapMs": 437,
+        "aAliveAtBarrierScheduling": true
+      },
+      "aClose": {
+        "closedAt": 1789263250039,
+        "disposeMs": 1,
+        "finalInProcess": {
+          "sessionKeys": [
+            "e10-session-fork"
+          ],
+          "sessionCount": 1,
+          "auditKeys": [],
+          "auditCount": 0,
+          "records": {
+            "e10-session-fork": {
+              "key": "e10-session-fork",
+              "present": true,
+              "schemaValid": true,
+              "session": {
+                "createdAt": 1700000000000,
+                "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+              },
+              "stable": {
+                "revision": 4,
+                "sourceCursor": 21,
+                "digest": "E10-DIGEST-A-r4-fork",
+                "filterVersion": "e10-filter-v1",
+                "schemaVersion": 1,
+                "objective": "E10 objective A-r4-fork",
+                "facts": [
+                  "E10 A-r4-fork durable fact one.",
+                  "E10 A-r4-fork durable fact two."
+                ]
+              },
+              "recordSha256": "4ad03a27d7e67f2fd95b4cd8fd10e6e3aca4e781c2bbdfb0f6bf5c5cd86bd771"
+            }
+          },
+          "audit": {},
+          "allRecordsSchemaValid": true,
+          "viewSha256": "fa59ea31e119a18258df63aa5e72bf8e46104316285c0048189a2e467804d929"
+        },
+        "diskAtCloseSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+        "diskAtCloseSessionKeys": [
+          "e10-session-fork"
+        ],
+        "domainClosed": true
+      },
+      "bClose": {
+        "closedAt": 1789263250069,
+        "disposeMs": 1,
+        "finalInProcess": {
+          "sessionKeys": [
+            "e10-session-fork"
+          ],
+          "sessionCount": 1,
+          "auditKeys": [],
+          "auditCount": 0,
+          "records": {
+            "e10-session-fork": {
+              "key": "e10-session-fork",
+              "present": true,
+              "schemaValid": true,
+              "session": {
+                "createdAt": 1700000000000,
+                "cwd": "C:\\Users\\chuxi\\Documents\\trae_projects\\code\\dsh-context-enhancement\\审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46"
+              },
+              "stable": {
+                "revision": 4,
+                "sourceCursor": 22,
+                "digest": "E10-DIGEST-B-r4-fork",
+                "filterVersion": "e10-filter-v1",
+                "schemaVersion": 1,
+                "objective": "E10 objective B-r4-fork",
+                "facts": [
+                  "E10 B-r4-fork durable fact one.",
+                  "E10 B-r4-fork durable fact two."
+                ]
+              },
+              "recordSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f"
+            }
+          },
+          "audit": {},
+          "allRecordsSchemaValid": true,
+          "viewSha256": "af9e2c6d44590be54313daf097b3f2a1633ec6cb238569f3ad354165371bfe10"
+        },
+        "diskAtCloseSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+        "diskAtCloseSessionKeys": [
+          "e10-session-fork"
+        ],
+        "domainClosed": true
+      },
+      "aExitCode": 0,
+      "bExitCode": 0,
+      "aAliveAfterClose": false,
+      "bAliveAfterClose": false,
+      "aliveWindowAfterClose": 556,
+      "diskSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+      "diskSize": 1956,
+      "diskSessionKeys": [
+        "e10-session-fork"
+      ],
+      "diskAuditKeys": [],
+      "finalKeyOwners": {
+        "e10-session-fork": {
+          "key": "e10-session-fork",
+          "digest": "E10-DIGEST-B-r4-fork",
+          "revision": 4,
+          "objective": "E10 objective B-r4-fork",
+          "recordSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f"
+        }
+      },
+      "schemaValidationOfDiskDoc": {
+        "sessions": {
+          "e10-session-fork": true
+        },
+        "audit": {},
+        "allValid": true
+      },
+      "domainFileBytes": 1956
+    },
+    "phase3_stageI_freshInstanceReadBack": {
+      "role": "第三个全新进程打开同一临时 storage domain（只读读回）",
+      "cPid": 41916,
+      "cOpenedAt": 1789263250390,
+      "cSeesSessionKeys": [
+        "e10-session-fork"
+      ],
+      "cSessionCount": 1,
+      "cInspectDiskSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+      "cInspectDiskSessionKeys": [
+        "e10-session-fork"
+      ],
+      "cSeesForkKeyRevision": 4,
+      "cSeesForkKeyDigest": "E10-DIGEST-B-r4-fork"
+    }
+  },
+  "phase1Puts": [
+    {
+      "instance": "A",
+      "key": "e10-session-a",
+      "table": "sessions",
+      "marker": "A-t1",
+      "window": "B-a-writes-while-b-open",
+      "payloadSha256": "642f5542439fb89618a5fe884f843c63fd0a4d4922faef36540851bb5de63c94",
+      "payloadRevision": 1,
+      "payloadDigest": "E10-DIGEST-A-t1",
+      "putStartedAt": 1789263248727,
+      "putSettledAt": 1789263248732,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskSha256After": "28d9b5650e0fc7214380dde5b6e8335b1c82e51192437f160f7444e30fb0c1b3",
+      "diskMtimeAfter": 1789263248729.817
+    },
+    {
+      "instance": "B",
+      "key": "e10-session-b",
+      "table": "sessions",
+      "marker": "B-t1",
+      "window": "D-b-writes-after-a-committed",
+      "payloadSha256": "8eb0e5a9537d0f99fd17ba9cfd91f581b05f989dd72520ce9636cdfdafe9dd57",
+      "payloadRevision": 1,
+      "payloadDigest": "E10-DIGEST-B-t1",
+      "putStartedAt": 1789263248816,
+      "putSettledAt": 1789263248821,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "e10-session-b"
+      ],
+      "diskKeysAfter": [
+        "e10-session-b"
+      ],
+      "diskSha256After": "7d7549d6c1e1dd7026f68aa783676c5c04ea6cf5f2bf3e70af99596523225525",
+      "diskMtimeAfter": 1789263248818.2312
+    },
+    {
+      "instance": "A",
+      "key": "e10-session-a",
+      "table": "sessions",
+      "marker": "A-t2",
+      "window": "E-a-updates-from-stale-snapshot",
+      "payloadSha256": "0483b11f55eddc1708040ef2a19f276d4fdb7044ff3863993a69ec9a1d6e6ec8",
+      "payloadRevision": 2,
+      "payloadDigest": "E10-DIGEST-A-t2",
+      "putStartedAt": 1789263248875,
+      "putSettledAt": 1789263248882,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskKeysAfter": [
+        "e10-session-a"
+      ],
+      "diskSha256After": "93265965299ee6bc06a8f8df2a350b074010f2906e04a859f657b1d05d94eab2",
+      "diskMtimeAfter": 1789263248877.1262
+    },
+    {
+      "instance": "A",
+      "key": "ts-e10-shared-audit-row",
+      "table": "audit",
+      "marker": "A-audit-t1",
+      "window": "F-audit-open-row",
+      "payloadSha256": "9b002abcbec532f5c20e0d5f86634137fdd1bdbcb4f1e4fe37c176e757fb7f25",
+      "payloadRevision": 1,
+      "payloadDigest": "E10-AUDIT-A-audit-t1",
+      "putStartedAt": 1789263248907,
+      "putSettledAt": 1789263248912,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "ts-e10-shared-audit-row"
+      ],
+      "diskKeysAfter": [
+        "ts-e10-shared-audit-row"
+      ],
+      "diskSha256After": "0d7cd6e26c1678e8d285c8c183e3164618aedafe6a6ceca8c290e3dff8243861",
+      "diskMtimeAfter": 1789263248908.6262
+    },
+    {
+      "instance": "B",
+      "key": "ts-e10-shared-audit-row",
+      "table": "audit",
+      "marker": "B-audit-t1",
+      "window": "F-audit-finish-row-same-key",
+      "payloadSha256": "4e5f1257e167b7307d6b286f45792156d8871e346ed3af8c1b0de1956151b443",
+      "payloadRevision": 2,
+      "payloadDigest": "E10-AUDIT-B-audit-t1",
+      "putStartedAt": 1789263248940,
+      "putSettledAt": 1789263248945,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "ts-e10-shared-audit-row"
+      ],
+      "diskKeysAfter": [
+        "ts-e10-shared-audit-row"
+      ],
+      "diskSha256After": "e486d4b430b6a9bcf9ef88a440f10206cadf0894f23dba859519c072ac717efb",
+      "diskMtimeAfter": 1789263248940.6133
+    }
+  ],
+  "phase2Puts": [
+    {
+      "instance": "S",
+      "key": "e10-session-fork",
+      "table": "sessions",
+      "marker": "SEED-r3",
+      "window": "G0-seed-r3-fresh-medium",
+      "payloadSha256": "b05d6e7374828f162b970111e050ed2fb40639dbd2b3f13917b099f230f62c53",
+      "payloadRevision": 3,
+      "payloadDigest": "E10-DIGEST-SEED-r3",
+      "putStartedAt": 1789263249320,
+      "putSettledAt": 1789263249326,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "e10-session-fork"
+      ],
+      "diskKeysAfter": [
+        "e10-session-fork"
+      ],
+      "diskSha256After": "335075a8d3b13877117e09186b9823c018281c6449c6f8bb4600d7833fbf2d56",
+      "diskMtimeAfter": 1789263249322.3376
+    },
+    {
+      "instance": "A",
+      "key": "e10-session-fork",
+      "table": "sessions",
+      "marker": "A-r4-fork",
+      "window": "G2-fork-same-revision",
+      "payloadSha256": "4ad03a27d7e67f2fd95b4cd8fd10e6e3aca4e781c2bbdfb0f6bf5c5cd86bd771",
+      "payloadRevision": 4,
+      "payloadDigest": "E10-DIGEST-A-r4-fork",
+      "putStartedAt": 1789263249916,
+      "putSettledAt": 1789263249921,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "e10-session-fork"
+      ],
+      "diskKeysAfter": [
+        "e10-session-fork"
+      ],
+      "diskSha256After": "205ecdd0e68f0a3d3b79c4c36dd64d251878a868146a2d9235a3eb13b9be280e",
+      "diskMtimeAfter": 1789263249917.97
+    },
+    {
+      "instance": "B",
+      "key": "e10-session-fork",
+      "table": "sessions",
+      "marker": "B-r4-fork",
+      "window": "G2-fork-same-revision",
+      "payloadSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f",
+      "payloadRevision": 4,
+      "payloadDigest": "E10-DIGEST-B-r4-fork",
+      "putStartedAt": 1789263249947,
+      "putSettledAt": 1789263249951,
+      "putOk": true,
+      "inProcessKeysAfter": [
+        "e10-session-fork"
+      ],
+      "diskKeysAfter": [
+        "e10-session-fork"
+      ],
+      "diskSha256After": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+      "diskMtimeAfter": 1789263249948.4258
+    }
+  ],
+  "phase1Medium": {
+    "sessions": [
+      "e10-session-b"
+    ],
+    "audit": [
+      "ts-e10-shared-audit-row"
+    ]
+  },
+  "phase1MediumOwners": {
+    "e10-session-b": {
+      "key": "e10-session-b",
+      "digest": "E10-DIGEST-B-t1",
+      "revision": 1,
+      "objective": "E10 objective B-t1",
+      "recordSha256": "8eb0e5a9537d0f99fd17ba9cfd91f581b05f989dd72520ce9636cdfdafe9dd57"
+    }
+  },
+  "phaseBoundaryIndex": 5,
+  "committedPayloadsAtFinalMedium": [
+    {
+      "instance": "S",
+      "window": "G0-seed-r3-fresh-medium",
+      "key": "e10-session-fork",
+      "table": "sessions",
+      "marker": "SEED-r3",
+      "payloadSha256": "b05d6e7374828f162b970111e050ed2fb40639dbd2b3f13917b099f230f62c53",
+      "payloadDigest": "E10-DIGEST-SEED-r3",
+      "payloadRevision": 3,
+      "keyPresentOnMedium": true,
+      "payloadIsTheMediumValueForKey": false,
+      "mediumDigestForKey": "E10-DIGEST-B-r4-fork",
+      "putStartedAt": 1789263249320,
+      "putSettledAt": 1789263249326
+    },
+    {
+      "instance": "A",
+      "window": "G2-fork-same-revision",
+      "key": "e10-session-fork",
+      "table": "sessions",
+      "marker": "A-r4-fork",
+      "payloadSha256": "4ad03a27d7e67f2fd95b4cd8fd10e6e3aca4e781c2bbdfb0f6bf5c5cd86bd771",
+      "payloadDigest": "E10-DIGEST-A-r4-fork",
+      "payloadRevision": 4,
+      "keyPresentOnMedium": true,
+      "payloadIsTheMediumValueForKey": false,
+      "mediumDigestForKey": "E10-DIGEST-B-r4-fork",
+      "putStartedAt": 1789263249916,
+      "putSettledAt": 1789263249921
+    },
+    {
+      "instance": "B",
+      "window": "G2-fork-same-revision",
+      "key": "e10-session-fork",
+      "table": "sessions",
+      "marker": "B-r4-fork",
+      "payloadSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f",
+      "payloadDigest": "E10-DIGEST-B-r4-fork",
+      "payloadRevision": 4,
+      "keyPresentOnMedium": true,
+      "payloadIsTheMediumValueForKey": true,
+      "mediumDigestForKey": "E10-DIGEST-B-r4-fork",
+      "putStartedAt": 1789263249947,
+      "putSettledAt": 1789263249951
+    }
+  ],
+  "committedPayloadsAtPhase1Medium": [
+    {
+      "instance": "A",
+      "window": "B-a-writes-while-b-open",
+      "key": "e10-session-a",
+      "table": "sessions",
+      "marker": "A-t1",
+      "payloadDigest": "E10-DIGEST-A-t1",
+      "payloadRevision": 1,
+      "putSettledAt": 1789263248732,
+      "addedKeyOnDiskAfterOwnPut": true,
+      "presentInPhase1EndSnapshot": false,
+      "phase1EndValueDigestForKey": null
+    },
+    {
+      "instance": "B",
+      "window": "D-b-writes-after-a-committed",
+      "key": "e10-session-b",
+      "table": "sessions",
+      "marker": "B-t1",
+      "payloadDigest": "E10-DIGEST-B-t1",
+      "payloadRevision": 1,
+      "putSettledAt": 1789263248821,
+      "addedKeyOnDiskAfterOwnPut": true,
+      "presentInPhase1EndSnapshot": true,
+      "phase1EndValueDigestForKey": "E10-DIGEST-B-t1"
+    },
+    {
+      "instance": "A",
+      "window": "E-a-updates-from-stale-snapshot",
+      "key": "e10-session-a",
+      "table": "sessions",
+      "marker": "A-t2",
+      "payloadDigest": "E10-DIGEST-A-t2",
+      "payloadRevision": 2,
+      "putSettledAt": 1789263248882,
+      "addedKeyOnDiskAfterOwnPut": true,
+      "presentInPhase1EndSnapshot": false,
+      "phase1EndValueDigestForKey": null
+    },
+    {
+      "instance": "A",
+      "window": "F-audit-open-row",
+      "key": "ts-e10-shared-audit-row",
+      "table": "audit",
+      "marker": "A-audit-t1",
+      "payloadDigest": "E10-AUDIT-A-audit-t1",
+      "payloadRevision": 1,
+      "putSettledAt": 1789263248912,
+      "addedKeyOnDiskAfterOwnPut": true,
+      "presentInPhase1EndSnapshot": true,
+      "phase1EndValueDigestForKey": null
+    },
+    {
+      "instance": "B",
+      "window": "F-audit-finish-row-same-key",
+      "key": "ts-e10-shared-audit-row",
+      "table": "audit",
+      "marker": "B-audit-t1",
+      "payloadDigest": "E10-AUDIT-B-audit-t1",
+      "payloadRevision": 2,
+      "putSettledAt": 1789263248945,
+      "addedKeyOnDiskAfterOwnPut": true,
+      "presentInPhase1EndSnapshot": true,
+      "phase1EndValueDigestForKey": null
+    }
+  ],
+  "lastWriterByKey": {
+    "e10-session-a": {
+      "writes": [
+        {
+          "instance": "A",
+          "window": "B-a-writes-while-b-open",
+          "marker": "A-t1",
+          "revision": 1,
+          "digest": "E10-DIGEST-A-t1",
+          "settledAt": 1789263248732
+        },
+        {
+          "instance": "A",
+          "window": "E-a-updates-from-stale-snapshot",
+          "marker": "A-t2",
+          "revision": 2,
+          "digest": "E10-DIGEST-A-t2",
+          "settledAt": 1789263248882
+        }
+      ],
+      "lastWriter": {
+        "instance": "A",
+        "marker": "A-t2",
+        "revision": 2,
+        "digest": "E10-DIGEST-A-t2"
+      },
+      "comparedAgainst": "phase1Medium（阶段 1 之后、清空前）",
+      "mediumDigest": null,
+      "lastWriterMatchesMedium": false
+    },
+    "e10-session-b": {
+      "writes": [
+        {
+          "instance": "B",
+          "window": "D-b-writes-after-a-committed",
+          "marker": "B-t1",
+          "revision": 1,
+          "digest": "E10-DIGEST-B-t1",
+          "settledAt": 1789263248821
+        }
+      ],
+      "lastWriter": {
+        "instance": "B",
+        "marker": "B-t1",
+        "revision": 1,
+        "digest": "E10-DIGEST-B-t1"
+      },
+      "comparedAgainst": "phase1Medium（阶段 1 之后、清空前）",
+      "mediumDigest": "E10-DIGEST-B-t1",
+      "lastWriterMatchesMedium": true
+    },
+    "ts-e10-shared-audit-row": {
+      "writes": [
+        {
+          "instance": "A",
+          "window": "F-audit-open-row",
+          "marker": "A-audit-t1",
+          "revision": 1,
+          "digest": "E10-AUDIT-A-audit-t1",
+          "settledAt": 1789263248912
+        },
+        {
+          "instance": "B",
+          "window": "F-audit-finish-row-same-key",
+          "marker": "B-audit-t1",
+          "revision": 2,
+          "digest": "E10-AUDIT-B-audit-t1",
+          "settledAt": 1789263248945
+        }
+      ],
+      "lastWriter": {
+        "instance": "B",
+        "marker": "B-audit-t1",
+        "revision": 2,
+        "digest": "E10-AUDIT-B-audit-t1"
+      },
+      "comparedAgainst": "不适用（audit 行没有 stable.digest，finalKeyOwners 只解析 sessions 表）",
+      "mediumDigest": null,
+      "lastWriterMatchesMedium": null
+    },
+    "e10-session-fork": {
+      "writes": [
+        {
+          "instance": "S",
+          "window": "G0-seed-r3-fresh-medium",
+          "marker": "SEED-r3",
+          "revision": 3,
+          "digest": "E10-DIGEST-SEED-r3",
+          "settledAt": 1789263249326
+        },
+        {
+          "instance": "A",
+          "window": "G2-fork-same-revision",
+          "marker": "A-r4-fork",
+          "revision": 4,
+          "digest": "E10-DIGEST-A-r4-fork",
+          "settledAt": 1789263249921
+        },
+        {
+          "instance": "B",
+          "window": "G2-fork-same-revision",
+          "marker": "B-r4-fork",
+          "revision": 4,
+          "digest": "E10-DIGEST-B-r4-fork",
+          "settledAt": 1789263249951
+        }
+      ],
+      "lastWriter": {
+        "instance": "B",
+        "marker": "B-r4-fork",
+        "revision": 4,
+        "digest": "E10-DIGEST-B-r4-fork"
+      },
+      "comparedAgainst": "finalMedium（阶段 2 之后的介质）",
+      "mediumDigest": "E10-DIGEST-B-r4-fork",
+      "lastWriterMatchesMedium": true
+    }
+  },
+  "coverageLoss": [
+    {
+      "instance": "B",
+      "window": "D-b-writes-after-a-committed",
+      "atPutOf": "e10-session-b",
+      "table": "sessions",
+      "putSettledAt": 1789263248821,
+      "committedKeysBeforeThisPut": [
+        "e10-session-a",
+        "e10-session-b"
+      ],
+      "diskKeysAfterThisPut": [
+        "e10-session-b"
+      ],
+      "committedKeysErasedByThisPut": [
+        "e10-session-a"
+      ]
+    },
+    {
+      "instance": "A",
+      "window": "E-a-updates-from-stale-snapshot",
+      "atPutOf": "e10-session-a",
+      "table": "sessions",
+      "putSettledAt": 1789263248882,
+      "committedKeysBeforeThisPut": [
+        "e10-session-a",
+        "e10-session-b"
+      ],
+      "diskKeysAfterThisPut": [
+        "e10-session-a"
+      ],
+      "committedKeysErasedByThisPut": [
+        "e10-session-b"
+      ]
+    }
+  ],
+  "coverageLossBeforeWipe": [
+    {
+      "instance": "B",
+      "window": "D-b-writes-after-a-committed",
+      "atPutOf": "e10-session-b",
+      "table": "sessions",
+      "putSettledAt": 1789263248821,
+      "committedKeysBeforeThisPut": [
+        "e10-session-a",
+        "e10-session-b"
+      ],
+      "diskKeysAfterThisPut": [
+        "e10-session-b"
+      ],
+      "committedKeysErasedByThisPut": [
+        "e10-session-a"
+      ]
+    },
+    {
+      "instance": "A",
+      "window": "E-a-updates-from-stale-snapshot",
+      "atPutOf": "e10-session-a",
+      "table": "sessions",
+      "putSettledAt": 1789263248882,
+      "committedKeysBeforeThisPut": [
+        "e10-session-a",
+        "e10-session-b"
+      ],
+      "diskKeysAfterThisPut": [
+        "e10-session-a"
+      ],
+      "committedKeysErasedByThisPut": [
+        "e10-session-b"
+      ]
+    }
+  ],
+  "coverageLossAfterWipe": [],
+  "revisionFork": [
+    {
+      "key": "e10-session-fork",
+      "revision": 4,
+      "firstInstance": "A",
+      "firstMarker": "A-r4-fork",
+      "firstDigest": "E10-DIGEST-A-r4-fork",
+      "firstSettledAt": 1789263249921,
+      "secondInstance": "B",
+      "secondMarker": "B-r4-fork",
+      "secondDigest": "E10-DIGEST-B-r4-fork",
+      "secondSettledAt": 1789263249951,
+      "conflictSignal": "none — both puts resolved successfully; the storage layer never compares revisions across processes"
+    }
+  ],
+  "criteria": {
+    "C1_wholeDocumentLastWriteWinsOverwrite": true,
+    "C2_revisionForkWithoutCas": true,
+    "C3_committedDataSilentlyLostAtMedium": true,
+    "C4_externalChangeInvisibleToOpenInstance": true,
+    "C5_auditRowLostAcrossInstances": false,
+    "C6_conflictOrWarningEmitted": false
+  },
+  "finalMedium": {
+    "path": "审计资料\\实验结果\\E10-双实例\\tmp-storage\\run-a20f8b46\\context_enhancement_task_state.json",
+    "sha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+    "size": 1956,
+    "sessionKeys": [
+      "e10-session-fork"
+    ],
+    "auditKeys": [],
+    "schemaValid": {
+      "sessions": {
+        "e10-session-fork": true
+      },
+      "audit": {},
+      "allValid": true
+    },
+    "recordOwners": {
+      "e10-session-fork": {
+        "key": "e10-session-fork",
+        "digest": "E10-DIGEST-B-r4-fork",
+        "revision": 4,
+        "objective": "E10 objective B-r4-fork",
+        "recordSha256": "4ad1b55082a0806e20fdd12a0127a34533331bdc42ddf1cb0a235b44c2f9b49f"
+      }
+    }
+  },
+  "fileInventory": [
+    "context_enhancement_task_state.json"
+  ],
+  "errors": [],
+  "globalDeadlineHit": false,
+  "commandCount": 37,
+  "testSummary": {
+    "runner": "vitest",
+    "config": "审计资料/实验结果/harness/vitest.experiment.config.ts",
+    "spec": "审计资料/实验结果/E10-双实例/e10-dual-instance.spec.ts",
+    "reportedByRunner": "Test Files 1 passed (1) / Tests 1 passed (1)",
+    "testFilesPassed": 1,
+    "testsPassed": 1,
+    "testsFailed": 0,
+    "rawOutputFile": "审计资料/实验结果/E10-双实例/vitest-output-run1.txt",
+    "rawOutputNote": "原始 verbose 输出由外部命令 tee 落盘（spec 自己不启动 runner，无法自报耗时）。"
+  },
+  "ledgerSha256OfItself": "cd61f4d7e7933b3c91c7e505a329c1fbd3a3a30461e8318b86ec6c1c4eca3c3d",
+  "artifactHashes": {
+    "workerScript": "f2e02a0034b4d311ef6773e66a55fc71ce36931a1f02a85888d085f4a12843ad",
+    "workerStdoutA": null,
+    "workerStdoutB": null,
+    "workerStdoutC": null,
+    "workerStderrA": null,
+    "workerStderrB": null,
+    "workerStderrC": null,
+    "workerProcessLog": null
+  },
+  "generatedAt": "2026-09-13T01:34:10.507Z",
+  "specSideValidation": {
+    "domainFileSha256": "3b6f1c46ab16e9684d0176b4b3ae927c276b255b5f1097b5e51334b801d9265a",
+    "domainFileBytes": 1956,
+    "unitHeader": {
+      "name": "context_enhancement_task_state",
+      "version": 1
+    },
+    "sessionsValid": [
+      {
+        "key": "e10-session-fork",
+        "valid": true
+      }
+    ],
+    "auditValid": [],
+    "matchesLiveSpecIdentity": true
+  }
+}
